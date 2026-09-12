@@ -1,13 +1,20 @@
 import { Routes } from '@angular/router';
-import { EstadoList } from './components/estados/estado-list/estado-list';
-import { EstadoForm } from './components/estados/estado-form/estado-form';
-import { estadoResolver } from './resolvers/estado-resolver';
+import { TransacaoList } from './components/transacoes/transacao-list/transacao-list';
+import { TransacaoForm } from './components/transacoes/transacao-form/transacao-form';
+import { transacaoResolver } from './resolvers/transacao-resolver';
+import { CategoriaList } from './components/categorias/categoria-list/categoria-list';
+import { CategoriaForm } from './components/categorias/categoria-form/categoria-form';
+import { categoriaResolver } from './resolvers/categoria-resolver';
 
 export const routes: Routes = [
-    {path: '', redirectTo: 'estados', pathMatch: 'full'},
-    {path: 'estados', component: EstadoList, title: 'Lista de Estados',},
-    {path: 'estados/new', component: EstadoForm, title: 'Novo Estado',},
-    {path: 'estados/edit/:id', component: EstadoForm, title: 'Editar Estado', 
-        resolve: { estado: estadoResolver }},
+    {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
+    {path: 'transacoes', component: TransacaoList, title: 'Lista de Transações'},
+    {path: 'transacoes/new', component: TransacaoForm, title: 'Nova Transação'},
+    {path: 'transacoes/edit/:id', component: TransacaoForm, title: 'Editar Transação',
+        resolve: { transacao: transacaoResolver }},
 
+    {path: 'categorias', component: CategoriaList, title: 'Lista de Categorias'},
+    {path: 'categorias/new', component: CategoriaForm, title: 'Nova Categoria'},
+    {path: 'categorias/edit/:id', component: CategoriaForm, title: 'Editar Categoria',
+        resolve: { categoria: categoriaResolver }},
 ];

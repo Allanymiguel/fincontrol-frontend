@@ -1,0 +1,84 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    Controle de Transações
+</mat-toolbar>
+
+<mat-card class="card">
+    <mat-card-content>
+        <form class="form" [formGroup]="form">
+            <div class="grid">
+
+                <!-- Descricao -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Descrição</mat-label>
+                    <input matInput formControlName="descricao" maxlength="120" placeholder="Ex.: Almoço" />
+                </mat-form-field>
+
+                <!-- Valor -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Valor</mat-label>
+                    <input matInput type="number" step="0.01" min="0.01" formControlName="valor" placeholder="Ex.: 45.90" />
+                </mat-form-field>
+
+                <!-- Data -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Data</mat-label>
+                    <input matInput type="date" formControlName="data" />
+                </mat-form-field>
+
+                <!-- Tipo -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Tipo</mat-label>
+                    <mat-select formControlName="tipo" placeholder="Selecione um tipo">
+                        @for (tipo of tipos; track tipo) {
+                            <mat-option [value]="tipo">{{tipoLabels[tipo]}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- Escopo -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Escopo</mat-label>
+                    <mat-select formControlName="escopo" placeholder="Selecione um escopo">
+                        @for (escopo of escopos; track escopo) {
+                            <mat-option [value]="escopo">{{escopoLabels[escopo]}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- Categoria -->
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="idCategoria" placeholder="Selecione uma categoria">
+                        @for (categoria of categorias; track categoria.id) {
+                            <mat-option [value]="categoria.id">{{categoria.nome}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button
+                    color="warn"
+                    (click)="excluir()"
+                    [disabled]="!form.value.id">
+                    <mat-icon>delete</mat-icon>
+                    Excluir
+                </button>
+
+                <button mat-raised-button (click)="voltar()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Cancelar
+                </button>
+
+                <button mat-raised-button
+                    color="primary"
+                    (click)="salvar()"
+                    [disabled]="form.invalid">
+                    <mat-icon>save</mat-icon>
+                    Salvar
+                </button>
+            </div>
+
+        </form>
+    </mat-card-content>
+</mat-card>

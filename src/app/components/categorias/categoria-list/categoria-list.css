@@ -1,0 +1,45 @@
+.toolbar-title {
+    flex: 1;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.mat-column-nome {
+    width: 100%;
+}
+
+.mat-column-tipo {
+    min-width: 8em;
+    width: 8em;
+}
+
+.mat-column-cor {
+    min-width: 8em;
+    width: 8em;
+}
+
+.mat-column-ativa {
+    text-align: center;
+    min-width: 6em;
+    width: 6em;
+}
+
+.mat-column-acao {
+    text-align: center;
+    min-width: 6em;
+}
+
+.cor-swatch {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    margin-right: 0.5em;
+    vertical-align: middle;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
