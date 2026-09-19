@@ -2,18 +2,16 @@
     display: flex;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    background: #3f51b5;
-    color: white;
 }
 
 .app-nav a {
-    color: white;
+    color: #1f2937;
     text-decoration: none;
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
 }
 
 .app-nav a.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: #e5e7eb;
     font-weight: 500;
 }
