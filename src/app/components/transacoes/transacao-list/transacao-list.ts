@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -17,6 +18,7 @@ import { TransacaoService } from '../../../services/transacao.service';
 
 @Component({
   imports: [
+    DecimalPipe,
     FormsModule,
     MatTableModule,
     MatInputModule,

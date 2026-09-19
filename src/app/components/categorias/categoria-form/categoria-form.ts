@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -66,7 +67,7 @@ export class CategoriaForm implements OnInit {
   salvar() {
     const categoria = this.form.value;
 
-    const resultado = categoria.id
+    const resultado: Observable<unknown> = categoria.id
       ? this.categoriaService.update(categoria.id, categoria)
       : this.categoriaService.create(categoria);
 

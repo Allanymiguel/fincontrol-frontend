@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -85,7 +86,7 @@ export class TransacaoForm implements OnInit {
     const transacao = { ...this.form.value };
     transacao.data = this.formatarData(transacao.data);
 
-    const resultado = transacao.id
+    const resultado: Observable<unknown> = transacao.id
       ? this.transacaoService.update(transacao.id, transacao)
       : this.transacaoService.create(transacao);
 
