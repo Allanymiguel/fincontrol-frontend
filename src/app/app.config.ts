@@ -20,6 +20,10 @@ function getPtBrPaginatorIntl(): MatPaginatorIntl {
     const startIndex = page * pageSize;
     const endIndex = Math.min(startIndex + pageSize, length);
 
+    if (startIndex + 1 === endIndex) {
+      return `${startIndex + 1} de ${length}`;
+    }
+
     return `${startIndex + 1} - ${endIndex} de ${length}`;
   };
 
