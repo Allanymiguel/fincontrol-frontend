@@ -9,41 +9,40 @@
     width: 100%;
 }
 
+.filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.filter-descricao {
+    flex: 2;
+}
+
+.filter-categoria {
+    flex: 1;
+    min-width: 12em;
+}
+
 .mat-column-descricao {
     width: 100%;
 }
 
-.mat-column-data {
-    min-width: 7em;
-    width: 7em;
-}
-
-.mat-column-categoria {
-    min-width: 10em;
-    width: 10em;
-}
-
-.mat-column-tipo,
-.mat-column-escopo {
-    min-width: 7em;
-    width: 7em;
-}
-
+.mat-column-data,
 .mat-column-valor {
-    text-align: right;
     min-width: 8em;
     width: 8em;
+}
+
+.mat-column-categoria,
+.mat-column-tipo,
+.mat-column-escopo {
+    min-width: 10em;
+    width: 10em;
 }
 
 .mat-column-acao {
     text-align: center;
     min-width: 6em;
-}
-
-.despesa {
-    color: #b91c1c;
-}
-
-.receita {
-    color: #15803d;
 }

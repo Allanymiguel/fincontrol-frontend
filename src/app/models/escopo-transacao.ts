@@ -1,8 +1,9 @@
-export type EscopoTransacao = 'PESSOAL' | 'EMPRESA';
+export class EscopoTransacao {
+    id!: number;
+    nome!: string;
+}
 
-export const ESCOPOS_TRANSACAO: EscopoTransacao[] = ['PESSOAL', 'EMPRESA'];
-
-export const ESCOPO_TRANSACAO_LABELS: Record<EscopoTransacao, string> = {
-  PESSOAL: 'Pessoal',
-  EMPRESA: 'Empresa',
-};
+export const ESCOPOS_TRANSACAO: EscopoTransacao[] = [
+    { id: 1, nome: 'Pessoal' },
+    { id: 2, nome: 'Empresa' },
+];

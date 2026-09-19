@@ -1,12 +1,38 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { routes } from './app.routes';
+
+function getPtBrPaginatorIntl(): MatPaginatorIntl {
+  const paginatorIntl = new MatPaginatorIntl();
+
+  paginatorIntl.itemsPerPageLabel = 'Itens por página:';
+  paginatorIntl.nextPageLabel = 'Próxima página';
+  paginatorIntl.previousPageLabel = 'Página anterior';
+  paginatorIntl.firstPageLabel = 'Primeira página';
+  paginatorIntl.lastPageLabel = 'Última página';
+  paginatorIntl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length === 0 || pageSize === 0) {
+      return `0 de ${length}`;
+    }
+
+    const startIndex = page * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, length);
+
+    return `${startIndex + 1} - ${endIndex} de ${length}`;
+  };
+
+  return paginatorIntl;
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient()
-  ]
+    provideHttpClient(),
+    provideAnimationsAsync(),
+    { provide: MatPaginatorIntl, useFactory: getPtBrPaginatorIntl },
+  ],
 };

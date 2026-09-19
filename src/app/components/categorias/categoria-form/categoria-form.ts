@@ -1,48 +1,54 @@
 import { Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { TIPOS_TRANSACAO, TipoTransacao } from '../../../models/tipo-transacao';
 import { CategoriaService } from '../../../services/categoria.service';
-import { TIPOS_TRANSACAO, TIPO_TRANSACAO_LABELS } from '../../../models/tipo-transacao';
 
 @Component({
-  imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-            MatInputModule, MatButtonModule, MatToolbarModule,
-            MatSelectModule, MatIconModule, MatSnackBarModule, MatSlideToggleModule],
+  imports: [
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatSnackBarModule,
+  ],
   selector: 'app-categoria-form',
   styleUrl: './categoria-form.css',
   templateUrl: './categoria-form.html',
 })
 export class CategoriaForm implements OnInit {
-
   readonly form: FormGroup;
   private readonly location = inject(Location);
-  readonly tipos = TIPOS_TRANSACAO;
-  readonly tipoLabels = TIPO_TRANSACAO_LABELS;
+  tipos: TipoTransacao[] = TIPOS_TRANSACAO;
 
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
     private activatedRoute: ActivatedRoute,
     private snack: MatSnackBar,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       id: [null],
-      nome: [''],
-      tipo: [''],
-      cor: ['#4F46E5'],
-      ativa: [true]
+      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
+      idTipo: [null, Validators.required],
+      cor: [''],
+      ativa: [true, Validators.required],
     });
   }
 
@@ -50,31 +56,29 @@ export class CategoriaForm implements OnInit {
     const categoria = this.activatedRoute.snapshot.data['categoria'];
 
     if (categoria) {
-      this.form.patchValue(categoria);
+      this.form.patchValue({
+        ...categoria,
+        idTipo: categoria.tipo?.id,
+      });
     }
-  }
-
-  onColorPick(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.form.patchValue({ cor: value });
   }
 
   salvar() {
     const categoria = this.form.value;
 
-    let resultado: Observable<unknown> = (categoria.id) ?
-      this.categoriaService.update(categoria.id, categoria) :
-      this.categoriaService.create(categoria);
+    const resultado = categoria.id
+      ? this.categoriaService.update(categoria.id, categoria)
+      : this.categoriaService.create(categoria);
 
     resultado.subscribe({
       next: () => {
         this.exibirMensagem('Categoria salva com sucesso!');
         this.router.navigate(['/categorias']);
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.exibirMensagem('Erro ao salvar categoria!');
         console.error('Erro ao salvar categoria:', error);
-      }
+      },
     });
   }
 
@@ -87,10 +91,10 @@ export class CategoriaForm implements OnInit {
           this.exibirMensagem('Categoria excluída com sucesso!');
           this.router.navigate(['/categorias']);
         },
-        error: (error) => {
+        error: (error: unknown) => {
           this.exibirMensagem('Erro ao excluir categoria!');
           console.error('Erro ao excluir categoria:', error);
-        }
+        },
       });
     }
   }

@@ -7,7 +7,10 @@ export class Transacao {
     descricao!: string;
     valor!: number;
     data!: string;
-    tipo!: TipoTransacao;
-    escopo!: EscopoTransacao;
-    categoria!: Categoria;
+    idTipo?: number;
+    tipo?: TipoTransacao;
+    idEscopo?: number;
+    escopo?: EscopoTransacao;
+    idCategoria?: number;
+    categoria?: Categoria;
 }

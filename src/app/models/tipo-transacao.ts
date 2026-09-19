@@ -1,8 +1,9 @@
-export type TipoTransacao = 'DESPESA' | 'RECEITA';
+export class TipoTransacao {
+    id!: number;
+    nome!: string;
+}
 
-export const TIPOS_TRANSACAO: TipoTransacao[] = ['DESPESA', 'RECEITA'];
-
-export const TIPO_TRANSACAO_LABELS: Record<TipoTransacao, string> = {
-  DESPESA: 'Despesa',
-  RECEITA: 'Receita',
-};
+export const TIPOS_TRANSACAO: TipoTransacao[] = [
+    { id: 1, nome: 'Receita' },
+    { id: 2, nome: 'Despesa' },
+];

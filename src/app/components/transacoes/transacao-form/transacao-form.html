@@ -6,46 +6,41 @@
     <mat-card-content>
         <form class="form" [formGroup]="form">
             <div class="grid">
-
-                <!-- Descricao -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Descrição</mat-label>
-                    <input matInput formControlName="descricao" maxlength="120" placeholder="Ex.: Almoço" />
+                    <input matInput formControlName="descricao" placeholder="Ex.: Salário mensal" />
                 </mat-form-field>
 
-                <!-- Valor -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Valor</mat-label>
-                    <input matInput type="number" step="0.01" min="0.01" formControlName="valor" placeholder="Ex.: 45.90" />
+                    <input matInput type="number" step="0.01" formControlName="valor" placeholder="Ex.: 1500,00" />
                 </mat-form-field>
 
-                <!-- Data -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Data</mat-label>
-                    <input matInput type="date" formControlName="data" />
+                    <input matInput [matDatepicker]="picker" formControlName="data" />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
 
-                <!-- Tipo -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Tipo</mat-label>
-                    <mat-select formControlName="tipo" placeholder="Selecione um tipo">
-                        @for (tipo of tipos; track tipo) {
-                            <mat-option [value]="tipo">{{tipoLabels[tipo]}}</mat-option>
+                    <mat-select formControlName="idTipo" placeholder="Selecione um tipo">
+                        @for (tipo of tipos; track tipo.id) {
+                            <mat-option [value]="tipo.id">{{tipo.nome}}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
 
-                <!-- Escopo -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Escopo</mat-label>
-                    <mat-select formControlName="escopo" placeholder="Selecione um escopo">
-                        @for (escopo of escopos; track escopo) {
-                            <mat-option [value]="escopo">{{escopoLabels[escopo]}}</mat-option>
+                    <mat-select formControlName="idEscopo" placeholder="Selecione um escopo">
+                        @for (escopo of escopos; track escopo.id) {
+                            <mat-option [value]="escopo.id">{{escopo.nome}}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
 
-                <!-- Categoria -->
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Categoria</mat-label>
                     <mat-select formControlName="idCategoria" placeholder="Selecione uma categoria">
@@ -78,7 +73,6 @@
                     Salvar
                 </button>
             </div>
-
         </form>
     </mat-card-content>
 </mat-card>
