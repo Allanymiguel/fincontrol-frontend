@@ -1,0 +1,47 @@
+.toolbar-title {
+    flex: 1;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.filter-nome {
+    flex: 1;
+}
+
+.mat-column-nome {
+    width: 100%;
+}
+
+.mat-column-tipo,
+.mat-column-cep {
+    min-width: 8em;
+}
+
+.mat-column-documento,
+.mat-column-cidade {
+    min-width: 11em;
+    white-space: nowrap;
+}
+
+.mat-column-acao {
+    text-align: center;
+    min-width: 6em;
+}
+
+.empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+}

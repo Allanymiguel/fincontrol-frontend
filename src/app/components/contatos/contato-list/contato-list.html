@@ -1,0 +1,80 @@
+<mat-toolbar class="mat-toolbar">
+    <div class="flex-container">
+        <span class="toolbar-title">Contatos (clientes e fornecedores)</span>
+        <button mat-fab class="accent" routerLink="/contatos/new" aria-label="Novo contato">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+<div class="filters">
+    <mat-form-field appearance="outline" class="filter-nome">
+        <mat-label>Filtrar por nome</mat-label>
+        <input matInput [ngModel]="nomeFilter" (ngModelChange)="onNomeInput($event)" placeholder="Ex.: Maria" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="limparFiltro()">
+        <mat-icon>clear</mat-icon>
+        Limpar
+    </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef> Nº </th>
+        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.nome }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef> Tipo </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.tipo?.nome }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="documento">
+        <th mat-header-cell *matHeaderCellDef> CPF / CNPJ </th>
+        <td mat-cell *matCellDef="let obj"> {{ formatarDocumento(obj.documento) }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cidade">
+        <th mat-header-cell *matHeaderCellDef> Cidade / UF </th>
+        <td mat-cell *matCellDef="let obj">
+            {{ obj.endereco?.municipio?.nome }} - {{ obj.endereco?.municipio?.estado?.sigla }}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cep">
+        <th mat-header-cell *matHeaderCellDef> CEP </th>
+        <td mat-cell *matCellDef="let obj"> {{ formatarCep(obj.endereco?.cep) }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acao">
+        <th mat-header-cell *matHeaderCellDef> Ação </th>
+        <td mat-cell *matCellDef="let obj">
+            <button mat-icon-button color="primary" routerLink="/contatos/edit/{{ obj.id }}" aria-label="Editar">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhum contato encontrado.</td>
+    </tr>
+</table>
+
+<mat-paginator
+    [length]="totalItems"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+</mat-paginator>
