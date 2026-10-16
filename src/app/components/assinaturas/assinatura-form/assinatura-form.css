@@ -1,0 +1,94 @@
+.toolbar-title {
+    display: flex;
+    justify-content: center;
+    font-size: x-large;
+}
+
+.card {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.section-title {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem 1rem;
+    align-items: start;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.full-width-input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.secundario {
+    color: #6b7280;
+    font-size: 0.9em;
+}
+
+/* preco, desconto e valor final calculados enquanto o admin preenche */
+.resumo {
+    margin: 0.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 4px;
+    background: #f3f4f6;
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.2rem 0;
+    color: #374151;
+}
+
+.resumo-linha.desconto {
+    color: #166534;
+}
+
+.resumo-linha.total {
+    margin-top: 0.4rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid #d1d5db;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+button[mat-raised-button] {
+    min-width: 120px;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: auto;
+    }
+}
