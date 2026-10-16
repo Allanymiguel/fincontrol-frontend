@@ -17,6 +17,9 @@ import { cupomResolver } from './resolvers/cupom-resolver';
 import { CategoriaPadraoList } from './components/categorias-padrao/categoria-padrao-list/categoria-padrao-list';
 import { CategoriaPadraoForm } from './components/categorias-padrao/categoria-padrao-form/categoria-padrao-form';
 import { categoriaPadraoResolver } from './resolvers/categoria-padrao-resolver';
+import { ParametroFiscalList } from './components/parametros-fiscais/parametro-fiscal-list/parametro-fiscal-list';
+import { ParametroFiscalForm } from './components/parametros-fiscais/parametro-fiscal-form/parametro-fiscal-form';
+import { parametroFiscalResolver } from './resolvers/parametro-fiscal-resolver';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -50,4 +53,9 @@ export const routes: Routes = [
     {path: 'categorias-padrao/new', component: CategoriaPadraoForm, title: 'Nova Categoria Padrão'},
     {path: 'categorias-padrao/edit/:id', component: CategoriaPadraoForm, title: 'Editar Categoria Padrão',
         resolve: { categoriaPadrao: categoriaPadraoResolver }},
+
+    {path: 'parametros-fiscais', component: ParametroFiscalList, title: 'Lista de Parâmetros Fiscais'},
+    {path: 'parametros-fiscais/new', component: ParametroFiscalForm, title: 'Novo Parâmetro Fiscal'},
+    {path: 'parametros-fiscais/edit/:id', component: ParametroFiscalForm, title: 'Editar Parâmetro Fiscal',
+        resolve: { parametroFiscal: parametroFiscalResolver }},
 ];

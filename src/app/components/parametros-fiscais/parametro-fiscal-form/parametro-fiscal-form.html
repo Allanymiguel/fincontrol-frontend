@@ -1,0 +1,77 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    Cadastro de Parâmetros Fiscais
+</mat-toolbar>
+
+<mat-card class="card">
+    <mat-card-content>
+        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
+
+            <div class="grid">
+                <mat-form-field appearance="outline" class="full-width-input span-2">
+                    <mat-label>Chave</mat-label>
+                    <input matInput formControlName="chave" maxlength="60" placeholder="Ex.: SALARIO_MINIMO"
+                        (input)="normalizarChave()" />
+                    <mat-hint>Identificador usado nos cálculos fiscais</mat-hint>
+                    @if (getErrorMessage('chave'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Valor</mat-label>
+                    <input matInput type="number" formControlName="valor" min="0" step="0.0001" />
+                    @if (getErrorMessage('valor'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Início da vigência</mat-label>
+                    <input matInput [matDatepicker]="pickerInicio" formControlName="vigenciaInicio" />
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerInicio></mat-datepicker>
+                    @if (getErrorMessage('vigenciaInicio'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Fim da vigência</mat-label>
+                    <input matInput [matDatepicker]="pickerFim" [min]="inicioSelecionado" formControlName="vigenciaFim" />
+                    <div matIconSuffix class="sufixo-data">
+                        @if (form.value.vigenciaFim) {
+                            <button mat-icon-button type="button" aria-label="Limpar fim da vigência"
+                                (click)="limparFim()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        }
+                        <mat-datepicker-toggle [for]="pickerFim"></mat-datepicker-toggle>
+                    </div>
+                    <mat-datepicker #pickerFim></mat-datepicker>
+                    <mat-hint>Em branco = sem data de fim</mat-hint>
+                    @if (getErrorMessage('vigenciaFim'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button color="warn" type="button"
+                    (click)="excluir()" [disabled]="!form.value.id">
+                    <mat-icon>delete</mat-icon>
+                    Excluir
+                </button>
+
+                <button mat-raised-button type="button" (click)="voltar()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Cancelar
+                </button>
+
+                <button mat-raised-button color="primary" type="submit">
+                    <mat-icon>save</mat-icon>
+                    Salvar
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
