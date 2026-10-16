@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './components/auth/login/login';
+import { Registro } from './components/auth/registro/registro';
 import { TransacaoList } from './components/transacoes/transacao-list/transacao-list';
 import { TransacaoForm } from './components/transacoes/transacao-form/transacao-form';
 import { transacaoResolver } from './resolvers/transacao-resolver';
@@ -28,6 +29,7 @@ import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
 
 export const routes: Routes = [
     {path: 'login', component: Login, title: 'Entrar'},
+    {path: 'registro', component: Registro, title: 'Criar conta'},
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
 
     // ===== Operacional (futuro client) =====
