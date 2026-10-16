@@ -23,6 +23,7 @@ import { parametroFiscalResolver } from './resolvers/parametro-fiscal-resolver';
 import { FaixaIrpfList } from './components/faixas-irpf/faixa-irpf-list/faixa-irpf-list';
 import { FaixaIrpfForm } from './components/faixas-irpf/faixa-irpf-form/faixa-irpf-form';
 import { faixaIrpfResolver } from './resolvers/faixa-irpf-resolver';
+import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -66,4 +67,6 @@ export const routes: Routes = [
     {path: 'faixas-irpf/new', component: FaixaIrpfForm, title: 'Nova Faixa IRPF'},
     {path: 'faixas-irpf/edit/:id', component: FaixaIrpfForm, title: 'Editar Faixa IRPF',
         resolve: { faixaIrpf: faixaIrpfResolver }},
+
+    {path: 'usuarios', component: UsuarioList, title: 'Lista de Usuários'},
 ];
