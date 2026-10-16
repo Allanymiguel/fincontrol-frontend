@@ -1,0 +1,78 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    Cadastro de Faixas do IRPF
+</mat-toolbar>
+
+<mat-card class="card">
+    <mat-card-content>
+        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
+
+            <div class="grid">
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Início da vigência</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="vigenciaInicio" />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-hint>Mesma data = mesma tabela</mat-hint>
+                    @if (getErrorMessage('vigenciaInicio'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Limite inferior</mat-label>
+                    <span matTextPrefix>R$&nbsp;</span>
+                    <input matInput type="number" formControlName="limiteInferior" min="0" step="0.01" />
+                    @if (getErrorMessage('limiteInferior'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Limite superior</mat-label>
+                    <span matTextPrefix>R$&nbsp;</span>
+                    <input matInput type="number" formControlName="limiteSuperior" min="0" step="0.01" />
+                    <mat-hint>Em branco na última faixa</mat-hint>
+                    @if (getErrorMessage('limiteSuperior'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Alíquota</mat-label>
+                    <input matInput type="number" formControlName="aliquota" min="0" max="100" step="0.01" />
+                    <span matTextSuffix>%</span>
+                    @if (getErrorMessage('aliquota'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Parcela a deduzir</mat-label>
+                    <span matTextPrefix>R$&nbsp;</span>
+                    <input matInput type="number" formControlName="parcelaDeduzir" min="0" step="0.01" />
+                    @if (getErrorMessage('parcelaDeduzir'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button color="warn" type="button"
+                    (click)="excluir()" [disabled]="!form.value.id">
+                    <mat-icon>delete</mat-icon>
+                    Excluir
+                </button>
+
+                <button mat-raised-button type="button" (click)="voltar()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Cancelar
+                </button>
+
+                <button mat-raised-button color="primary" type="submit">
+                    <mat-icon>save</mat-icon>
+                    Salvar
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

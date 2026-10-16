@@ -20,6 +20,9 @@ import { categoriaPadraoResolver } from './resolvers/categoria-padrao-resolver';
 import { ParametroFiscalList } from './components/parametros-fiscais/parametro-fiscal-list/parametro-fiscal-list';
 import { ParametroFiscalForm } from './components/parametros-fiscais/parametro-fiscal-form/parametro-fiscal-form';
 import { parametroFiscalResolver } from './resolvers/parametro-fiscal-resolver';
+import { FaixaIrpfList } from './components/faixas-irpf/faixa-irpf-list/faixa-irpf-list';
+import { FaixaIrpfForm } from './components/faixas-irpf/faixa-irpf-form/faixa-irpf-form';
+import { faixaIrpfResolver } from './resolvers/faixa-irpf-resolver';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -58,4 +61,9 @@ export const routes: Routes = [
     {path: 'parametros-fiscais/new', component: ParametroFiscalForm, title: 'Novo Parâmetro Fiscal'},
     {path: 'parametros-fiscais/edit/:id', component: ParametroFiscalForm, title: 'Editar Parâmetro Fiscal',
         resolve: { parametroFiscal: parametroFiscalResolver }},
+
+    {path: 'faixas-irpf', component: FaixaIrpfList, title: 'Lista de Faixas IRPF'},
+    {path: 'faixas-irpf/new', component: FaixaIrpfForm, title: 'Nova Faixa IRPF'},
+    {path: 'faixas-irpf/edit/:id', component: FaixaIrpfForm, title: 'Editar Faixa IRPF',
+        resolve: { faixaIrpf: faixaIrpfResolver }},
 ];
