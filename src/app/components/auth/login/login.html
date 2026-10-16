@@ -1,0 +1,55 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    FinControl
+</mat-toolbar>
+
+<mat-card class="card">
+    <mat-card-content>
+        <h1 class="titulo">Entrar</h1>
+
+        @if (aviso(); as aviso) {
+            <p class="mensagem mensagem-aviso" role="status">
+                <mat-icon>info</mat-icon>
+                {{ aviso }}
+            </p>
+        }
+
+        @if (erro(); as erro) {
+            <p class="mensagem mensagem-erro" role="alert">
+                <mat-icon>error</mat-icon>
+                {{ erro }}
+            </p>
+        }
+
+        <form class="form" [formGroup]="form" (ngSubmit)="entrar()">
+            <mat-form-field appearance="outline" class="full-width-input">
+                <mat-label>E-mail</mat-label>
+                <input matInput type="email" formControlName="email" autocomplete="username" maxlength="120" />
+                @if (getErrorMessage('email'); as error) {
+                    <mat-error>{{ error }}</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width-input">
+                <mat-label>Senha</mat-label>
+                <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
+                    autocomplete="current-password" />
+                <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
+                    [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                    <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (getErrorMessage('senha'); as error) {
+                    <mat-error>{{ error }}</mat-error>
+                }
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit" class="botao-entrar" [disabled]="entrando()">
+                @if (entrando()) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                } @else {
+                    <mat-icon>login</mat-icon>
+                }
+                Entrar
+            </button>
+        </form>
+    </mat-card-content>
+</mat-card>
