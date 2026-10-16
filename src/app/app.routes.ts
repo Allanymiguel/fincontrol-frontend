@@ -27,6 +27,9 @@ import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
+
+    // ===== Operacional (futuro client) =====
+    // TODO: canActivate com guard de usuario autenticado (Keycloak)
     {path: 'transacoes', component: TransacaoList, title: 'Lista de Transações'},
     {path: 'transacoes/new', component: TransacaoForm, title: 'Nova Transação'},
     {path: 'transacoes/edit/:id', component: TransacaoForm, title: 'Editar Transação',
@@ -42,7 +45,8 @@ export const routes: Routes = [
     {path: 'contatos/edit/:id', component: ContatoForm, title: 'Editar Contato',
         resolve: { contato: contatoResolver }},
 
-    // TODO: canActivate com guard de role ADMIN (Keycloak)
+    // ===== Admin =====
+    // TODO: canActivate com guard de role ADMIN (Keycloak) em todas as rotas abaixo
     {path: 'planos', component: PlanoList, title: 'Lista de Planos'},
     {path: 'planos/new', component: PlanoForm, title: 'Novo Plano'},
     {path: 'planos/edit/:id', component: PlanoForm, title: 'Editar Plano',

@@ -1,7 +1,30 @@
 .app-nav {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
     padding: 1rem 1.5rem;
+}
+
+.nav-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+}
+
+/* separa visualmente a area administrativa da operacional */
+.nav-admin {
+    padding-left: 1.5rem;
+    border-left: 1px solid #d1d5db;
+}
+
+.nav-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7280;
 }
 
 .app-nav a {
@@ -14,4 +37,12 @@
 .app-nav a.active {
     background: #e5e7eb;
     font-weight: 500;
+}
+
+/* abaixo dessa largura a secao admin quebra para a linha de baixo: o divisor sai */
+@media (max-width: 1200px) {
+    .nav-admin {
+        padding-left: 0;
+        border-left: none;
+    }
 }

@@ -1,13 +1,21 @@
-<nav class="app-nav">
-    <a routerLink="/transacoes" routerLinkActive="active">Transações</a>
-    <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
-    <a routerLink="/contatos" routerLinkActive="active">Contatos</a>
-    <a routerLink="/planos" routerLinkActive="active">Planos</a>
-    <a routerLink="/cupons" routerLinkActive="active">Cupons</a>
-    <a routerLink="/categorias-padrao" routerLinkActive="active">Categorias Padrão</a>
-    <a routerLink="/parametros-fiscais" routerLinkActive="active">Parâmetros Fiscais</a>
-    <a routerLink="/faixas-irpf" routerLinkActive="active">Faixas IRPF</a>
-    <a routerLink="/usuarios" routerLinkActive="active">Usuários</a>
+<nav class="app-nav" aria-label="Navegação principal">
+    <div class="nav-section" role="group" aria-labelledby="nav-operacional">
+        <span class="nav-label" id="nav-operacional">Operacional</span>
+        <a routerLink="/transacoes" routerLinkActive="active">Transações</a>
+        <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
+        <a routerLink="/contatos" routerLinkActive="active">Contatos</a>
+    </div>
+
+    <!-- TODO: esconder seção admin quando role != ADMIN -->
+    <div class="nav-section nav-admin" role="group" aria-labelledby="nav-admin">
+        <span class="nav-label" id="nav-admin">Admin</span>
+        <a routerLink="/planos" routerLinkActive="active">Planos</a>
+        <a routerLink="/cupons" routerLinkActive="active">Cupons</a>
+        <a routerLink="/categorias-padrao" routerLinkActive="active">Categorias Padrão</a>
+        <a routerLink="/parametros-fiscais" routerLinkActive="active">Parâmetros Fiscais</a>
+        <a routerLink="/faixas-irpf" routerLinkActive="active">Faixas IRPF</a>
+        <a routerLink="/usuarios" routerLinkActive="active">Usuários</a>
+    </div>
 </nav>
 
 <router-outlet />
