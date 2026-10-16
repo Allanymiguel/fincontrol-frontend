@@ -1,0 +1,82 @@
+.toolbar-title {
+    flex: 1;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.filter-nome {
+    flex: 1;
+}
+
+.filter-tipo {
+    width: 12rem;
+}
+
+.mat-column-nome {
+    width: 100%;
+}
+
+.mat-column-tipo,
+.mat-column-cor,
+.mat-column-situacao {
+    min-width: 8em;
+    white-space: nowrap;
+}
+
+.mat-column-acao {
+    text-align: center;
+    min-width: 7em;
+    white-space: nowrap;
+}
+
+.cor-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: white;
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+.sem-cor {
+    color: #6b7280;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+.tag-ok {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.tag-off {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.linha-arquivada td {
+    color: #6b7280;
+}
+
+.empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+}

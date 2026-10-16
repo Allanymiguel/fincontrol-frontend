@@ -14,6 +14,9 @@ import { planoResolver } from './resolvers/plano-resolver';
 import { CupomList } from './components/cupons/cupom-list/cupom-list';
 import { CupomForm } from './components/cupons/cupom-form/cupom-form';
 import { cupomResolver } from './resolvers/cupom-resolver';
+import { CategoriaPadraoList } from './components/categorias-padrao/categoria-padrao-list/categoria-padrao-list';
+import { CategoriaPadraoForm } from './components/categorias-padrao/categoria-padrao-form/categoria-padrao-form';
+import { categoriaPadraoResolver } from './resolvers/categoria-padrao-resolver';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -42,4 +45,9 @@ export const routes: Routes = [
     {path: 'cupons/new', component: CupomForm, title: 'Novo Cupom'},
     {path: 'cupons/edit/:id', component: CupomForm, title: 'Editar Cupom',
         resolve: { cupom: cupomResolver }},
+
+    {path: 'categorias-padrao', component: CategoriaPadraoList, title: 'Lista de Categorias Padrão'},
+    {path: 'categorias-padrao/new', component: CategoriaPadraoForm, title: 'Nova Categoria Padrão'},
+    {path: 'categorias-padrao/edit/:id', component: CategoriaPadraoForm, title: 'Editar Categoria Padrão',
+        resolve: { categoriaPadrao: categoriaPadraoResolver }},
 ];

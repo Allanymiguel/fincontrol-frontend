@@ -1,0 +1,101 @@
+<mat-toolbar class="mat-toolbar">
+    <div class="flex-container">
+        <span class="toolbar-title">Categorias padrão (copiadas para novas contas)</span>
+        <button mat-fab class="accent" routerLink="/categorias-padrao/new" aria-label="Nova categoria padrão">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+<div class="filters">
+    <mat-form-field appearance="outline" class="filter-nome">
+        <mat-label>Filtrar por nome</mat-label>
+        <input matInput [ngModel]="nomeFilter" (ngModelChange)="onNomeInput($event)" placeholder="Ex.: Alimentação" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-tipo">
+        <mat-label>Tipo</mat-label>
+        <mat-select [(ngModel)]="idTipoFilter" (selectionChange)="onTipoChange()">
+            <mat-option [value]="null">Todos</mat-option>
+            @for (tipo of tipos; track tipo.id) {
+                <mat-option [value]="tipo.id">{{ tipo.nome }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="limparFiltro()">
+        <mat-icon>clear</mat-icon>
+        Limpar
+    </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef> Nº </th>
+        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.nome }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef> Tipo </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.tipo?.nome }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cor">
+        <th mat-header-cell *matHeaderCellDef> Cor </th>
+        <td mat-cell *matCellDef="let obj">
+            @if (obj.cor) {
+                <span class="cor-badge" [style.background-color]="obj.cor">{{ obj.cor }}</span>
+            } @else {
+                <span class="sem-cor">Sem cor</span>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="situacao">
+        <th mat-header-cell *matHeaderCellDef> Situação </th>
+        <td mat-cell *matCellDef="let obj">
+            @if (obj.arquivada) {
+                <span class="tag tag-off">Arquivada</span>
+            } @else {
+                <span class="tag tag-ok">Em uso</span>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acao">
+        <th mat-header-cell *matHeaderCellDef> Ação </th>
+        <td mat-cell *matCellDef="let obj">
+            <button mat-icon-button color="primary" routerLink="/categorias-padrao/edit/{{ obj.id }}" aria-label="Editar"
+                matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="alternarArquivada(obj)"
+                [attr.aria-label]="obj.arquivada ? 'Desarquivar' : 'Arquivar'"
+                [matTooltip]="obj.arquivada ? 'Desarquivar' : 'Arquivar'">
+                <mat-icon>{{ obj.arquivada ? 'unarchive' : 'archive' }}</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.linha-arquivada]="row.arquivada"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhuma categoria padrão encontrada.</td>
+    </tr>
+</table>
+
+<mat-paginator
+    [length]="totalItems"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+</mat-paginator>

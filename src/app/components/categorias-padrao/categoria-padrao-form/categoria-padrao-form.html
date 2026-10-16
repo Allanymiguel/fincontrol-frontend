@@ -1,0 +1,68 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    Cadastro de Categorias Padrão
+</mat-toolbar>
+
+<mat-card class="card">
+    <mat-card-content>
+        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
+
+            @if (arquivada) {
+                <div class="aviso-arquivada" role="status">
+                    <mat-icon>archive</mat-icon>
+                    Esta categoria está arquivada: novas contas não a recebem.
+                </div>
+            }
+
+            <div class="grid">
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Nome</mat-label>
+                    <input matInput formControlName="nome" placeholder="Ex.: Alimentação" maxlength="60" />
+                    @if (getErrorMessage('nome'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Tipo</mat-label>
+                    <mat-select formControlName="idTipo" placeholder="Selecione">
+                        @for (tipo of tipos; track tipo.id) {
+                            <mat-option [value]="tipo.id">{{ tipo.nome }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (getErrorMessage('idTipo'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Cor</mat-label>
+                    <input matInput formControlName="cor" maxlength="7" placeholder="#4F46E5" />
+                    <input matSuffix type="color" class="seletor-cor" aria-label="Escolher cor"
+                        [value]="corDoSeletor" (input)="onCorSelecionada($any($event.target).value)" />
+                    <mat-hint>Opcional</mat-hint>
+                    @if (getErrorMessage('cor'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button type="button" class="botao-arquivar"
+                    (click)="alternarArquivada()" [disabled]="!form.value.id">
+                    <mat-icon>{{ arquivada ? 'unarchive' : 'archive' }}</mat-icon>
+                    {{ arquivada ? 'Desarquivar' : 'Arquivar' }}
+                </button>
+
+                <button mat-raised-button type="button" (click)="voltar()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Cancelar
+                </button>
+
+                <button mat-raised-button color="primary" type="submit">
+                    <mat-icon>save</mat-icon>
+                    Salvar
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
