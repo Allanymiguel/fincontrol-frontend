@@ -8,6 +8,9 @@ import { categoriaResolver } from './resolvers/categoria-resolver';
 import { ContatoList } from './components/contatos/contato-list/contato-list';
 import { ContatoForm } from './components/contatos/contato-form/contato-form';
 import { contatoResolver } from './resolvers/contato-resolver';
+import { PlanoList } from './components/planos/plano-list/plano-list';
+import { PlanoForm } from './components/planos/plano-form/plano-form';
+import { planoResolver } from './resolvers/plano-resolver';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -25,4 +28,10 @@ export const routes: Routes = [
     {path: 'contatos/new', component: ContatoForm, title: 'Novo Contato'},
     {path: 'contatos/edit/:id', component: ContatoForm, title: 'Editar Contato',
         resolve: { contato: contatoResolver }},
+
+    // TODO: canActivate com guard de role ADMIN (Keycloak)
+    {path: 'planos', component: PlanoList, title: 'Lista de Planos'},
+    {path: 'planos/new', component: PlanoForm, title: 'Novo Plano'},
+    {path: 'planos/edit/:id', component: PlanoForm, title: 'Editar Plano',
+        resolve: { plano: planoResolver }},
 ];

@@ -1,0 +1,62 @@
+.toolbar-title {
+    flex: 1;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.filter-nome {
+    flex: 1;
+}
+
+.mat-column-nome {
+    width: 100%;
+}
+
+.mat-column-precoMensal,
+.mat-column-precoAnual,
+.mat-column-limites {
+    white-space: nowrap;
+    min-width: 7em;
+}
+
+.mat-column-modulos {
+    min-width: 14em;
+}
+
+.mat-column-ativo,
+.mat-column-acao {
+    text-align: center;
+    min-width: 5em;
+}
+
+.tag {
+    display: inline-block;
+    margin: 2px 4px 2px 0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e0e7ff;
+    color: #3730a3;
+    font-size: 0.85em;
+}
+
+.sem-modulo {
+    color: #6b7280;
+}
+
+.empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+}
