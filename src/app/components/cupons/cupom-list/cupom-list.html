@@ -1,0 +1,79 @@
+<mat-toolbar class="mat-toolbar">
+    <div class="flex-container">
+        <span class="toolbar-title">Cupons de desconto</span>
+        <button mat-fab class="accent" routerLink="/cupons/new" aria-label="Novo cupom">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
+
+<div class="filters">
+    <mat-form-field appearance="outline" class="filter-nome">
+        <mat-label>Filtrar por código</mat-label>
+        <input matInput [ngModel]="codigoFilter" (ngModelChange)="onCodigoInput($event)" placeholder="Ex.: BEMVINDO" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="limparFiltro()">
+        <mat-icon>clear</mat-icon>
+        Limpar
+    </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef> Nº </th>
+        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="codigo">
+        <th mat-header-cell *matHeaderCellDef> Código </th>
+        <td mat-cell *matCellDef="let obj"> <span class="codigo">{{ obj.codigo }}</span> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="desconto">
+        <th mat-header-cell *matHeaderCellDef> Desconto </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.percentualDesconto | number:'1.0-2' }}% </td>
+    </ng-container>
+
+    <ng-container matColumnDef="validade">
+        <th mat-header-cell *matHeaderCellDef> Validade </th>
+        <td mat-cell *matCellDef="let obj"> {{ obj.validade | date:'dd/MM/yyyy' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="situacao">
+        <th mat-header-cell *matHeaderCellDef> Situação </th>
+        <td mat-cell *matCellDef="let obj">
+            @switch (situacao(obj)) {
+                @case ('ativo') { <span class="tag tag-ok">Ativo</span> }
+                @case ('expirado') { <span class="tag tag-alerta">Expirado</span> }
+                @default { <span class="tag tag-off">Inativo</span> }
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acao">
+        <th mat-header-cell *matHeaderCellDef> Ação </th>
+        <td mat-cell *matCellDef="let obj">
+            <button mat-icon-button color="primary" routerLink="/cupons/edit/{{ obj.id }}" aria-label="Editar">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhum cupom encontrado.</td>
+    </tr>
+</table>
+
+<mat-paginator
+    [length]="totalItems"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+</mat-paginator>

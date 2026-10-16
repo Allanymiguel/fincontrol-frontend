@@ -11,6 +11,9 @@ import { contatoResolver } from './resolvers/contato-resolver';
 import { PlanoList } from './components/planos/plano-list/plano-list';
 import { PlanoForm } from './components/planos/plano-form/plano-form';
 import { planoResolver } from './resolvers/plano-resolver';
+import { CupomList } from './components/cupons/cupom-list/cupom-list';
+import { CupomForm } from './components/cupons/cupom-form/cupom-form';
+import { cupomResolver } from './resolvers/cupom-resolver';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
@@ -34,4 +37,9 @@ export const routes: Routes = [
     {path: 'planos/new', component: PlanoForm, title: 'Novo Plano'},
     {path: 'planos/edit/:id', component: PlanoForm, title: 'Editar Plano',
         resolve: { plano: planoResolver }},
+
+    {path: 'cupons', component: CupomList, title: 'Lista de Cupons'},
+    {path: 'cupons/new', component: CupomForm, title: 'Novo Cupom'},
+    {path: 'cupons/edit/:id', component: CupomForm, title: 'Editar Cupom',
+        resolve: { cupom: cupomResolver }},
 ];
