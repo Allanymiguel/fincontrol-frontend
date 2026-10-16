@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ApiProblem } from '../../../models/api-problem.model';
 import { Usuario } from '../../../models/usuario.model';
 import { PagedResponse } from '../../../services/categoria.service';
 import { UsuarioService } from '../../../services/usuario.service';
@@ -105,7 +106,9 @@ export class UsuarioList implements OnInit {
         this.alterando.delete(usuario.id);
         // desfaz a mudanca visual do toggle
         event.source.checked = usuario.ativo;
-        this.exibirMensagem('Erro ao alterar o usuário.');
+        // ex.: "Você não pode desativar a própria conta."
+        const problem = error.error as ApiProblem | null;
+        this.exibirMensagem(problem?.errors?.[0]?.message ?? problem?.detail ?? 'Erro ao alterar o usuário.');
         console.error('Erro ao ativar/desativar usuário:', error);
       },
     });

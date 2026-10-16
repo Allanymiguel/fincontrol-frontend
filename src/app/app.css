@@ -39,6 +39,25 @@
     font-weight: 500;
 }
 
+/* usuario logado e botao Sair, no canto direito */
+.nav-usuario {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.nav-nome {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #374151;
+}
+
+.nav-nome mat-icon {
+    color: #6b7280;
+}
+
 /* abaixo dessa largura a secao admin quebra para a linha de baixo: o divisor sai */
 @media (max-width: 1200px) {
     .nav-admin {
