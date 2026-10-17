@@ -6,7 +6,7 @@
         <p class="atual secundario">
             Plano atual: <strong>{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome.toLowerCase() }})</strong>
             @if (assinatura.dataProximaCobranca) {
-                · próxima cobrança em {{ assinatura.dataProximaCobranca | date:'dd/MM/yyyy' }}
+                · próxima cobrança em {{ assinatura.dataProximaCobranca | date }}
             }
         </p>
 
@@ -72,11 +72,11 @@
                             <p class="efeito efeito-agora"><mat-icon aria-hidden="true">bolt</mat-icon> Vale agora</p>
                             @if (r.valorCobradoAgora > 0) {
                                 <p>Cobrança de <strong>R$ {{ r.valorCobradoAgora | number:'1.2-2' }}</strong> hoje.
-                                    Próxima cobrança em {{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}.</p>
+                                    Próxima cobrança em {{ r.dataProximaCobranca | date }}.</p>
                             } @else if (r.dataProximaCobranca) {
                                 <p>Nada é cobrado hoje: o crédito de <strong>R$ {{ r.credito | number:'1.2-2' }}</strong> que sobra
                                     do período atual cobre {{ r.diasCobertos }} {{ r.diasCobertos === 1 ? 'dia' : 'dias' }} do novo plano.</p>
-                                <p>Próxima cobrança em <strong>{{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}</strong>:
+                                <p>Próxima cobrança em <strong>{{ r.dataProximaCobranca | date }}</strong>:
                                     R$ {{ r.valorProximaCobranca | number:'1.2-2' }}.</p>
                             } @else {
                                 <p>Plano sem custo: não há cobrança.</p>
@@ -84,7 +84,7 @@
                         }
                         @case (EFEITO_AGENDADO) {
                             <p class="efeito efeito-agendado"><mat-icon aria-hidden="true">schedule</mat-icon> Fica agendada</p>
-                            <p>Passa a valer em <strong>{{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}</strong>, na próxima cobrança
+                            <p>Passa a valer em <strong>{{ r.dataProximaCobranca | date }}</strong>, na próxima cobrança
                                 @if (r.valorProximaCobranca > 0) {
                                     (R$ {{ r.valorProximaCobranca | number:'1.2-2' }}).
                                 } @else {
@@ -94,7 +94,7 @@
                         }
                         @case (EFEITO_DESFAZ) {
                             <p class="efeito"><mat-icon aria-hidden="true">undo</mat-icon> É o plano atual</p>
-                            <p>A troca agendada para {{ r.dataProximaCobranca | date:'dd/MM/yyyy' }} será desfeita.</p>
+                            <p>A troca agendada para {{ r.dataProximaCobranca | date }} será desfeita.</p>
                         }
                     }
                 } @else {

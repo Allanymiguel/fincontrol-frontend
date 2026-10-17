@@ -67,7 +67,7 @@
                         Última transação
                     </span>
                     @if (resumo.ultimaTransacaoEm) {
-                        <strong class="num">{{ resumo.ultimaTransacaoEm | date:'dd/MM/yyyy' }}</strong>
+                        <strong class="num">{{ resumo.ultimaTransacaoEm | date }}</strong>
                     } @else {
                         <span class="secundario">Nenhuma transação registrada</span>
                     }
@@ -113,11 +113,11 @@
                         </div>
                         <p class="assinatura-desde">
                             @if (assinatura.dataProximaCobranca) {
-                                Próxima cobrança em {{ assinatura.dataProximaCobranca | date:'dd/MM/yyyy' }}
+                                Próxima cobrança em {{ assinatura.dataProximaCobranca | date }}
                             } @else {
                                 Plano sem custo · sem cobrança
                             }
-                            · assinante desde {{ assinatura.dataInicio | date:'dd/MM/yyyy' }}
+                            · assinante desde {{ assinatura.dataInicio | date }}
                         </p>
                         <div class="assinatura-rodape">
                             <span>R$ {{ assinatura.valor | number:'1.2-2' }} / {{ assinatura.periodicidade.id === 2 ? 'ano' : 'mês' }} · {{ assinatura.formaPagamento.nome }}</span>
@@ -147,7 +147,7 @@
                         <div class="troca-agendada callout callout-alerta" role="status">
                             <mat-icon aria-hidden="true">schedule</mat-icon>
                             <span>
-                                Em <strong>{{ troca.data | date:'dd/MM/yyyy' }}</strong> passa para
+                                Em <strong>{{ troca.data | date }}</strong> passa para
                                 <strong>{{ troca.nomePlano }} ({{ troca.periodicidade.nome.toLowerCase() }})</strong>
                                 @if (troca.valor > 0) {
                                     por R$ {{ troca.valor | number:'1.2-2' }}.
@@ -183,7 +183,7 @@
                             <table mat-table [dataSource]="resumo.pagamentos" class="historico">
                                 <ng-container matColumnDef="data">
                                     <th mat-header-cell *matHeaderCellDef> Data </th>
-                                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataPagamento | date:'dd/MM/yyyy' }} </td>
+                                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataPagamento | date }} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="plano">
                                     <th mat-header-cell *matHeaderCellDef class="col-principal"> Plano </th>

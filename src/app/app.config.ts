@@ -1,4 +1,4 @@
-import { registerLocaleData } from '@angular/common';
+import { DATE_PIPE_DEFAULT_OPTIONS, registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import {
   ApplicationConfig,
@@ -14,6 +14,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { routes } from './app.routes';
 import { authInterceptor } from './auth/auth.interceptor';
+import { FORMATO_DATA } from './utils/data';
 import { DataBrAdapter, FORMATOS_DATA_BR } from './utils/data-br-adapter';
 
 registerLocaleData(localePt);
@@ -52,6 +53,8 @@ export const appConfig: ApplicationConfig = {
     { provide: MatPaginatorIntl, useFactory: getPtBrPaginatorIntl },
     // pipes number/date no formato brasileiro (R$ 1.500,00)
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    // "| date" sem formato ja mostra dd/MM/yyyy em todo o front
+    { provide: DATE_PIPE_DEFAULT_OPTIONS, useValue: { dateFormat: FORMATO_DATA } },
     // campos de data (mat-datepicker) em dd/MM/aaaa e calendario em portugues
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     { provide: DateAdapter, useClass: DataBrAdapter },

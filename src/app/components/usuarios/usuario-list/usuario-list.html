@@ -95,7 +95,7 @@
                     <th mat-header-cell *matHeaderCellDef> Próxima cobrança </th>
                     <td mat-cell *matCellDef="let obj">
                         @if (obj.assinatura?.dataProximaCobranca) {
-                            <div class="num">{{ obj.assinatura.dataProximaCobranca | date:'dd/MM/yyyy' }}</div>
+                            <div class="num">{{ obj.assinatura.dataProximaCobranca | date }}</div>
                             <div class="secundario num">R$ {{ obj.assinatura.valor | number:'1.2-2' }}</div>
                         } @else {
                             <span class="secundario">{{ obj.assinatura ? 'Sem cobrança' : '—' }}</span>

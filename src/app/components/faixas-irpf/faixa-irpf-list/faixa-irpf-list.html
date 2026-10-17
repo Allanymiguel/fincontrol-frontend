@@ -16,7 +16,7 @@
             <mat-select [(ngModel)]="vigenciaFilter" (selectionChange)="onVigenciaChange()">
                 <mat-option [value]="null">Todas</mat-option>
                 @for (vigencia of vigencias; track vigencia) {
-                    <mat-option [value]="vigencia">{{ vigencia | date:'dd/MM/yyyy' }}</mat-option>
+                    <mat-option [value]="vigencia">{{ vigencia | date }}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
@@ -38,7 +38,7 @@
 
                 <ng-container matColumnDef="vigencia">
                     <th mat-header-cell *matHeaderCellDef> Vigência desde </th>
-                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.vigenciaInicio | date:'dd/MM/yyyy' }} </td>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.vigenciaInicio | date }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="faixa">

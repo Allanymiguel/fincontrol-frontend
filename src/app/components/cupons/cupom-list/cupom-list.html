@@ -44,7 +44,7 @@
 
                 <ng-container matColumnDef="validade">
                     <th mat-header-cell *matHeaderCellDef> Validade </th>
-                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.validade | date:'dd/MM/yyyy' }} </td>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.validade | date }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="situacao">

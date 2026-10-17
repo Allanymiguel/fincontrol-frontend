@@ -20,6 +20,7 @@ import { Usuario } from '../../../models/usuario.model';
 import { UsuarioResumo } from '../../../models/usuario-resumo.model';
 import { AssinaturaService } from '../../../services/assinatura.service';
 import { UsuarioService } from '../../../services/usuario.service';
+import { FORMATO_DATA } from '../../../utils/data';
 import { formatarDocumento } from '../../../utils/documento';
 import { ConfirmacaoService } from '../../../services/confirmacao.service';
 import { DadosTrocaPlano, TrocaPlanoDialog } from '../troca-plano-dialog/troca-plano-dialog';
@@ -186,7 +187,7 @@ export class UsuarioDetalhe implements OnInit {
   }
 
   private formatar(data: string | null): string {
-    return data ? formatDate(data, 'dd/MM/yyyy', 'pt-BR') : '';
+    return data ? formatDate(data, FORMATO_DATA, 'pt-BR') : '';
   }
 
   private exibirErro(error: HttpErrorResponse, padrao: string): void {
