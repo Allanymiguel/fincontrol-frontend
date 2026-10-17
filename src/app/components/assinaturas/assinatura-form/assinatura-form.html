@@ -51,6 +51,21 @@
                 </mat-form-field>
             </div>
 
+            <!-- o back encerra a assinatura ativa e coloca a nova no lugar (uma ATIVA por usuario) -->
+            @if (assinaturaAtual(); as atual) {
+                <p class="aviso-troca" [class.aviso-erro]="mesmoPlanoAtivo()" role="status">
+                    <mat-icon aria-hidden="true">{{ mesmoPlanoAtivo() ? 'error' : 'swap_horiz' }}</mat-icon>
+                    @if (mesmoPlanoAtivo()) {
+                        <span>{{ atual.nomeUsuario }} já tem este plano ativo nessa periodicidade. Escolha outro plano ou outra periodicidade.</span>
+                    } @else {
+                        <span>
+                            {{ atual.nomeUsuario }} tem a assinatura <strong>{{ atual.nomePlano }} ({{ atual.periodicidade.nome.toLowerCase() }})</strong>
+                            ativa desde {{ atual.dataInicio | date:'dd/MM/yyyy' }}. Ao salvar, ela será encerrada hoje e substituída por esta.
+                        </span>
+                    }
+                </p>
+            }
+
             <h3 class="section-title">Pagamento</h3>
             <div class="grid">
                 <mat-form-field appearance="outline" class="full-width-input">

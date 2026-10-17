@@ -1,4 +1,4 @@
-import { DecimalPipe, Location } from '@angular/common';
+import { DatePipe, DecimalPipe, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -20,9 +20,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { debounceTime, distinctUntilChanged, filter, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 import { ApiProblem } from '../../../models/api-problem.model';
-import { AssinaturaRequest } from '../../../models/assinatura.model';
+import { Assinatura, AssinaturaRequest } from '../../../models/assinatura.model';
 import { Cupom } from '../../../models/cupom.model';
 import { FORMAS_PAGAMENTO, FORMA_PAGAMENTO_NENHUMA, FormaPagamento } from '../../../models/forma-pagamento';
 import { PERIODICIDADES, Periodicidade } from '../../../models/periodicidade';
@@ -50,6 +50,7 @@ function usuarioSelecionado(control: AbstractControl): ValidationErrors | null {
 // A edicao (status, data de fim, observacao) fica em AssinaturaEdit.
 @Component({
   imports: [
+    DatePipe,
     DecimalPipe,
     ReactiveFormsModule,
     MatAutocompleteModule,
@@ -80,10 +81,13 @@ export class AssinaturaForm implements OnInit {
   readonly cupons = signal<Cupom[]>([]);
   // resultado da busca de usuarios no back (autocomplete)
   readonly usuariosEncontrados = signal<Usuario[]>([]);
+  // assinatura ATIVA do usuario escolhido: ao salvar, o back a encerra e coloca a nova no lugar
+  readonly assinaturaAtual = signal<Assinatura | null>(null);
 
   private readonly valores;
   // preco, desconto e valor final mostrados enquanto o admin preenche
   readonly resumo;
+  readonly mesmoPlanoAtivo;
   // sem custo: so "Nenhuma"; com custo: as formas reais (sem "Nenhuma")
   readonly semCusto;
   readonly formasPagamento;
@@ -127,6 +131,13 @@ export class AssinaturaForm implements OnInit {
       const valorPago = calcularValorPago(preco, cupom?.percentualDesconto ?? null);
 
       return { plano, anual, preco, cupom, desconto: preco - valorPago, valorPago };
+    });
+
+    // escolheu o mesmo plano e periodicidade que o usuario ja tem ativo (o back recusa)
+    this.mesmoPlanoAtivo = computed(() => {
+      const atual = this.assinaturaAtual();
+      const valores = this.valores();
+      return !!atual && atual.idPlano === valores.idPlano && atual.periodicidade.id === valores.idPeriodicidade;
     });
 
     this.semCusto = computed(() => this.resumo()?.valorPago === 0);
@@ -177,6 +188,21 @@ export class AssinaturaForm implements OnInit {
         next: (response) => this.usuariosEncontrados.set(response ? response.items.filter((u) => u.ativo) : []),
         error: (error: unknown) => console.error('Erro ao buscar usuários:', error),
       });
+
+    // ao escolher o usuario, busca a assinatura ativa dele (resumo do admin) para avisar da troca
+    this.form
+      .get('usuario')!
+      .valueChanges.pipe(
+        switchMap((valor: Usuario | string | null) =>
+          valor && typeof valor === 'object'
+            ? this.usuarioService.buscarResumo(valor.id).pipe(
+                map((resumo) => resumo.assinaturaAtual),
+                catchError(() => of(null)),
+              )
+            : of(null),
+        ),
+      )
+      .subscribe((atual) => this.assinaturaAtual.set(atual));
   }
 
   exibirUsuario(usuario: Usuario | string | null): string {
@@ -193,9 +219,17 @@ export class AssinaturaForm implements OnInit {
       return;
     }
 
+    const atual = this.assinaturaAtual();
+    if (atual && !confirm(`A assinatura ${atual.nomePlano} (${atual.periodicidade.nome.toLowerCase()}) de ${atual.nomeUsuario} `
+        + 'será encerrada hoje e substituída por esta. Continuar?')) {
+      return;
+    }
+
     this.assinaturaService.create(this.toRequest()).subscribe({
       next: () => {
-        this.exibirMensagem('Assinatura criada com sucesso!');
+        this.exibirMensagem(atual
+          ? `Assinatura criada. A anterior (${atual.nomePlano}) foi encerrada.`
+          : 'Assinatura criada com sucesso!');
         this.router.navigate(['/assinaturas']);
       },
       error: (error: HttpErrorResponse) => {
