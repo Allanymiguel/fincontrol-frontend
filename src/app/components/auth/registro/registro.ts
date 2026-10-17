@@ -22,6 +22,7 @@ import {
 } from '../../../utils/cadastro';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
 import { DadosCompletos } from '../../cadastro/dados-completos/dados-completos';
+import { Logo } from '../../logo/logo';
 
 // Cadastro publico (sempre papel USER) em duas formas: simples (so nome, e-mail e senha) ou
 // completo (tambem dados fiscais e endereco). Depois a pessoa entra pela tela de login.
@@ -36,6 +37,7 @@ import { DadosCompletos } from '../../cadastro/dados-completos/dados-completos';
     MatInputModule,
     MatProgressSpinnerModule,
     DadosCompletos,
+    Logo,
   ],
   selector: 'app-registro',
   styleUrl: './registro.css',

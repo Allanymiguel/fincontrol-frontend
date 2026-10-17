@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../services/auth.service';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { Logo } from '../../logo/logo';
 
 @Component({
   imports: [
@@ -19,6 +20,7 @@ import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../ut
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    Logo,
   ],
   selector: 'app-login',
   styleUrl: './login.css',

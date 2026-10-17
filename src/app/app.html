@@ -3,10 +3,10 @@
     @if (mostrarMenu()) {
         <aside class="sidebar" [class.aberta]="menuAberto()">
             <div class="marca">
-                <div class="logo" aria-hidden="true">F</div>
+                <app-logo class="logo" />
                 <div class="marca-texto">
                     <span class="marca-nome">
-                        FinControl
+                        <span><strong>Fin</strong>Control</span>
                         @if (auth.isAdmin()) {
                             <span class="marca-badge">Admin</span>
                         }

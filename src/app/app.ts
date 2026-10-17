@@ -5,10 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { filter, map, tap } from 'rxjs';
 import { AUTH_HABILITADA } from './auth/auth-config';
+import { Logo } from './components/logo/logo';
 import { AuthService } from './services/auth.service';
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatButtonModule, MatIconModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, Logo],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
