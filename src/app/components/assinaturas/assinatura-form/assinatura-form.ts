@@ -1,6 +1,6 @@
 import { DecimalPipe, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -24,7 +24,7 @@ import { debounceTime, distinctUntilChanged, filter, of, switchMap } from 'rxjs'
 import { ApiProblem } from '../../../models/api-problem.model';
 import { AssinaturaRequest } from '../../../models/assinatura.model';
 import { Cupom } from '../../../models/cupom.model';
-import { FORMAS_PAGAMENTO, FormaPagamento } from '../../../models/forma-pagamento';
+import { FORMAS_PAGAMENTO, FORMA_PAGAMENTO_NENHUMA, FormaPagamento } from '../../../models/forma-pagamento';
 import { PERIODICIDADES, Periodicidade } from '../../../models/periodicidade';
 import { Plano } from '../../../models/plano.model';
 import { Usuario } from '../../../models/usuario.model';
@@ -75,7 +75,6 @@ export class AssinaturaForm implements OnInit {
   private readonly cupomService = inject(CupomService);
 
   readonly periodicidades: Periodicidade[] = PERIODICIDADES;
-  readonly formasPagamento: FormaPagamento[] = FORMAS_PAGAMENTO;
   // so o que pode ser contratado: planos ativos e cupons ativos dentro da validade
   readonly planos = signal<Plano[]>([]);
   readonly cupons = signal<Cupom[]>([]);
@@ -85,6 +84,9 @@ export class AssinaturaForm implements OnInit {
   private readonly valores;
   // preco, desconto e valor final mostrados enquanto o admin preenche
   readonly resumo;
+  // sem custo: so "Nenhuma"; com custo: as formas reais (sem "Nenhuma")
+  readonly semCusto;
+  readonly formasPagamento;
 
   private readonly fieldMessages: Record<string, Record<string, string>> = {
     usuario: {
@@ -125,6 +127,23 @@ export class AssinaturaForm implements OnInit {
       const valorPago = calcularValorPago(preco, cupom?.percentualDesconto ?? null);
 
       return { plano, anual, preco, cupom, desconto: preco - valorPago, valorPago };
+    });
+
+    this.semCusto = computed(() => this.resumo()?.valorPago === 0);
+    this.formasPagamento = computed<FormaPagamento[]>(() =>
+      FORMAS_PAGAMENTO.filter((f) => (f.id === FORMA_PAGAMENTO_NENHUMA) === this.semCusto()),
+    );
+
+    // assinatura sem custo: a forma de pagamento fica travada em "Nenhuma"
+    effect(() => {
+      const control = this.form.get('idFormaPagamento')!;
+      if (this.semCusto()) {
+        control.setValue(FORMA_PAGAMENTO_NENHUMA, { emitEvent: false });
+        control.disable({ emitEvent: false });
+      } else if (control.disabled) {
+        control.enable({ emitEvent: false });
+        control.setValue(null, { emitEvent: false });
+      }
     });
   }
 

@@ -70,10 +70,13 @@
                 <mat-form-field appearance="outline" class="full-width-input">
                     <mat-label>Forma de pagamento</mat-label>
                     <mat-select formControlName="idFormaPagamento" placeholder="Selecione">
-                        @for (forma of formasPagamento; track forma.id) {
+                        @for (forma of formasPagamento(); track forma.id) {
                             <mat-option [value]="forma.id">{{ forma.nome }}</mat-option>
                         }
                     </mat-select>
+                    @if (semCusto()) {
+                        <mat-hint>Assinatura sem custo: não há pagamento</mat-hint>
+                    }
                     @if (getErrorMessage('idFormaPagamento'); as error) {
                         <mat-error>{{ error }}</mat-error>
                     }
