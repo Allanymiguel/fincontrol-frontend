@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Usuario } from '../models/usuario.model';
+import { UsuarioResumo } from '../models/usuario-resumo.model';
 import { PagedResponse } from './categoria.service';
 
 // Gestao de usuarios pelo admin: so consulta e ativacao
@@ -24,6 +25,11 @@ export class UsuarioService {
 
   findById(id: number | string): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
+  }
+
+  // perfil + assinaturas + contagens (sem o conteudo dos registros pessoais)
+  buscarResumo(id: number | string): Observable<UsuarioResumo> {
+    return this.http.get<UsuarioResumo>(`${this.apiUrl}/${id}/resumo`);
   }
 
   // ativa se estiver inativo, desativa se estiver ativo; devolve o novo estado

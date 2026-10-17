@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +31,7 @@ import { formatarDocumento } from '../../../utils/documento';
     MatIconModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    RouterLink,
   ],
   selector: 'app-usuario-list',
   styleUrl: './usuario-list.css',

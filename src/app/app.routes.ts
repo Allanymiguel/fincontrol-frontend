@@ -29,6 +29,8 @@ import { FaixaIrpfList } from './components/faixas-irpf/faixa-irpf-list/faixa-ir
 import { FaixaIrpfForm } from './components/faixas-irpf/faixa-irpf-form/faixa-irpf-form';
 import { faixaIrpfResolver } from './resolvers/faixa-irpf-resolver';
 import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
+import { UsuarioDetalhe } from './components/usuarios/usuario-detalhe/usuario-detalhe';
+import { usuarioResumoResolver } from './resolvers/usuario-resumo-resolver';
 import { AssinaturaList } from './components/assinaturas/assinatura-list/assinatura-list';
 import { AssinaturaForm } from './components/assinaturas/assinatura-form/assinatura-form';
 import { AssinaturaEdit } from './components/assinaturas/assinatura-edit/assinatura-edit';
@@ -95,6 +97,8 @@ export const routes: Routes = [
                 resolve: { faixaIrpf: faixaIrpfResolver }},
 
             {path: 'usuarios', component: UsuarioList, title: 'Lista de Usuários'},
+            {path: 'usuarios/:id', component: UsuarioDetalhe, title: 'Detalhe do Usuário',
+                resolve: { resumo: usuarioResumoResolver }},
         ]},
     ]},
 

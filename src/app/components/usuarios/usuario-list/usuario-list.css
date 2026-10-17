@@ -76,3 +76,13 @@
     text-align: center;
     color: #6b7280;
 }
+
+/* nome leva ao detalhe do usuario */
+.link-nome {
+    color: #3730a3;
+    text-decoration: none;
+}
+
+.link-nome:hover {
+    text-decoration: underline;
+}

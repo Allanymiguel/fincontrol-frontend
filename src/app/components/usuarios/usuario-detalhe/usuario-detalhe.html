@@ -1,0 +1,152 @@
+<mat-toolbar class="toolbar-title" color="primary">
+    Detalhe do Usuário
+</mat-toolbar>
+
+@if (resumo(); as resumo) {
+    <mat-card class="card">
+        <mat-card-content>
+            <div class="cabecalho">
+                <div>
+                    <h2 class="nome">{{ resumo.usuario.nome }}</h2>
+                    <div class="secundario">{{ resumo.usuario.email }}</div>
+                </div>
+                <div class="cabecalho-acoes">
+                    <!-- id 2 = ADMIN (enum Papel do back) -->
+                    <span class="tag" [class.tag-admin]="resumo.usuario.papel.id === 2">{{ resumo.usuario.papel.nome }}</span>
+                    <span class="tag" [class.tag-ok]="resumo.usuario.ativo">{{ resumo.usuario.ativo ? 'Ativo' : 'Desativado' }}</span>
+                    <button mat-stroked-button type="button" (click)="alternarAtivo()" [disabled]="alterando()">
+                        <mat-icon>{{ resumo.usuario.ativo ? 'block' : 'check_circle' }}</mat-icon>
+                        {{ resumo.usuario.ativo ? 'Desativar' : 'Ativar' }}
+                    </button>
+                </div>
+            </div>
+
+            <h3 class="section-title">Perfil</h3>
+            <dl class="resumo">
+                <div>
+                    <dt>CPF / CNPJ</dt>
+                    <dd>{{ resumo.usuario.documento ? formatarDocumento(resumo.usuario.documento) : '—' }}</dd>
+                </div>
+                <div>
+                    <dt>Telefone</dt>
+                    <dd>{{ resumo.usuario.telefone ?? '—' }}</dd>
+                </div>
+                <div>
+                    <dt>Perfil fiscal</dt>
+                    <dd>
+                        {{ resumo.usuario.perfilFiscal.nome }}
+                        @if (resumo.usuario.atividadeMei) {
+                            <span class="secundario">· {{ resumo.usuario.atividadeMei.nome }}</span>
+                        }
+                    </dd>
+                </div>
+                <div>
+                    <dt>Cidade / UF</dt>
+                    <dd>
+                        @if (resumo.usuario.endereco?.municipio; as municipio) {
+                            {{ municipio.nome }} - {{ municipio.estado.sigla }}
+                        } @else {
+                            <span class="secundario">Não informado</span>
+                        }
+                    </dd>
+                </div>
+            </dl>
+
+            <h3 class="section-title">Uso do sistema</h3>
+            <div class="contagens">
+                <div class="contagem">
+                    <span class="numero">{{ resumo.contagens.transacoes }}</span>
+                    <span class="rotulo">transações</span>
+                </div>
+                <div class="contagem">
+                    <span class="numero">{{ resumo.contagens.categorias }}</span>
+                    <span class="rotulo">categorias</span>
+                </div>
+                <div class="contagem">
+                    <span class="numero">{{ resumo.contagens.contatos }}</span>
+                    <span class="rotulo">contatos</span>
+                </div>
+            </div>
+            <p class="secundario">
+                @if (resumo.ultimaTransacaoEm) {
+                    Última transação em {{ resumo.ultimaTransacaoEm | date:'dd/MM/yyyy' }}.
+                } @else {
+                    Nenhuma transação registrada.
+                }
+            </p>
+            <p class="aviso" role="note">
+                <mat-icon aria-hidden="true">lock</mat-icon>
+                Por privacidade, o administrador vê apenas quantidades, não o conteúdo dos registros do usuário.
+            </p>
+
+            <h3 class="section-title">Assinatura atual</h3>
+            @if (resumo.assinaturaAtual; as atual) {
+                <dl class="resumo">
+                    <div>
+                        <dt>Plano</dt>
+                        <dd>{{ atual.nomePlano }} ({{ atual.periodicidade.nome }})</dd>
+                    </div>
+                    <div>
+                        <dt>Valor pago</dt>
+                        <dd>R$ {{ atual.valorPago | number:'1.2-2' }} · {{ atual.formaPagamento.nome }}</dd>
+                    </div>
+                    <div>
+                        <dt>Desde</dt>
+                        <dd>{{ atual.dataInicio | date:'dd/MM/yyyy' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Cupom</dt>
+                        <dd>{{ atual.codigoCupom ?? '—' }}</dd>
+                    </div>
+                </dl>
+            } @else {
+                <p class="secundario">Sem assinatura ativa.</p>
+            }
+
+            <h3 class="section-title">Histórico de assinaturas</h3>
+            @if (resumo.assinaturas.length > 0) {
+                <table mat-table [dataSource]="resumo.assinaturas" class="historico">
+                    <ng-container matColumnDef="plano">
+                        <th mat-header-cell *matHeaderCellDef> Plano </th>
+                        <td mat-cell *matCellDef="let obj"> {{ obj.nomePlano }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let obj">
+                            <!-- 1 Pendente, 2 Ativa, 3 Cancelada, 4 Suspensa, 5 Expirada -->
+                            <span class="tag" [class.tag-ok]="obj.status.id === 2"
+                                [class.tag-alerta]="obj.status.id === 1 || obj.status.id === 4">{{ obj.status.nome }}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="periodicidade">
+                        <th mat-header-cell *matHeaderCellDef> Periodicidade </th>
+                        <td mat-cell *matCellDef="let obj"> {{ obj.periodicidade.nome }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="valorPago">
+                        <th mat-header-cell *matHeaderCellDef> Valor </th>
+                        <td mat-cell *matCellDef="let obj"> R$ {{ obj.valorPago | number:'1.2-2' }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="dataInicio">
+                        <th mat-header-cell *matHeaderCellDef> Início </th>
+                        <td mat-cell *matCellDef="let obj"> {{ obj.dataInicio | date:'dd/MM/yyyy' }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="dataFim">
+                        <th mat-header-cell *matHeaderCellDef> Fim </th>
+                        <td mat-cell *matCellDef="let obj"> {{ obj.dataFim ? (obj.dataFim | date:'dd/MM/yyyy') : 'Sem prazo' }} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="colunasHistorico"></tr>
+                    <tr mat-row *matRowDef="let row; columns: colunasHistorico;"></tr>
+                </table>
+            } @else {
+                <p class="secundario">Nenhuma assinatura.</p>
+            }
+
+            <div class="actions">
+                <button mat-raised-button type="button" (click)="voltar()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Voltar
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+}
