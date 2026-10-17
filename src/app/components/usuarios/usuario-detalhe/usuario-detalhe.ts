@@ -1,13 +1,11 @@
 import { DatePipe, DecimalPipe, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { ApiProblem } from '../../../models/api-problem.model';
 import { Usuario } from '../../../models/usuario.model';
 import { UsuarioResumo } from '../../../models/usuario-resumo.model';
@@ -20,9 +18,7 @@ import { formatarDocumento } from '../../../utils/documento';
   imports: [
     DatePipe,
     DecimalPipe,
-    MatCardModule,
     MatButtonModule,
-    MatToolbarModule,
     MatIconModule,
     MatSnackBarModule,
     MatTableModule,
@@ -41,6 +37,14 @@ export class UsuarioDetalhe implements OnInit {
   readonly alterando = signal(false);
   readonly colunasHistorico = ['plano', 'status', 'periodicidade', 'valorPago', 'dataInicio', 'dataFim'];
   readonly formatarDocumento = formatarDocumento;
+
+  // ate duas iniciais do nome, para o avatar
+  readonly iniciais = computed(() => {
+    const partes = (this.resumo()?.usuario.nome ?? '').trim().split(/\s+/).filter(Boolean);
+    if (partes.length === 0) return '?';
+    const ultima = partes.length > 1 ? partes[partes.length - 1][0] : '';
+    return (partes[0][0] + ultima).toUpperCase();
+  });
 
   ngOnInit(): void {
     this.resumo.set(this.activatedRoute.snapshot.data['resumo'] as UsuarioResumo);
