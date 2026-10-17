@@ -1,10 +1,11 @@
 .link-nome {
-    color: var(--fc-on-surface);
-    font-weight: 500;
+    color: var(--color-text-primary);
+    font-weight: 600;
     text-decoration: none;
 }
 
 .link-nome:hover {
+    color: var(--color-accent);
     text-decoration: underline;
 }
 

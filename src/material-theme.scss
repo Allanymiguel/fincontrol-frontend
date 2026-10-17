@@ -1,5 +1,6 @@
-// Tema do Angular Material (Material 3) com a paleta do design do FinControl:
-// primario quase preto, superficies neutras e cantos de 8px. As cores ficam em styles.css (--fc-*).
+// Tema do Angular Material (Material 3) com a paleta do FinControl: verde-esmeralda nas acoes
+// (botoes, foco, selecao), azul-marinho no texto e superficies claras. Nenhuma cor e escrita aqui:
+// tudo aponta para as variaveis de styles.css (--color-*, --radius-*).
 @use '@angular/material' as mat;
 
 html {
@@ -9,12 +10,15 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
+        primary: mat.$green-palette,
         theme-type: light,
       ),
       typography: (
-        plain-family: 'Inter, sans-serif',
-        brand-family: 'Inter, sans-serif',
+        plain-family: 'Plus Jakarta Sans, sans-serif',
+        brand-family: 'Plus Jakarta Sans, sans-serif',
+        bold-weight: 700,
+        medium-weight: 600,
+        regular-weight: 400,
       ),
       density: 0,
     )
@@ -22,54 +26,72 @@ html {
 
   @include mat.theme-overrides(
     (
-      primary: #111827,
-      on-primary: #ffffff,
-      primary-container: #e5e7eb,
-      on-primary-container: #111827,
-      secondary-container: #e2e8f0,
-      on-secondary-container: #0f172a,
-      error: #b91c1c,
-      on-error: #ffffff,
-      surface: #ffffff,
-      on-surface: #111827,
-      on-surface-variant: #4b5563,
-      surface-container-lowest: #ffffff,
-      surface-container-low: #f8f9fb,
-      surface-container: #ffffff,
-      surface-container-high: #ffffff,
-      surface-container-highest: #f3f4f6,
-      outline: #9ca3af,
-      outline-variant: #e5e7eb,
-      corner-extra-small: 6px,
-      corner-small: 8px,
-      corner-medium: 12px,
+      primary: var(--color-accent),
+      on-primary: var(--color-on-accent),
+      primary-container: var(--color-accent-soft),
+      on-primary-container: var(--color-primary),
+      secondary-container: var(--color-accent-soft),
+      on-secondary-container: var(--color-primary),
+      error: var(--color-danger),
+      on-error: var(--color-on-accent),
+      surface: var(--color-surface),
+      on-surface: var(--color-text-primary),
+      on-surface-variant: var(--color-text-secondary),
+      surface-container-lowest: var(--color-surface),
+      surface-container-low: var(--color-bg),
+      surface-container: var(--color-surface),
+      surface-container-high: var(--color-surface),
+      surface-container-highest: var(--color-divider),
+      outline: var(--color-text-muted),
+      outline-variant: var(--color-border),
+      corner-extra-small: var(--radius-sm),
+      corner-small: var(--radius-sm),
+      corner-medium: var(--radius-md),
+      corner-large: var(--radius-lg),
     )
   );
 
-  // botoes retangulares e mais baixos, como no design
+  // primario verde, secundario com contorno; cantos de 6px, 600 de peso e 10px x 20px de respiro
   @include mat.button-overrides(
     (
-      filled-container-height: 38px,
-      outlined-container-height: 38px,
-      text-container-height: 38px,
-      filled-container-shape: 8px,
-      outlined-container-shape: 8px,
-      text-container-shape: 8px,
-      tonal-container-shape: 8px,
-      filled-horizontal-padding: 18px,
-      outlined-horizontal-padding: 16px,
-      outlined-outline-color: #e5e7eb,
-      outlined-label-text-color: #111827,
+      filled-container-height: 40px,
+      outlined-container-height: 40px,
+      text-container-height: 40px,
+      filled-container-shape: var(--radius-sm),
+      outlined-container-shape: var(--radius-sm),
+      text-container-shape: var(--radius-sm),
+      tonal-container-shape: var(--radius-sm),
+      filled-horizontal-padding: 20px,
+      outlined-horizontal-padding: 20px,
+      filled-container-color: var(--color-accent),
+      filled-label-text-color: var(--color-on-accent),
+      filled-label-text-weight: 600,
+      filled-hover-state-layer-opacity: 0,
+      outlined-outline-color: var(--color-border),
+      outlined-label-text-color: var(--color-text-primary),
+      outlined-label-text-weight: 600,
+      outlined-hover-state-layer-opacity: 0,
+      text-label-text-color: var(--color-text-primary),
+      text-label-text-weight: 600,
     )
   );
 
-  // campos mais compactos (44px) e com texto de 14px, como os do design
+  // campos de 44px: borda clara, foco verde (o anel de foco fica em styles.css)
   @include mat.form-field-overrides(
     (
       container-text-size: 14px,
-      outlined-label-text-size: 14px,
-      outlined-outline-color: #e5e7eb,
-      outlined-hover-outline-color: #9ca3af,
+      outlined-container-shape: var(--radius-sm),
+      outlined-outline-color: var(--color-border),
+      outlined-hover-outline-color: var(--color-text-muted),
+      outlined-focus-outline-color: var(--color-accent),
+      outlined-focus-outline-width: 1px,
+      outlined-label-text-size: 13px,
+      outlined-label-text-weight: 500,
+      outlined-label-text-color: var(--color-text-secondary),
+      outlined-hover-label-text-color: var(--color-text-secondary),
+      outlined-focus-label-text-color: var(--color-accent),
+      outlined-input-text-color: var(--color-text-primary),
+      outlined-input-text-placeholder-color: var(--color-text-muted),
     )
   );
 
@@ -82,10 +104,10 @@ html {
   // toast claro no canto superior direito (a borda e a sombra ficam em styles.css)
   @include mat.snack-bar-overrides(
     (
-      container-color: #ffffff,
-      supporting-text-color: #111827,
-      button-color: #111827,
-      container-shape: 12px,
+      container-color: var(--color-surface),
+      supporting-text-color: var(--color-text-primary),
+      button-color: var(--color-accent),
+      container-shape: var(--radius-md),
     )
   );
 }

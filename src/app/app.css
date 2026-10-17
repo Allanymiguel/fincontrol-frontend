@@ -10,13 +10,14 @@
     overflow-y: auto;
 }
 
+/* barra escura com degrade: texto claro, item ativo em verde */
 .sidebar {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     width: 260px;
-    border-right: 1px solid var(--fc-outline-variant);
-    background: var(--fc-surface-lowest);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
 }
 
 .marca {
@@ -24,7 +25,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1.5rem 1.5rem 1rem;
-    border-bottom: 1px solid var(--fc-outline-variant);
+    border-bottom: 1px solid var(--sidebar-divider);
 }
 
 .logo {
@@ -34,13 +35,12 @@
     flex-shrink: 0;
     width: 36px;
     height: 36px;
-    border-radius: var(--fc-radius-lg);
-    background: var(--fc-primary);
-    color: var(--fc-on-primary);
-    font-family: var(--fc-font-display);
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
     font-size: 1.15rem;
-    font-weight: 700;
-    box-shadow: var(--fc-shadow-sm);
+    font-weight: 800;
+    box-shadow: var(--shadow-md);
 }
 
 .marca-texto {
@@ -53,29 +53,32 @@
 .marca-nome {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 1rem;
-    font-weight: 600;
+    gap: 0.5rem;
+    color: var(--sidebar-text-active);
+    font-size: 1.05rem;
+    font-weight: 800;
     letter-spacing: -0.01em;
 }
 
 .marca-badge {
-    padding: 0.1rem 0.35rem;
-    border-radius: 4px;
-    background: var(--fc-surface-container);
-    color: var(--fc-on-surface-variant);
-    font-family: var(--fc-font-mono);
-    font-size: 0.6rem;
-    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 .marca-sub {
     font-size: 0.6rem;
+    color: var(--sidebar-text-muted);
 }
 
 .botao-menu {
     display: none;
+    --mat-icon-button-icon-color: var(--sidebar-text-active);
 }
 
 .app-nav {
@@ -97,6 +100,7 @@
 .nav-label {
     padding: 0 0.75rem;
     margin-bottom: 0.25rem;
+    color: var(--sidebar-text-muted);
 }
 
 .app-nav a {
@@ -104,28 +108,32 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.6rem 0.75rem;
-    border-radius: var(--fc-radius-lg);
-    color: var(--fc-on-surface-variant);
+    border-left: 3px solid transparent;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--sidebar-text);
     font-weight: 500;
     text-decoration: none;
-    transition: background-color 150ms, color 150ms;
+    transition: var(--transition);
 }
 
 .app-nav a:hover {
-    background: rgba(234, 236, 239, 0.6);
-    color: var(--fc-on-surface);
+    background: var(--sidebar-hover);
+    color: var(--sidebar-text-active);
 }
 
 .app-nav a.active {
-    background: var(--fc-primary);
-    color: var(--fc-on-primary);
-    box-shadow: var(--fc-shadow-sm);
+    border-left-color: var(--color-accent);
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-text-active);
+    font-weight: 600;
 }
 
+/* o icone acompanha a cor do texto do item */
 .app-nav a mat-icon {
     width: 20px;
     height: 20px;
     font-size: 20px;
+    color: inherit;
 }
 
 /* usuario logado no rodape da barra */
@@ -136,8 +144,7 @@
     gap: 0.5rem 0.75rem;
     margin: auto -0.75rem 0;
     padding: 1rem;
-    border-top: 1px solid var(--fc-outline-variant);
-    background: rgba(243, 244, 246, 0.5);
+    border-top: 1px solid var(--sidebar-divider);
 }
 
 .avatar {
@@ -147,9 +154,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--fc-primary);
-    color: var(--fc-on-primary);
-    font-family: var(--fc-font-display);
+    background: var(--avatar-bg);
+    color: var(--color-on-accent);
     font-weight: 700;
 }
 
@@ -161,6 +167,7 @@
 
 .nav-nome {
     overflow: hidden;
+    color: var(--sidebar-text-active);
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -168,13 +175,18 @@
 
 .nav-papel {
     font-size: 0.6rem;
-    color: var(--fc-outline);
+    color: var(--sidebar-text-muted);
 }
 
 .botao-sair {
     grid-column: 1 / -1;
     justify-self: stretch;
-    --mat-button-text-label-text-color: var(--fc-on-surface-variant);
+    --mat-button-text-label-text-color: var(--sidebar-text);
+}
+
+.botao-sair:hover {
+    background: var(--sidebar-hover);
+    --mat-button-text-label-text-color: var(--sidebar-text-active);
 }
 
 /* telas estreitas: a barra vira um cabecalho no topo e a navegacao abre pelo botao de menu */
@@ -185,8 +197,6 @@
 
     .sidebar {
         width: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--fc-outline-variant);
     }
 
     .marca {
@@ -201,7 +211,7 @@
     .app-nav {
         display: none;
         padding-top: 0.5rem;
-        border-top: 1px solid var(--fc-outline-variant);
+        border-top: 1px solid var(--sidebar-divider);
     }
 
     .sidebar.aberta .app-nav {

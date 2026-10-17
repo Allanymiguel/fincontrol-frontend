@@ -9,25 +9,24 @@
     width: 48px;
     height: 48px;
     margin: 0 1.5rem 0.5rem;
-    border-radius: var(--fc-radius-xl);
-    background: var(--fc-info-container);
-    color: var(--fc-info);
+    border-radius: var(--radius-md);
+    background: var(--color-info-soft);
+    color: var(--color-info);
 }
 
 .perigo .icone {
-    background: var(--fc-error-container);
-    color: var(--fc-error);
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
 }
 
 .titulo {
-    font-family: var(--fc-font-display);
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .mensagem {
     margin: 0;
-    color: var(--fc-on-surface-variant);
+    color: var(--color-text-secondary);
     line-height: 1.5;
 }
 

@@ -1,8 +1,14 @@
+/* codigo do cupom: chip azul */
 .codigo {
-    color: var(--fc-primary);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    background: var(--color-info-soft);
+    color: var(--color-info);
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .desconto {
-    color: var(--fc-success);
+    color: var(--color-success);
     font-weight: 600;
 }
