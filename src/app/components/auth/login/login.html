@@ -1,57 +1,69 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    FinControl
-</mat-toolbar>
+<div class="auth">
+    <aside class="auth-marca" aria-hidden="true">
+        <div class="auth-logo">F</div>
+        <div>
+            <p class="auth-titulo">FinControl</p>
+            <p class="auth-frase">Receitas, despesas e contatos de pessoas físicas, MEIs e microempresas, em um só lugar.</p>
+        </div>
+        <ul class="auth-itens">
+            <li><mat-icon>swap_vert</mat-icon> Transações separadas entre pessoal e empresa</li>
+            <li><mat-icon>category</mat-icon> Categorias prontas desde o primeiro acesso</li>
+            <li><mat-icon>contacts</mat-icon> Clientes e fornecedores com busca de CEP</li>
+        </ul>
+    </aside>
 
-<mat-card class="card">
-    <mat-card-content>
-        <h1 class="titulo">Entrar</h1>
+    <main class="auth-conteudo">
+        <div class="auth-card">
+            <span class="label-caps">Bem-vindo de volta</span>
+            <h1 class="titulo">Entrar</h1>
 
-        @if (aviso(); as aviso) {
-            <p class="mensagem mensagem-aviso" role="status">
-                <mat-icon>info</mat-icon>
-                {{ aviso }}
-            </p>
-        }
+            @if (aviso(); as aviso) {
+                <p class="mensagem mensagem-aviso callout" role="status">
+                    <mat-icon>info</mat-icon>
+                    {{ aviso }}
+                </p>
+            }
 
-        @if (erro(); as erro) {
-            <p class="mensagem mensagem-erro" role="alert">
-                <mat-icon>error</mat-icon>
-                {{ erro }}
-            </p>
-        }
+            @if (erro(); as erro) {
+                <p class="mensagem mensagem-erro callout callout-erro" role="alert">
+                    <mat-icon>error</mat-icon>
+                    {{ erro }}
+                </p>
+            }
 
-        <form class="form" [formGroup]="form" (ngSubmit)="entrar()">
-            <mat-form-field appearance="outline" class="full-width-input">
-                <mat-label>E-mail</mat-label>
-                <input matInput type="email" formControlName="email" autocomplete="username" maxlength="120" />
-                @if (getErrorMessage('email'); as error) {
-                    <mat-error>{{ error }}</mat-error>
-                }
-            </mat-form-field>
+            <form class="form" [formGroup]="form" (ngSubmit)="entrar()">
+                <mat-form-field appearance="outline">
+                    <mat-label>E-mail</mat-label>
+                    <input matInput type="email" formControlName="email" autocomplete="username" maxlength="120" />
+                    @if (getErrorMessage('email'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width-input">
-                <mat-label>Senha</mat-label>
-                <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
-                    autocomplete="current-password" />
-                <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
-                    [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
-                    <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                <mat-form-field appearance="outline">
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
+                        autocomplete="current-password" />
+                    <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
+                        [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                        <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    @if (getErrorMessage('senha'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <button matButton="filled" type="submit" class="botao-entrar" [disabled]="entrando()">
+                    @if (entrando()) {
+                        <mat-spinner diameter="20"></mat-spinner>
+                    } @else {
+                        <mat-icon>login</mat-icon>
+                    }
+                    Entrar
                 </button>
-                @if (getErrorMessage('senha'); as error) {
-                    <mat-error>{{ error }}</mat-error>
-                }
-            </mat-form-field>
+            </form>
 
-            <button mat-raised-button color="primary" type="submit" class="botao-entrar" [disabled]="entrando()">
-                @if (entrando()) {
-                    <mat-spinner diameter="20"></mat-spinner>
-                } @else {
-                    <mat-icon>login</mat-icon>
-                }
-                Entrar
-            </button>
-        </form>
-
-        <p class="rodape">Não tem conta? <a routerLink="/registro">Criar conta</a></p>
-    </mat-card-content>
-</mat-card>
+            <p class="rodape">Não tem conta? <a routerLink="/registro">Criar conta</a></p>
+        </div>
+    </main>
+</div>

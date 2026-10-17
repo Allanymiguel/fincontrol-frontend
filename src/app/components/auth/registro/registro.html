@@ -1,120 +1,132 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    FinControl
-</mat-toolbar>
+<div class="auth">
+    <aside class="auth-marca" aria-hidden="true">
+        <div class="auth-logo">F</div>
+        <div>
+            <p class="auth-titulo">FinControl</p>
+            <p class="auth-frase">Receitas, despesas e contatos de pessoas físicas, MEIs e microempresas, em um só lugar.</p>
+        </div>
+        <ul class="auth-itens">
+            <li><mat-icon>swap_vert</mat-icon> Transações separadas entre pessoal e empresa</li>
+            <li><mat-icon>category</mat-icon> Categorias prontas desde o primeiro acesso</li>
+            <li><mat-icon>contacts</mat-icon> Clientes e fornecedores com busca de CEP</li>
+        </ul>
+    </aside>
 
-<mat-card class="card">
-    <mat-card-content>
-        <h1 class="titulo">Criar conta</h1>
+    <main class="auth-conteudo">
+        <div class="auth-card">
+            <span class="label-caps">Comece grátis</span>
+            <h1 class="titulo">Criar conta</h1>
 
-        @if (erro(); as erro) {
-            <p class="mensagem mensagem-erro" role="alert">
-                <mat-icon>error</mat-icon>
-                {{ erro }}
-            </p>
-        }
+            @if (erro(); as erro) {
+                <p class="mensagem mensagem-erro callout callout-erro" role="alert">
+                    <mat-icon>error</mat-icon>
+                    {{ erro }}
+                </p>
+            }
 
-        <form class="form" [formGroup]="form" (ngSubmit)="cadastrar()">
-            <h3 class="section-title">Acesso</h3>
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input span-2">
-                    <mat-label>Nome completo</mat-label>
-                    <input matInput formControlName="nome" autocomplete="name" maxlength="120" />
-                    @if (getErrorMessage('nome'); as error) {
-                        <mat-error>{{ error }}</mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width-input span-2">
-                    <mat-label>E-mail</mat-label>
-                    <input matInput type="email" formControlName="email" autocomplete="email" maxlength="120" />
-                    <mat-hint>Será o seu login</mat-hint>
-                    @if (getErrorMessage('email'); as error) {
-                        <mat-error>{{ error }}</mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width-input">
-                    <mat-label>Senha</mat-label>
-                    <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
-                        autocomplete="new-password" maxlength="64" />
-                    <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
-                        [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
-                        <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                    <mat-hint>Mínimo de 8 caracteres</mat-hint>
-                    @if (getErrorMessage('senha'); as error) {
-                        <mat-error>{{ error }}</mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width-input">
-                    <mat-label>Confirmar senha</mat-label>
-                    <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="confirmarSenha"
-                        autocomplete="new-password" maxlength="64" />
-                    @if (getErrorMessage('confirmarSenha'); as error) {
-                        <mat-error>{{ error }}</mat-error>
-                    }
-                </mat-form-field>
-            </div>
-
-            <h3 class="section-title">Dados fiscais</h3>
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input">
-                    <mat-label>Perfil fiscal</mat-label>
-                    <mat-select formControlName="idPerfilFiscal" placeholder="Selecione">
-                        @for (perfil of perfis; track perfil.id) {
-                            <mat-option [value]="perfil.id">{{ perfil.nome }}</mat-option>
-                        }
-                    </mat-select>
-                    @if (getErrorMessage('idPerfilFiscal'); as error) {
-                        <mat-error>{{ error }}</mat-error>
-                    }
-                </mat-form-field>
-
-                @if (isMei()) {
-                    <mat-form-field appearance="outline" class="full-width-input">
-                        <mat-label>Atividade do MEI</mat-label>
-                        <mat-select formControlName="idAtividadeMei" placeholder="Selecione">
-                            @for (atividade of atividades; track atividade.id) {
-                                <mat-option [value]="atividade.id">{{ atividade.nome }}</mat-option>
-                            }
-                        </mat-select>
-                        @if (getErrorMessage('idAtividadeMei'); as error) {
+            <form class="form" [formGroup]="form" (ngSubmit)="cadastrar()">
+                <h2 class="label-caps sheet-section">Acesso</h2>
+                <div class="form-grid">
+                    <mat-form-field appearance="outline" class="span-2">
+                        <mat-label>Nome completo</mat-label>
+                        <input matInput formControlName="nome" autocomplete="name" maxlength="120" />
+                        @if (getErrorMessage('nome'); as error) {
                             <mat-error>{{ error }}</mat-error>
                         }
                     </mat-form-field>
-                }
 
-                <mat-form-field appearance="outline" class="full-width-input">
-                    <mat-label>{{ rotuloDocumento() }}</mat-label>
-                    <input matInput formControlName="documento" maxlength="18" inputmode="numeric"
-                        placeholder="Somente números" (input)="somenteDigitos('documento')" />
-                    @if (getErrorMessage('documento'); as error) {
-                        <mat-error>{{ error }}</mat-error>
+                    <mat-form-field appearance="outline" class="span-2">
+                        <mat-label>E-mail</mat-label>
+                        <input matInput type="email" formControlName="email" autocomplete="email" maxlength="120" />
+                        <mat-hint>Será o seu login</mat-hint>
+                        @if (getErrorMessage('email'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Senha</mat-label>
+                        <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
+                            autocomplete="new-password" maxlength="64" />
+                        <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
+                            [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                            <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                        <mat-hint>Mínimo de 8 caracteres</mat-hint>
+                        @if (getErrorMessage('senha'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirmar senha</mat-label>
+                        <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="confirmarSenha"
+                            autocomplete="new-password" maxlength="64" />
+                        @if (getErrorMessage('confirmarSenha'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <h2 class="label-caps sheet-section">Dados fiscais</h2>
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Perfil fiscal</mat-label>
+                        <mat-select formControlName="idPerfilFiscal" placeholder="Selecione">
+                            @for (perfil of perfis; track perfil.id) {
+                                <mat-option [value]="perfil.id">{{ perfil.nome }}</mat-option>
+                            }
+                        </mat-select>
+                        @if (getErrorMessage('idPerfilFiscal'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+
+                    @if (isMei()) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>Atividade do MEI</mat-label>
+                            <mat-select formControlName="idAtividadeMei" placeholder="Selecione">
+                                @for (atividade of atividades; track atividade.id) {
+                                    <mat-option [value]="atividade.id">{{ atividade.nome }}</mat-option>
+                                }
+                            </mat-select>
+                            @if (getErrorMessage('idAtividadeMei'); as error) {
+                                <mat-error>{{ error }}</mat-error>
+                            }
+                        </mat-form-field>
                     }
-                </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
-                    <mat-label>Telefone</mat-label>
-                    <input matInput formControlName="telefone" maxlength="15" inputmode="numeric"
-                        placeholder="DDD + número" (input)="somenteDigitos('telefone')" />
-                    <mat-hint>Opcional</mat-hint>
-                    @if (getErrorMessage('telefone'); as error) {
-                        <mat-error>{{ error }}</mat-error>
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ rotuloDocumento() }}</mat-label>
+                        <input matInput formControlName="documento" maxlength="18" inputmode="numeric"
+                            placeholder="Somente números" (input)="somenteDigitos('documento')" />
+                        @if (getErrorMessage('documento'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Telefone</mat-label>
+                        <input matInput formControlName="telefone" maxlength="15" inputmode="numeric"
+                            placeholder="DDD + número" (input)="somenteDigitos('telefone')" />
+                        <mat-hint>Opcional</mat-hint>
+                        @if (getErrorMessage('telefone'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <button matButton="filled" type="submit" class="botao-principal" [disabled]="enviando()">
+                    @if (enviando()) {
+                        <mat-spinner diameter="20"></mat-spinner>
+                    } @else {
+                        <mat-icon>person_add</mat-icon>
                     }
-                </mat-form-field>
-            </div>
+                    Criar conta
+                </button>
+            </form>
 
-            <button mat-raised-button color="primary" type="submit" class="botao-principal" [disabled]="enviando()">
-                @if (enviando()) {
-                    <mat-spinner diameter="20"></mat-spinner>
-                } @else {
-                    <mat-icon>person_add</mat-icon>
-                }
-                Criar conta
-            </button>
-        </form>
-
-        <p class="rodape">Já tem conta? <a routerLink="/login">Entrar</a></p>
-    </mat-card-content>
-</mat-card>
+            <p class="rodape">Já tem conta? <a routerLink="/login">Entrar</a></p>
+        </div>
+    </main>
+</div>

@@ -561,3 +561,132 @@ a {
         max-width: none;
     }
 }
+
+/* ===== Login e cadastro: marca a esquerda, formulario a direita ===== */
+
+.auth {
+    display: grid;
+    grid-template-columns: minmax(320px, 5fr) 7fr;
+    min-height: 100vh;
+}
+
+.auth-marca {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 3rem;
+    background: var(--fc-primary);
+    color: var(--fc-on-primary);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--fc-radius-lg);
+    background: var(--fc-on-primary);
+    color: var(--fc-primary);
+    font-family: var(--fc-font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.auth-titulo {
+    margin: 0;
+    font-family: var(--fc-font-display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.auth-frase {
+    max-width: 26rem;
+    margin: 0.75rem 0 0;
+    color: rgba(249, 250, 251, 0.75);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.auth-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    list-style: none;
+    color: rgba(249, 250, 251, 0.85);
+}
+
+.auth-itens li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.auth-conteudo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 600px;
+}
+
+.auth-card .titulo {
+    margin: 0.25rem 0 1.5rem;
+    font-family: var(--fc-font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.auth-card .mensagem {
+    margin-bottom: 1rem;
+}
+
+.auth-card .mat-mdc-form-field {
+    width: 100%;
+}
+
+.auth-card .rodape {
+    margin: 1.5rem 0 0;
+    color: var(--fc-on-surface-variant);
+    text-align: center;
+}
+
+.auth-card .rodape a {
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .auth {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-marca {
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+
+    .auth-titulo {
+        font-size: 2rem;
+    }
+
+    .auth-itens {
+        display: none;
+    }
+}
