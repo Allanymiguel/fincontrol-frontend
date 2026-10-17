@@ -49,12 +49,12 @@ export class PlanoForm implements OnInit {
     },
     precoMensal: {
       required: 'Preço mensal é obrigatório.',
-      min: 'Preço mensal deve ser maior que zero.',
+      min: 'Preço mensal não pode ser negativo.',
       pattern: 'Use no máximo 2 casas decimais.',
     },
     precoAnual: {
       required: 'Preço anual é obrigatório.',
-      min: 'Preço anual deve ser maior que zero.',
+      min: 'Preço anual não pode ser negativo.',
       pattern: 'Use no máximo 2 casas decimais.',
     },
     limiteTransacoes: {
@@ -77,8 +77,9 @@ export class PlanoForm implements OnInit {
     this.form = this.fb.group({
       id: [null],
       nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
-      precoMensal: [null, [Validators.required, Validators.min(0.01), Validators.pattern(DINHEIRO)]],
-      precoAnual: [null, [Validators.required, Validators.min(0.01), Validators.pattern(DINHEIRO)]],
+      // 0 e aceito: e o plano Gratuito que toda conta nova recebe (RN13)
+      precoMensal: [null, [Validators.required, Validators.min(0), Validators.pattern(DINHEIRO)]],
+      precoAnual: [null, [Validators.required, Validators.min(0), Validators.pattern(DINHEIRO)]],
       limiteTransacoes: [null, [Validators.required, Validators.pattern(INTEIRO)]],
       limiteMetas: [null, [Validators.required, Validators.pattern(INTEIRO)]],
       liberaRecorrencias: [false],
