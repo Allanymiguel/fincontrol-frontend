@@ -13,6 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Plano, PlanoRequest } from '../../../models/plano.model';
 import { PlanoService } from '../../../services/plano.service';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // inteiro sem sinal: os limites nao aceitam negativo nem casas decimais
 const INTEIRO = /^\d+$/;
@@ -34,6 +35,7 @@ const DINHEIRO = /^\d+(\.\d{1,2})?$/;
   templateUrl: './plano-form.html',
 })
 export class PlanoForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
 
@@ -121,11 +123,11 @@ export class PlanoForm implements OnInit {
     });
   }
 
-  excluir(): void {
+  async excluir(): Promise<void> {
     const id = this.form.get('id')?.value as number | null;
     if (!id) return;
 
-    if (!confirm('Deseja realmente excluir este plano?')) return;
+    if (!(await this.confirmacao.confirmar({ titulo: 'Excluir plano', mensagem: 'Deseja realmente excluir este plano? Esta ação não pode ser desfeita.', confirmar: 'Excluir', perigo: true }))) return;
 
     this.planoService.delete(id).subscribe({
       next: () => {

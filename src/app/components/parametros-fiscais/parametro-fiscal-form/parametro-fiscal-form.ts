@@ -15,6 +15,7 @@ import { ParametroFiscal, ParametroFiscalRequest } from '../../../models/paramet
 import { ParametroFiscalService } from '../../../services/parametro-fiscal.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 @Component({
   imports: [
@@ -32,6 +33,7 @@ import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../ut
   templateUrl: './parametro-fiscal-form.html',
 })
 export class ParametroFiscalForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
 
@@ -133,11 +135,11 @@ export class ParametroFiscalForm implements OnInit {
     });
   }
 
-  excluir(): void {
+  async excluir(): Promise<void> {
     const id = this.form.get('id')?.value as number | null;
     if (!id) return;
 
-    if (!confirm('Deseja realmente excluir este parâmetro fiscal?')) return;
+    if (!(await this.confirmacao.confirmar({ titulo: 'Excluir parâmetro fiscal', mensagem: 'Deseja realmente excluir este parâmetro fiscal? Esta ação não pode ser desfeita.', confirmar: 'Excluir', perigo: true }))) return;
 
     this.parametroFiscalService.delete(id).subscribe({
       next: () => {

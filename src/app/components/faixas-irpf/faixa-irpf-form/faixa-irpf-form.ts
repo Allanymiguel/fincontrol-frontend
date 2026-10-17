@@ -15,6 +15,7 @@ import { FaixaIrpf, FaixaIrpfRequest } from '../../../models/faixa-irpf.model';
 import { FaixaIrpfService } from '../../../services/faixa-irpf.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // valor monetario/percentual com ate 2 casas decimais
 const DUAS_CASAS = /^\d+(\.\d{1,2})?$/;
@@ -35,6 +36,7 @@ const DUAS_CASAS = /^\d+(\.\d{1,2})?$/;
   templateUrl: './faixa-irpf-form.html',
 })
 export class FaixaIrpfForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
 
@@ -125,11 +127,11 @@ export class FaixaIrpfForm implements OnInit {
     });
   }
 
-  excluir(): void {
+  async excluir(): Promise<void> {
     const id = this.form.get('id')?.value as number | null;
     if (!id) return;
 
-    if (!confirm('Deseja realmente excluir esta faixa do IRPF?')) return;
+    if (!(await this.confirmacao.confirmar({ titulo: 'Excluir faixa do IRPF', mensagem: 'Deseja realmente excluir esta faixa do IRPF? Esta ação não pode ser desfeita.', confirmar: 'Excluir', perigo: true }))) return;
 
     this.faixaIrpfService.delete(id).subscribe({
       next: () => {

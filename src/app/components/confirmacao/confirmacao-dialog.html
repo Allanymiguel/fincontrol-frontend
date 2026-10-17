@@ -1,0 +1,16 @@
+<div class="confirmacao" [class.perigo]="dados.perigo">
+    <div class="icone" aria-hidden="true">
+        <mat-icon>{{ dados.icone ?? (dados.perigo ? 'warning' : 'help') }}</mat-icon>
+    </div>
+    <h2 mat-dialog-title class="titulo">{{ dados.titulo }}</h2>
+    <mat-dialog-content>
+        <p class="mensagem">{{ dados.mensagem }}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton="outlined" type="button" [mat-dialog-close]="false" class="voltar">Voltar</button>
+        <button matButton="filled" type="button" [mat-dialog-close]="true" class="confirmar"
+            [class.botao-perigo]="dados.perigo">
+            {{ dados.confirmar }}
+        </button>
+    </mat-dialog-actions>
+</div>

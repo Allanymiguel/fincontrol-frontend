@@ -33,6 +33,7 @@ import { UsuarioService } from '../../../services/usuario.service';
 import { hojeIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
 import { calcularValorPago } from '../../../utils/valor-assinatura';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // id 2 = ANUAL (enum Periodicidade do back)
 const PERIODICIDADE_ANUAL = 2;
@@ -64,6 +65,7 @@ function usuarioSelecionado(control: AbstractControl): ValidationErrors | null {
   templateUrl: './assinatura-form.html',
 })
 export class AssinaturaForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
   private readonly assinaturaService = inject(AssinaturaService);
@@ -206,7 +208,7 @@ export class AssinaturaForm implements OnInit {
     return typeof usuario === 'string' ? usuario : `${usuario.nome} (${usuario.email})`;
   }
 
-  salvar(): void {
+  async salvar(): Promise<void> {
     limparErrosDaApi(this.form);
 
     if (this.form.invalid) {
@@ -216,8 +218,13 @@ export class AssinaturaForm implements OnInit {
     }
 
     const atual = this.assinaturaAtual();
-    if (atual && !confirm(`A assinatura ${atual.nomePlano} (${atual.periodicidade.nome.toLowerCase()}) de ${atual.nomeUsuario} `
-        + 'será encerrada hoje e substituída por esta. Continuar?')) {
+    if (atual && !(await this.confirmacao.confirmar({
+      titulo: 'Substituir assinatura',
+      mensagem: `A assinatura ${atual.nomePlano} (${atual.periodicidade.nome.toLowerCase()}) de ${atual.nomeUsuario} `
+        + 'será encerrada hoje e substituída por esta. Continuar?',
+      confirmar: 'Substituir',
+      icone: 'swap_horiz',
+    }))) {
       return;
     }
 

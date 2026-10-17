@@ -24,6 +24,7 @@ import { TIPOS_CONTATO, TipoContato } from '../../../models/tipo-contato';
 import { CepService } from '../../../services/cep.service';
 import { ContatoService } from '../../../services/contato.service';
 import { apenasDigitos, documentoValidator } from '../../../utils/documento';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 type CepState = 'idle' | 'buscando' | 'encontrado' | 'erro';
 
@@ -43,6 +44,7 @@ type CepState = 'idle' | 'buscando' | 'encontrado' | 'erro';
   templateUrl: './contato-form.html',
 })
 export class ContatoForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
 
@@ -229,11 +231,11 @@ export class ContatoForm implements OnInit {
     });
   }
 
-  excluir(): void {
+  async excluir(): Promise<void> {
     const id = this.form.get('id')?.value as number | null;
     if (!id) return;
 
-    if (!confirm('Deseja realmente excluir este contato?')) return;
+    if (!(await this.confirmacao.confirmar({ titulo: 'Excluir contato', mensagem: 'Deseja realmente excluir este contato? Esta ação não pode ser desfeita.', confirmar: 'Excluir', perigo: true }))) return;
 
     this.contatoService.delete(id).subscribe({
       next: () => {

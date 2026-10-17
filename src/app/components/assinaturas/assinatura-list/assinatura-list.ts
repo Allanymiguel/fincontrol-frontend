@@ -1,6 +1,6 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +18,7 @@ import { Assinatura } from '../../../models/assinatura.model';
 import { STATUS_ASSINATURA, StatusAssinatura } from '../../../models/status-assinatura';
 import { AssinaturaService } from '../../../services/assinatura.service';
 import { PagedResponse } from '../../../services/categoria.service';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // id 3 = CANCELADA (enum StatusAssinatura do back)
 const STATUS_CANCELADA = 3;
@@ -43,6 +44,7 @@ const STATUS_CANCELADA = 3;
   templateUrl: './assinatura-list.html',
 })
 export class AssinaturaList implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   displayedColumns: string[] = [
     'numero', 'usuario', 'plano', 'status', 'periodicidade', 'valorPago', 'formaPagamento', 'dataInicio', 'dataFim', 'acao',
   ];
@@ -114,8 +116,8 @@ export class AssinaturaList implements OnInit {
     return assinatura.status?.id === STATUS_CANCELADA;
   }
 
-  cancelar(assinatura: Assinatura) {
-    if (!confirm(`Cancelar a assinatura de ${assinatura.nomeUsuario} no plano ${assinatura.nomePlano}?`)) return;
+  async cancelar(assinatura: Assinatura) {
+    if (!(await this.confirmacao.confirmar({ titulo: 'Cancelar assinatura', mensagem: `Cancelar a assinatura de ${assinatura.nomeUsuario} no plano ${assinatura.nomePlano}?`, confirmar: 'Cancelar assinatura', perigo: true }))) return;
 
     this.assinaturaService.cancelar(assinatura.id).subscribe({
       next: () => {

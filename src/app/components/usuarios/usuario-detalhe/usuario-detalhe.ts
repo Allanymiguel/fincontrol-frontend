@@ -11,6 +11,7 @@ import { Usuario } from '../../../models/usuario.model';
 import { UsuarioResumo } from '../../../models/usuario-resumo.model';
 import { UsuarioService } from '../../../services/usuario.service';
 import { formatarDocumento } from '../../../utils/documento';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // Detalhe de um usuario para o admin, sem invadir os dados pessoais: perfil, assinaturas e
 // apenas QUANTIDADES de transacoes/categorias/contatos (o conteudo nunca vem do back).
@@ -28,6 +29,7 @@ import { formatarDocumento } from '../../../utils/documento';
   templateUrl: './usuario-detalhe.html',
 })
 export class UsuarioDetalhe implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly usuarioService = inject(UsuarioService);
@@ -50,13 +52,20 @@ export class UsuarioDetalhe implements OnInit {
     this.resumo.set(this.activatedRoute.snapshot.data['resumo'] as UsuarioResumo);
   }
 
-  alternarAtivo(): void {
+  async alternarAtivo(): Promise<void> {
     const resumo = this.resumo();
     if (!resumo) return;
 
     const usuario = resumo.usuario;
     const acao = usuario.ativo ? 'desativar' : 'ativar';
-    if (!confirm(`Deseja ${acao} a conta de ${usuario.nome}?`)) return;
+    if (!(await this.confirmacao.confirmar({
+      titulo: usuario.ativo ? 'Desativar conta' : 'Ativar conta',
+      mensagem: usuario.ativo
+        ? `Deseja desativar a conta de ${usuario.nome}? A pessoa não conseguirá mais entrar.`
+        : `Deseja ativar a conta de ${usuario.nome}?`,
+      confirmar: usuario.ativo ? 'Desativar' : 'Ativar',
+      perigo: usuario.ativo,
+    }))) return;
 
     this.alterando.set(true);
     this.usuarioService.alternarAtivo(usuario.id).subscribe({

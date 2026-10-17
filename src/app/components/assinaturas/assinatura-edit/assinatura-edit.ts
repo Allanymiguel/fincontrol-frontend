@@ -17,6 +17,7 @@ import { STATUS_ASSINATURA, StatusAssinatura } from '../../../models/status-assi
 import { AssinaturaService } from '../../../services/assinatura.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 // id 3 = CANCELADA (enum StatusAssinatura do back)
 const STATUS_CANCELADA = 3;
@@ -42,6 +43,7 @@ const STATUS_CANCELADA = 3;
   templateUrl: './assinatura-edit.html',
 })
 export class AssinaturaEdit implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -119,9 +121,9 @@ export class AssinaturaEdit implements OnInit {
     });
   }
 
-  cancelarAssinatura(): void {
+  async cancelarAssinatura(): Promise<void> {
     const assinatura = this.assinatura();
-    if (!assinatura || !confirm('Deseja realmente cancelar esta assinatura?')) return;
+    if (!assinatura || !(await this.confirmacao.confirmar({ titulo: 'Cancelar assinatura', mensagem: 'Deseja realmente cancelar esta assinatura? Ela será encerrada hoje.', confirmar: 'Cancelar assinatura', perigo: true }))) return;
 
     this.assinaturaService.cancelar(assinatura.id).subscribe({
       next: () => {

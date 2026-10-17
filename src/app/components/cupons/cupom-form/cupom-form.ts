@@ -16,6 +16,7 @@ import { Cupom, CupomRequest } from '../../../models/cupom.model';
 import { CupomService } from '../../../services/cupom.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
+import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 @Component({
   imports: [
@@ -34,6 +35,7 @@ import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../ut
   templateUrl: './cupom-form.html',
 })
 export class CupomForm implements OnInit {
+  private readonly confirmacao = inject(ConfirmacaoService);
   readonly form: FormGroup;
   private readonly location = inject(Location);
 
@@ -120,11 +122,11 @@ export class CupomForm implements OnInit {
     });
   }
 
-  excluir(): void {
+  async excluir(): Promise<void> {
     const id = this.form.get('id')?.value as number | null;
     if (!id) return;
 
-    if (!confirm('Deseja realmente excluir este cupom?')) return;
+    if (!(await this.confirmacao.confirmar({ titulo: 'Excluir cupom', mensagem: 'Deseja realmente excluir este cupom? Esta ação não pode ser desfeita.', confirmar: 'Excluir', perigo: true }))) return;
 
     this.cupomService.delete(id).subscribe({
       next: () => {
