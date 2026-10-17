@@ -1,80 +1,43 @@
-.toolbar-title {
-    flex: 1;
-    text-align: center;
-}
-
-.flex-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.filters {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 1rem 0;
-}
-
-.filter-nome {
-    flex: 1;
-}
-
 .filter-status {
     width: 12rem;
 }
 
-.mat-column-usuario {
-    width: 100%;
+.nome {
+    font-weight: 500;
+}
+
+/* cupom aplicado: codigo em monoespacada e desconto em verde */
+.cupom {
+    margin-top: 0.15rem;
+    font-size: 0.7rem;
+}
+
+.desconto {
+    color: var(--fc-success);
+    font-family: var(--fc-font-sans);
+    font-weight: 700;
 }
 
 .mat-column-plano,
-.mat-column-status,
 .mat-column-periodicidade,
-.mat-column-valorPago,
-.mat-column-dataInicio,
 .mat-column-dataFim {
-    min-width: 6em;
-    white-space: nowrap;
-    padding-right: 1rem;
-}
-
-.mat-column-acao {
-    text-align: center;
-    min-width: 7em;
     white-space: nowrap;
 }
 
-.secundario {
-    color: #6b7280;
-    font-size: 0.85em;
+.valor {
+    font-weight: 600;
 }
 
-.tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    background: #e5e7eb;
-    color: #374151;
+.forma {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--fc-on-surface-variant);
+    white-space: nowrap;
 }
 
-.tag-ok {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.tag-alerta {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.linha-encerrada td {
-    color: #9ca3af;
-}
-
-.empty {
-    padding: 1.5rem;
-    text-align: center;
-    color: #6b7280;
+.forma mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
 }

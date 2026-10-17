@@ -206,6 +206,21 @@ a {
     color: var(--fc-on-surface);
 }
 
+.data-card .mat-mdc-header-cell,
+.data-card .mat-mdc-cell {
+    padding: 0 12px;
+}
+
+.data-card .mat-mdc-header-cell:first-child,
+.data-card .mat-mdc-cell:first-child {
+    padding-left: 16px;
+}
+
+.data-card .mat-mdc-header-cell:last-child,
+.data-card .mat-mdc-cell:last-child {
+    padding-right: 16px;
+}
+
 .data-card .mat-mdc-paginator {
     border-top: 1px solid var(--fc-outline-variant);
     --mat-paginator-container-text-color: var(--fc-on-surface-variant);
@@ -218,21 +233,58 @@ a {
     white-space: nowrap;
 }
 
-.data-card .col-acoes {
-    width: 1%;
-    text-align: right;
-    white-space: nowrap;
-}
-
 .data-card .mat-column-numero {
     width: 1%;
     color: var(--fc-outline);
     font-variant-numeric: tabular-nums;
 }
 
+.data-card .mat-column-acao {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* coluna principal (nome, descricao): ocupa a sobra de largura */
+.data-card .col-principal {
+    width: 100%;
+    min-width: 10rem;
+}
+
 .linha-encerrada,
 .linha-inativa {
     opacity: 0.6;
+}
+
+.linha-arquivada {
+    opacity: 0.5;
+}
+
+/* bolinha de cor + codigo hexadecimal (categorias) */
+.cor {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--fc-font-mono);
+    font-size: 0.8rem;
+    color: var(--fc-on-surface-variant);
+}
+
+.cor-ponto {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: 50%;
+}
+
+.data-card .valor-receita {
+    color: var(--fc-success);
+}
+
+.data-card .valor-despesa {
+    color: var(--fc-error);
 }
 
 .icone-acao {

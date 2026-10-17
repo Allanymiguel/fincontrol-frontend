@@ -10,7 +10,6 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ApiProblem } from '../../../models/api-problem.model';
 import { Usuario } from '../../../models/usuario.model';
@@ -26,7 +25,6 @@ import { formatarDocumento } from '../../../utils/documento';
     MatInputModule,
     MatFormFieldModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,

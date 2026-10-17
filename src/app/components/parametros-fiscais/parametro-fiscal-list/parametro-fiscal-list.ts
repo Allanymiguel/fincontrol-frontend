@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ParametroFiscal } from '../../../models/parametro-fiscal.model';
 import { PagedResponse } from '../../../services/categoria.service';
@@ -23,7 +22,6 @@ import { ParametroFiscalService } from '../../../services/parametro-fiscal.servi
     MatInputModule,
     MatFormFieldModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,

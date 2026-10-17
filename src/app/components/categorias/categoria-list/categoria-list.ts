@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { Categoria } from '../../../models/categoria.model';
 import { CategoriaService, PagedResponse } from '../../../services/categoria.service';
 
@@ -12,7 +11,6 @@ import { CategoriaService, PagedResponse } from '../../../services/categoria.ser
   imports: [
     MatTableModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,

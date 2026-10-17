@@ -1,98 +1,107 @@
-<mat-toolbar class="mat-toolbar">
-    <div class="flex-container">
-        <span class="toolbar-title">Usuários</span>
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Usuários</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'usuário' : 'usuários' }}</p>
+        </div>
+    </header>
+
+    <p class="aviso callout">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        As contas são criadas pelos próprios usuários na tela "Criar conta". Aqui o administrador as consulta e pode ativá-las ou desativá-las (conta desativada não consegue entrar).
+    </p>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filter-nome">
+            <mat-label>Buscar por nome ou e-mail</mat-label>
+            <input matInput [ngModel]="buscaFilter" (ngModelChange)="onBuscaInput($event)" placeholder="Ex.: maria ou @empresa.com" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
+            <mat-icon>clear</mat-icon>
+            Limpar
+        </button>
     </div>
-</mat-toolbar>
 
-<p class="aviso">
-    <mat-icon>info</mat-icon>
-    As contas são criadas pelos próprios usuários na tela "Criar conta". Aqui o administrador as consulta e pode ativá-las ou desativá-las (conta desativada não consegue entrar).
-</p>
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
 
-<div class="filters">
-    <mat-form-field appearance="outline" class="filter-nome">
-        <mat-label>Buscar por nome ou e-mail</mat-label>
-        <input matInput [ngModel]="buscaFilter" (ngModelChange)="onBuscaInput($event)" placeholder="Ex.: maria ou @empresa.com" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                    <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+                </ng-container>
 
-    <button mat-stroked-button (click)="limparFiltro()">
-        <mat-icon>clear</mat-icon>
-        Limpar
-    </button>
-</div>
+                <ng-container matColumnDef="nome">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Nome / e-mail </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal">
+                        <a class="link-nome" routerLink="/usuarios/{{ obj.id }}">{{ obj.nome }}</a>
+                        <div class="secundario">{{ obj.email }}</div>
+                    </td>
+                </ng-container>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="documento">
+                    <th mat-header-cell *matHeaderCellDef> CPF / CNPJ </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.documento ? formatarDocumento(obj.documento) : '—' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="numero">
-        <th mat-header-cell *matHeaderCellDef> Nº </th>
-        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
-    </ng-container>
+                <ng-container matColumnDef="perfil">
+                    <th mat-header-cell *matHeaderCellDef> Perfil fiscal </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <span class="tag">{{ obj.perfilFiscal?.nome }}</span>
+                        @if (obj.atividadeMei) {
+                            <div class="secundario">{{ obj.atividadeMei.nome }}</div>
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="nome">
-        <th mat-header-cell *matHeaderCellDef> Nome / e-mail </th>
-        <td mat-cell *matCellDef="let obj">
-            <a class="link-nome" routerLink="/usuarios/{{ obj.id }}">{{ obj.nome }}</a>
-            <div class="secundario">{{ obj.email }}</div>
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="cidade">
+                    <th mat-header-cell *matHeaderCellDef> Cidade / UF </th>
+                    <td mat-cell *matCellDef="let obj">
+                        @if (obj.endereco?.municipio; as municipio) {
+                            {{ municipio.nome }} - {{ municipio.estado.sigla }}
+                        } @else {
+                            <span class="secundario">Não informado</span>
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="documento">
-        <th mat-header-cell *matHeaderCellDef> CPF / CNPJ </th>
-        <td mat-cell *matCellDef="let obj"> {{ obj.documento ? formatarDocumento(obj.documento) : '—' }} </td>
-    </ng-container>
+                <ng-container matColumnDef="papel">
+                    <th mat-header-cell *matHeaderCellDef> Papel </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <!-- id 2 = ADMIN (enum Papel do back) -->
+                        <span class="tag" [class.tag-admin]="obj.papel?.id === 2">{{ obj.papel?.nome }}</span>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="perfil">
-        <th mat-header-cell *matHeaderCellDef> Perfil fiscal </th>
-        <td mat-cell *matCellDef="let obj">
-            <div>{{ obj.perfilFiscal?.nome }}</div>
-            @if (obj.atividadeMei) {
-                <div class="secundario">{{ obj.atividadeMei.nome }}</div>
-            }
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="ativo">
+                    <th mat-header-cell *matHeaderCellDef> Ativo </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <mat-slide-toggle [checked]="obj.ativo" [disabled]="alterando.has(obj.id)"
+                            (change)="alternarAtivo(obj, $event)"
+                            [attr.aria-label]="(obj.ativo ? 'Desativar ' : 'Ativar ') + obj.nome">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="cidade">
-        <th mat-header-cell *matHeaderCellDef> Cidade / UF </th>
-        <td mat-cell *matCellDef="let obj">
-            @if (obj.endereco?.municipio; as municipio) {
-                {{ municipio.nome }} - {{ municipio.estado.sigla }}
-            } @else {
-                <span class="secundario">Não informado</span>
-            }
-        </td>
-    </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.linha-inativa]="!row.ativo"></tr>
 
-    <ng-container matColumnDef="papel">
-        <th mat-header-cell *matHeaderCellDef> Papel </th>
-        <td mat-cell *matCellDef="let obj">
-            <!-- id 2 = ADMIN (enum Papel do back) -->
-            <span class="tag" [class.tag-admin]="obj.papel?.id === 2">{{ obj.papel?.nome }}</span>
-        </td>
-    </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon aria-hidden="true">inbox</mat-icon>
+                        Nenhum usuário encontrado.</td>
+                </tr>
+            </table>
+        </div>
 
-    <ng-container matColumnDef="ativo">
-        <th mat-header-cell *matHeaderCellDef> Ativo </th>
-        <td mat-cell *matCellDef="let obj">
-            <mat-slide-toggle [checked]="obj.ativo" [disabled]="alterando.has(obj.id)"
-                (change)="alternarAtivo(obj, $event)"
-                [attr.aria-label]="(obj.ativo ? 'Desativar ' : 'Ativar ') + obj.nome">
-            </mat-slide-toggle>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.linha-inativa]="!row.ativo"></tr>
-
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhum usuário encontrado.</td>
-    </tr>
-</table>
-
-<mat-paginator
-    [length]="totalItems"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-</mat-paginator>
+        <mat-paginator
+            [length]="totalItems"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</section>

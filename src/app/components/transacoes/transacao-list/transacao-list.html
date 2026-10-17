@@ -1,92 +1,112 @@
-<mat-toolbar class="mat-toolbar">
-    <div class="flex-container">
-        <span class="toolbar-title">Controle de Transações</span>
-        <button mat-fab class="accent" routerLink="/transacoes/new">
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Transações</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'transação' : 'transações' }}</p>
+        </div>
+        <button matButton="filled" routerLink="/transacoes/new">
             <mat-icon>add</mat-icon>
+            Nova transação
+        </button>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filter-descricao">
+            <mat-label>Filtrar por descrição</mat-label>
+            <input matInput
+                   [ngModel]="descricaoFilter"
+                   (ngModelChange)="onDescricaoInput($event)"
+                   placeholder="Ex.: Salário" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-categoria">
+            <mat-label>Categoria</mat-label>
+            <mat-select [(ngModel)]="idCategoriaFilter" (selectionChange)="onCategoriaChange()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (categoria of categorias; track categoria.id) {
+                    <mat-option [value]="categoria.id">{{categoria.nome}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <button matButton="outlined" class="filters-fim" (click)="limparFiltros()">
+            <mat-icon>clear</mat-icon>
+            Limpar
         </button>
     </div>
-</mat-toolbar>
 
-<div class="filters">
-    <mat-form-field appearance="outline" class="filter-descricao">
-        <mat-label>Filtrar por descrição</mat-label>
-        <input matInput
-               [ngModel]="descricaoFilter"
-               (ngModelChange)="onDescricaoInput($event)"
-               placeholder="Ex.: Salário" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
 
-    <mat-form-field appearance="outline" class="filter-categoria">
-        <mat-label>Categoria</mat-label>
-        <mat-select [(ngModel)]="idCategoriaFilter" (selectionChange)="onCategoriaChange()">
-            <mat-option [value]="null">Todas</mat-option>
-            @for (categoria of categorias; track categoria.id) {
-                <mat-option [value]="categoria.id">{{categoria.nome}}</mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                    <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+                </ng-container>
 
-    <button mat-stroked-button (click)="limparFiltros()">
-        <mat-icon>clear</mat-icon>
-        Limpar
-    </button>
-</div>
+                <ng-container matColumnDef="data">
+                    <th mat-header-cell *matHeaderCellDef> Data </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.data | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="descricao">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Descrição </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal"> {{ obj.descricao }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="numero">
-        <th mat-header-cell *matHeaderCellDef> Número </th>
-        <td mat-cell *matCellDef="let obj; let i = index"> {{pageIndex * pageSize + i + 1}} </td>
-    </ng-container>
+                <ng-container matColumnDef="valor">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Valor </th>
+                    <!-- id 1 = Receita, 2 = Despesa (enum TipoTransacao do back) -->
+                    <td mat-cell *matCellDef="let obj" class="col-num" [class.valor-receita]="obj.tipo?.id === 1"
+                        [class.valor-despesa]="obj.tipo?.id === 2">
+                        {{ obj.tipo?.id === 2 ? '−' : '' }} R$ {{ obj.valor | number:'1.2-2' }}
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="data">
-        <th mat-header-cell *matHeaderCellDef> Data </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.data}} </td>
-    </ng-container>
+                <ng-container matColumnDef="categoria">
+                    <th mat-header-cell *matHeaderCellDef> Categoria </th>
+                    <td mat-cell *matCellDef="let obj"> {{ obj.categoria?.nome }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="descricao">
-        <th mat-header-cell *matHeaderCellDef> Descrição </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.descricao}} </td>
-    </ng-container>
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <span class="tag" [class.tag-ok]="obj.tipo?.id === 1" [class.tag-erro]="obj.tipo?.id === 2">{{ obj.tipo?.nome }}</span>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="valor">
-        <th mat-header-cell *matHeaderCellDef> Valor </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.valor | number:'1.2-2'}} </td>
-    </ng-container>
+                <ng-container matColumnDef="escopo">
+                    <th mat-header-cell *matHeaderCellDef> Escopo </th>
+                    <td mat-cell *matCellDef="let obj"> <span class="tag">{{ obj.escopo?.nome }}</span> </td>
+                </ng-container>
 
-    <ng-container matColumnDef="categoria">
-        <th mat-header-cell *matHeaderCellDef> Categoria </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.categoria?.nome}} </td>
-    </ng-container>
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef> Ações </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button class="icone-acao" routerLink="/transacoes/edit/{{ obj.id }}" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="tipo">
-        <th mat-header-cell *matHeaderCellDef> Tipo </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.tipo?.nome}} </td>
-    </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-    <ng-container matColumnDef="escopo">
-        <th mat-header-cell *matHeaderCellDef> Escopo </th>
-        <td mat-cell *matCellDef="let obj"> {{obj.escopo?.nome}} </td>
-    </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon aria-hidden="true">inbox</mat-icon>
+                        Nenhuma transação encontrada.</td>
+                </tr>
+            </table>
+        </div>
 
-    <ng-container matColumnDef="acao">
-        <th mat-header-cell *matHeaderCellDef> Ação </th>
-        <td mat-cell *matCellDef="let obj">
-            <button mat-icon-button color="primary" routerLink="/transacoes/edit/{{obj.id}}">
-                <mat-icon>edit</mat-icon>
-            </button>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-paginator
-    [length]="totalItems"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-</mat-paginator>
+        <mat-paginator
+            [length]="totalItems"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</section>

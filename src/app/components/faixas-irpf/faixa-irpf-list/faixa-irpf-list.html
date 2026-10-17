@@ -1,93 +1,101 @@
-<mat-toolbar class="mat-toolbar">
-    <div class="flex-container">
-        <span class="toolbar-title">Faixas do IRPF (tabela progressiva mensal)</span>
-        <!-- com uma tabela filtrada, a nova faixa ja vem com a vigencia dela -->
-        <button mat-fab class="accent" routerLink="/faixas-irpf/new"
-            [queryParams]="vigenciaFilter ? { vigencia: vigenciaFilter } : {}" aria-label="Nova faixa do IRPF">
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Faixas do IRPF</h1>
+            <p class="page-subtitle">Tabela progressiva mensal · {{ totalItems }} {{ totalItems === 1 ? 'faixa' : 'faixas' }}</p>
+        </div>
+        <button matButton="filled" routerLink="/faixas-irpf/new" [queryParams]="vigenciaFilter ? { vigencia: vigenciaFilter } : {}">
             <mat-icon>add</mat-icon>
+            Nova faixa
+        </button>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filter-vigencia">
+            <mat-label>Tabela (início da vigência)</mat-label>
+            <mat-select [(ngModel)]="vigenciaFilter" (selectionChange)="onVigenciaChange()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (vigencia of vigencias; track vigencia) {
+                    <mat-option [value]="vigencia">{{ vigencia | date:'dd/MM/yyyy' }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
+            <mat-icon>clear</mat-icon>
+            Limpar
         </button>
     </div>
-</mat-toolbar>
 
-<div class="filters">
-    <mat-form-field appearance="outline" class="filter-vigencia">
-        <mat-label>Tabela (início da vigência)</mat-label>
-        <mat-select [(ngModel)]="vigenciaFilter" (selectionChange)="onVigenciaChange()">
-            <mat-option [value]="null">Todas</mat-option>
-            @for (vigencia of vigencias; track vigencia) {
-                <mat-option [value]="vigencia">{{ vigencia | date:'dd/MM/yyyy' }}</mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
 
-    <button mat-stroked-button (click)="limparFiltro()">
-        <mat-icon>clear</mat-icon>
-        Limpar
-    </button>
-</div>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                    <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+                </ng-container>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="vigencia">
+                    <th mat-header-cell *matHeaderCellDef> Vigência desde </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.vigenciaInicio | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="numero">
-        <th mat-header-cell *matHeaderCellDef> Nº </th>
-        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
-    </ng-container>
+                <ng-container matColumnDef="faixa">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Base de cálculo mensal </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal num">
+                        @if (obj.limiteSuperior === null) {
+                            Acima de R$ {{ obj.limiteInferior | number:'1.2-2' }}
+                        } @else if (obj.limiteInferior === 0) {
+                            Até R$ {{ obj.limiteSuperior | number:'1.2-2' }}
+                        } @else {
+                            De R$ {{ obj.limiteInferior | number:'1.2-2' }} até R$ {{ obj.limiteSuperior | number:'1.2-2' }}
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="vigencia">
-        <th mat-header-cell *matHeaderCellDef> Vigência desde </th>
-        <td mat-cell *matCellDef="let obj"> {{ obj.vigenciaInicio | date:'dd/MM/yyyy' }} </td>
-    </ng-container>
+                <ng-container matColumnDef="aliquota">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Alíquota </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num aliquota">
+                        @if (obj.aliquota === 0) {
+                            <span class="tag tag-ok">Isento</span>
+                        } @else {
+                            {{ obj.aliquota | number:'1.1-2' }}%
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="faixa">
-        <th mat-header-cell *matHeaderCellDef> Base de cálculo mensal </th>
-        <td mat-cell *matCellDef="let obj">
-            @if (obj.limiteSuperior === null) {
-                Acima de R$ {{ obj.limiteInferior | number:'1.2-2' }}
-            } @else if (obj.limiteInferior === 0) {
-                Até R$ {{ obj.limiteSuperior | number:'1.2-2' }}
-            } @else {
-                De R$ {{ obj.limiteInferior | number:'1.2-2' }} até R$ {{ obj.limiteSuperior | number:'1.2-2' }}
-            }
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="parcelaDeduzir">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Parcela a deduzir </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num"> R$ {{ obj.parcelaDeduzir | number:'1.2-2' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="aliquota">
-        <th mat-header-cell *matHeaderCellDef> Alíquota </th>
-        <td mat-cell *matCellDef="let obj">
-            @if (obj.aliquota === 0) {
-                <span class="tag tag-ok">Isento</span>
-            } @else {
-                {{ obj.aliquota | number:'1.1-2' }}%
-            }
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef> Ações </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button class="icone-acao" routerLink="/faixas-irpf/edit/{{ obj.id }}" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="parcelaDeduzir">
-        <th mat-header-cell *matHeaderCellDef> Parcela a deduzir </th>
-        <td mat-cell *matCellDef="let obj"> R$ {{ obj.parcelaDeduzir | number:'1.2-2' }} </td>
-    </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-    <ng-container matColumnDef="acao">
-        <th mat-header-cell *matHeaderCellDef> Ação </th>
-        <td mat-cell *matCellDef="let obj">
-            <button mat-icon-button color="primary" routerLink="/faixas-irpf/edit/{{ obj.id }}" aria-label="Editar">
-                <mat-icon>edit</mat-icon>
-            </button>
-        </td>
-    </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon aria-hidden="true">inbox</mat-icon>
+                        Nenhuma faixa do IRPF encontrada.</td>
+                </tr>
+            </table>
+        </div>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhuma faixa do IRPF encontrada.</td>
-    </tr>
-</table>
-
-<mat-paginator
-    [length]="totalItems"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-</mat-paginator>
+        <mat-paginator
+            [length]="totalItems"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</section>

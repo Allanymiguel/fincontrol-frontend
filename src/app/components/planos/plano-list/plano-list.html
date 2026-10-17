@@ -1,91 +1,102 @@
-<mat-toolbar class="mat-toolbar">
-    <div class="flex-container">
-        <span class="toolbar-title">Planos de assinatura</span>
-        <button mat-fab class="accent" routerLink="/planos/new" aria-label="Novo plano">
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Planos de assinatura</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'plano' : 'planos' }}</p>
+        </div>
+        <button matButton="filled" routerLink="/planos/new">
             <mat-icon>add</mat-icon>
+            Novo plano
+        </button>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filter-nome">
+            <mat-label>Filtrar por nome</mat-label>
+            <input matInput [ngModel]="nomeFilter" (ngModelChange)="onNomeInput($event)" placeholder="Ex.: Essencial" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
+            <mat-icon>clear</mat-icon>
+            Limpar
         </button>
     </div>
-</mat-toolbar>
 
-<div class="filters">
-    <mat-form-field appearance="outline" class="filter-nome">
-        <mat-label>Filtrar por nome</mat-label>
-        <input matInput [ngModel]="nomeFilter" (ngModelChange)="onNomeInput($event)" placeholder="Ex.: Essencial" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
 
-    <button mat-stroked-button (click)="limparFiltro()">
-        <mat-icon>clear</mat-icon>
-        Limpar
-    </button>
-</div>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                    <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+                </ng-container>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="nome">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Nome </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal nome"> {{ obj.nome }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="numero">
-        <th mat-header-cell *matHeaderCellDef> Nº </th>
-        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
-    </ng-container>
+                <ng-container matColumnDef="precoMensal">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Mensal </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num"> R$ {{ obj.precoMensal | number:'1.2-2' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="nome">
-        <th mat-header-cell *matHeaderCellDef> Nome </th>
-        <td mat-cell *matCellDef="let obj"> {{ obj.nome }} </td>
-    </ng-container>
+                <ng-container matColumnDef="precoAnual">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Anual </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num"> R$ {{ obj.precoAnual | number:'1.2-2' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="precoMensal">
-        <th mat-header-cell *matHeaderCellDef> Mensal </th>
-        <td mat-cell *matCellDef="let obj"> R$ {{ obj.precoMensal | number:'1.2-2' }} </td>
-    </ng-container>
+                <ng-container matColumnDef="limites">
+                    <th mat-header-cell *matHeaderCellDef> Limites </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <div>{{ obj.limiteTransacoes | number }} {{ obj.limiteTransacoes === 1 ? 'transação' : 'transações' }}</div>
+                        <div class="secundario">{{ obj.limiteMetas | number }} {{ obj.limiteMetas === 1 ? 'meta' : 'metas' }}</div>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="precoAnual">
-        <th mat-header-cell *matHeaderCellDef> Anual </th>
-        <td mat-cell *matCellDef="let obj"> R$ {{ obj.precoAnual | number:'1.2-2' }} </td>
-    </ng-container>
+                <ng-container matColumnDef="modulos">
+                    <th mat-header-cell *matHeaderCellDef> Módulos </th>
+                    <td mat-cell *matCellDef="let obj">
+                        @for (modulo of modulos(obj); track modulo) {
+                            <span class="tag tag-info">{{ modulo }}</span>
+                        } @empty {
+                            <span class="secundario">Nenhum</span>
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="limites">
-        <th mat-header-cell *matHeaderCellDef> Limites </th>
-        <td mat-cell *matCellDef="let obj">
-            {{ obj.limiteTransacoes }} transações · {{ obj.limiteMetas }} metas
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="ativo">
+                    <th mat-header-cell *matHeaderCellDef> Ativo </th>
+                    <td mat-cell *matCellDef="let obj"> <span class="tag" [class.tag-ok]="obj.ativo">{{ obj.ativo ? 'Ativo' : 'Inativo' }}</span> </td>
+                </ng-container>
 
-    <ng-container matColumnDef="modulos">
-        <th mat-header-cell *matHeaderCellDef> Módulos </th>
-        <td mat-cell *matCellDef="let obj">
-            @for (modulo of modulos(obj); track modulo) {
-                <span class="tag">{{ modulo }}</span>
-            } @empty {
-                <span class="sem-modulo">Nenhum</span>
-            }
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef> Ações </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button class="icone-acao" routerLink="/planos/edit/{{ obj.id }}" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="ativo">
-        <th mat-header-cell *matHeaderCellDef> Ativo </th>
-        <td mat-cell *matCellDef="let obj"> {{ obj.ativo ? 'Sim' : 'Não' }} </td>
-    </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.linha-inativa]="!row.ativo"></tr>
 
-    <ng-container matColumnDef="acao">
-        <th mat-header-cell *matHeaderCellDef> Ação </th>
-        <td mat-cell *matCellDef="let obj">
-            <button mat-icon-button color="primary" routerLink="/planos/edit/{{ obj.id }}" aria-label="Editar">
-                <mat-icon>edit</mat-icon>
-            </button>
-        </td>
-    </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon aria-hidden="true">inbox</mat-icon>
+                        Nenhum plano encontrado.</td>
+                </tr>
+            </table>
+        </div>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhum plano encontrado.</td>
-    </tr>
-</table>
-
-<mat-paginator
-    [length]="totalItems"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-</mat-paginator>
+        <mat-paginator
+            [length]="totalItems"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</section>

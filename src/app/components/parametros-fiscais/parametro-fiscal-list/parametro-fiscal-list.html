@@ -1,86 +1,96 @@
-<mat-toolbar class="mat-toolbar">
-    <div class="flex-container">
-        <span class="toolbar-title">Parâmetros fiscais</span>
-        <button mat-fab class="accent" routerLink="/parametros-fiscais/new" aria-label="Novo parâmetro fiscal">
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Parâmetros fiscais</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'parâmetro' : 'parâmetros' }}</p>
+        </div>
+        <button matButton="filled" routerLink="/parametros-fiscais/new">
             <mat-icon>add</mat-icon>
+            Novo parâmetro
+        </button>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filter-nome">
+            <mat-label>Filtrar por chave</mat-label>
+            <input matInput [ngModel]="chaveFilter" (ngModelChange)="onChaveInput($event)" placeholder="Ex.: SALARIO_MINIMO" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
+            <mat-icon>clear</mat-icon>
+            Limpar
         </button>
     </div>
-</mat-toolbar>
 
-<div class="filters">
-    <mat-form-field appearance="outline" class="filter-nome">
-        <mat-label>Filtrar por chave</mat-label>
-        <input matInput [ngModel]="chaveFilter" (ngModelChange)="onChaveInput($event)" placeholder="Ex.: SALARIO_MINIMO" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
 
-    <button mat-stroked-button (click)="limparFiltro()">
-        <mat-icon>clear</mat-icon>
-        Limpar
-    </button>
-</div>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                    <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
+                </ng-container>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="chave">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Chave </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal"> <span class="codigo">{{ obj.chave }}</span> </td>
+                </ng-container>
 
-    <ng-container matColumnDef="numero">
-        <th mat-header-cell *matHeaderCellDef> Nº </th>
-        <td mat-cell *matCellDef="let obj; let i = index"> {{ pageIndex * pageSize + i + 1 }} </td>
-    </ng-container>
+                <ng-container matColumnDef="valor">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Valor </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num valor"> {{ obj.valor | number:'1.2-4' }} </td>
+                </ng-container>
 
-    <ng-container matColumnDef="chave">
-        <th mat-header-cell *matHeaderCellDef> Chave </th>
-        <td mat-cell *matCellDef="let obj"> <span class="chave">{{ obj.chave }}</span> </td>
-    </ng-container>
+                <ng-container matColumnDef="vigencia">
+                    <th mat-header-cell *matHeaderCellDef> Vigência </th>
+                    <td mat-cell *matCellDef="let obj" class="num">
+                        {{ obj.vigenciaInicio | date:'dd/MM/yyyy' }} até
+                        @if (obj.vigenciaFim) {
+                            {{ obj.vigenciaFim | date:'dd/MM/yyyy' }}
+                        } @else {
+                            <span class="secundario">sem data de fim</span>
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="valor">
-        <th mat-header-cell *matHeaderCellDef> Valor </th>
-        <td mat-cell *matCellDef="let obj"> {{ obj.valor | number:'1.2-4' }} </td>
-    </ng-container>
+                <ng-container matColumnDef="situacao">
+                    <th mat-header-cell *matHeaderCellDef> Situação </th>
+                    <td mat-cell *matCellDef="let obj">
+                        @if (obj.vigente) {
+                            <span class="tag tag-ok">Vigente</span>
+                        } @else {
+                            <span class="tag">Fora de vigência</span>
+                        }
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="vigencia">
-        <th mat-header-cell *matHeaderCellDef> Vigência </th>
-        <td mat-cell *matCellDef="let obj">
-            {{ obj.vigenciaInicio | date:'dd/MM/yyyy' }} até
-            @if (obj.vigenciaFim) {
-                {{ obj.vigenciaFim | date:'dd/MM/yyyy' }}
-            } @else {
-                <em>sem data de fim</em>
-            }
-        </td>
-    </ng-container>
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef> Ações </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button class="icone-acao" routerLink="/parametros-fiscais/edit/{{ obj.id }}" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
-    <ng-container matColumnDef="situacao">
-        <th mat-header-cell *matHeaderCellDef> Situação </th>
-        <td mat-cell *matCellDef="let obj">
-            @if (obj.vigente) {
-                <span class="tag tag-ok">Vigente</span>
-            } @else {
-                <span class="tag tag-off">Fora de vigência</span>
-            }
-        </td>
-    </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.linha-inativa]="!row.vigente"></tr>
 
-    <ng-container matColumnDef="acao">
-        <th mat-header-cell *matHeaderCellDef> Ação </th>
-        <td mat-cell *matCellDef="let obj">
-            <button mat-icon-button color="primary" routerLink="/parametros-fiscais/edit/{{ obj.id }}" aria-label="Editar">
-                <mat-icon>edit</mat-icon>
-            </button>
-        </td>
-    </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon aria-hidden="true">inbox</mat-icon>
+                        Nenhum parâmetro fiscal encontrado.</td>
+                </tr>
+            </table>
+        </div>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Nenhum parâmetro fiscal encontrado.</td>
-    </tr>
-</table>
-
-<mat-paginator
-    [length]="totalItems"
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-</mat-paginator>
+        <mat-paginator
+            [length]="totalItems"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</section>

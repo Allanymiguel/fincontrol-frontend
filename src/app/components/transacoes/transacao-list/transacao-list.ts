@@ -1,4 +1,4 @@
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Categoria } from '../../../models/categoria.model';
 import { Transacao } from '../../../models/transacao.model';
@@ -18,6 +17,7 @@ import { TransacaoService } from '../../../services/transacao.service';
 
 @Component({
   imports: [
+    DatePipe,
     DecimalPipe,
     FormsModule,
     MatTableModule,
@@ -25,7 +25,6 @@ import { TransacaoService } from '../../../services/transacao.service';
     MatFormFieldModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,

@@ -1,48 +1,12 @@
-.toolbar-title {
-    flex: 1;
-    text-align: center;
-}
-
-.flex-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.filters {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 1rem 0;
-}
-
 .filter-descricao {
-    flex: 2;
+    flex: 2 1 18rem;
 }
 
 .filter-categoria {
-    flex: 1;
-    min-width: 12em;
+    flex: 1 1 12rem;
+    max-width: 16rem;
 }
 
-.mat-column-descricao {
-    width: 100%;
-}
-
-.mat-column-data,
 .mat-column-valor {
-    min-width: 8em;
-    width: 8em;
-}
-
-.mat-column-categoria,
-.mat-column-tipo,
-.mat-column-escopo {
-    min-width: 10em;
-    width: 10em;
-}
-
-.mat-column-acao {
-    text-align: center;
-    min-width: 6em;
+    font-weight: 600;
 }

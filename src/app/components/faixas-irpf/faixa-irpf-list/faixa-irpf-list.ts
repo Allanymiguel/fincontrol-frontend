@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { FaixaIrpf } from '../../../models/faixa-irpf.model';
 import { PagedResponse } from '../../../services/categoria.service';
 import { FaixaIrpfService } from '../../../services/faixa-irpf.service';
@@ -22,7 +21,6 @@ import { FaixaIrpfService } from '../../../services/faixa-irpf.service';
     MatFormFieldModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,

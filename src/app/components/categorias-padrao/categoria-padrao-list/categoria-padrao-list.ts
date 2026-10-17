@@ -10,7 +10,6 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { CategoriaPadrao } from '../../../models/categoria-padrao.model';
@@ -26,7 +25,6 @@ import { CategoriaPadraoService } from '../../../services/categoria-padrao.servi
     MatFormFieldModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,

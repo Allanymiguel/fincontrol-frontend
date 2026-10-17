@@ -11,7 +11,6 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ApiProblem } from '../../../models/api-problem.model';
@@ -33,7 +32,6 @@ const STATUS_CANCELADA = 3;
     MatFormFieldModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
@@ -46,7 +44,7 @@ const STATUS_CANCELADA = 3;
 })
 export class AssinaturaList implements OnInit {
   displayedColumns: string[] = [
-    'numero', 'usuario', 'plano', 'status', 'periodicidade', 'valorPago', 'dataInicio', 'dataFim', 'acao',
+    'numero', 'usuario', 'plano', 'status', 'periodicidade', 'valorPago', 'formaPagamento', 'dataInicio', 'dataFim', 'acao',
   ];
   dataSource = new MatTableDataSource<Assinatura>();
   pageIndex = 0;
@@ -105,6 +103,11 @@ export class AssinaturaList implements OnInit {
     this.idStatusFilter = null;
     this.pageIndex = 0;
     this.loadAssinaturas();
+  }
+
+  // ids do enum FormaPagamento do back: 1 Pix, 2 Cartao, 3 Boleto, 4 Nenhuma
+  iconeForma(id: number | undefined): string {
+    return ({ 1: 'qr_code_2', 2: 'credit_card', 3: 'receipt_long' } as Record<number, string>)[id ?? 0] ?? 'money_off';
   }
 
   isCancelada(assinatura: Assinatura): boolean {
