@@ -119,6 +119,24 @@
                         </div>
                     </div>
 
+                    <div class="acoes-assinatura">
+                        <button matButton="filled" type="button" class="botao-trocar" (click)="trocarPlano()"
+                            [disabled]="!resumo.usuario.ativo">
+                            <mat-icon>swap_horiz</mat-icon>
+                            Trocar plano
+                        </button>
+                        @if (podeCancelar()) {
+                            <button matButton="outlined" type="button" class="botao-perigo botao-cancelar-plano"
+                                (click)="cancelarPlanoPago()" [disabled]="!resumo.usuario.ativo">
+                                <mat-icon>block</mat-icon>
+                                Cancelar plano pago
+                            </button>
+                        }
+                        @if (!resumo.usuario.ativo) {
+                            <span class="secundario">Conta desativada: reative para trocar o plano.</span>
+                        }
+                    </div>
+
                     @if (assinatura.trocaAgendada; as troca) {
                         <div class="troca-agendada callout callout-alerta" role="status">
                             <mat-icon aria-hidden="true">schedule</mat-icon>
@@ -132,12 +150,22 @@
                                 }
                                 Até lá, continua no plano atual.
                             </span>
+                            <button matButton type="button" class="botao-desfazer" (click)="desfazerTroca()">Desfazer</button>
                         </div>
                     }
 
-                    @if (assinatura.observacao) {
-                        <p class="observacao secundario">Observação: {{ assinatura.observacao }}</p>
-                    }
+                    <div class="observacao">
+                        <mat-form-field appearance="outline" class="campo-observacao" subscriptSizing="dynamic">
+                            <mat-label>Observação interna</mat-label>
+                            <textarea matInput [formControl]="observacao" rows="2" maxlength="255"
+                                placeholder="Notas de atendimento sobre a assinatura"></textarea>
+                            <mat-hint align="end">{{ observacao.value.length }}/255</mat-hint>
+                        </mat-form-field>
+                        <button matButton="outlined" type="button" class="botao-observacao" (click)="salvarObservacao()"
+                            [disabled]="observacao.pristine || salvandoObservacao()">
+                            Salvar
+                        </button>
+                    </div>
                 } @else {
                     <p class="secundario">Sem assinatura (contas de administrador não têm plano).</p>
                 }

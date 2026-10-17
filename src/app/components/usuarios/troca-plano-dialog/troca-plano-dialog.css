@@ -1,0 +1,69 @@
+.troca {
+    padding: 1.5rem 0.5rem 0.5rem;
+}
+
+.troca > .label-caps {
+    display: block;
+    padding: 0 1.5rem;
+}
+
+.titulo {
+    padding-top: 0.25rem;
+    font-family: var(--fc-font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.atual {
+    margin: 0 0 1rem;
+}
+
+/* previa do efeito da troca (vem da simulacao do back) */
+.previa {
+    margin-top: 0.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-xl);
+    background: var(--fc-surface-container);
+    color: var(--fc-on-surface-variant);
+    line-height: 1.5;
+}
+
+.previa p {
+    margin: 0.25rem 0 0;
+}
+
+.efeito {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--fc-on-surface);
+    font-weight: 700;
+}
+
+.previa .efeito {
+    margin: 0 0 0.25rem;
+}
+
+.efeito mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+.efeito-agora mat-icon {
+    color: var(--fc-success);
+}
+
+.efeito-agendado mat-icon {
+    color: var(--fc-warning);
+}
+
+.efeito-erro {
+    font-weight: 500;
+}
+
+mat-dialog-actions {
+    gap: 0.5rem;
+    padding: 0.5rem 1.5rem 1rem;
+}

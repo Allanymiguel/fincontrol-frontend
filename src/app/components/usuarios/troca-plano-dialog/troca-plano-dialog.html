@@ -1,0 +1,116 @@
+<div class="troca">
+    <span class="label-caps">{{ assinatura.nomeUsuario }}</span>
+    <h2 mat-dialog-title class="titulo">Trocar plano</h2>
+
+    <mat-dialog-content>
+        <p class="atual secundario">
+            Plano atual: <strong>{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome.toLowerCase() }})</strong>
+            @if (assinatura.dataProximaCobranca) {
+                · próxima cobrança em {{ assinatura.dataProximaCobranca | date:'dd/MM/yyyy' }}
+            }
+        </p>
+
+        <form class="form-grid" [formGroup]="form" (ngSubmit)="confirmar()">
+            <mat-form-field appearance="outline">
+                <mat-label>Plano</mat-label>
+                <mat-select formControlName="idPlano">
+                    @for (plano of planos(); track plano.id) {
+                        <mat-option [value]="plano.id">{{ plano.nome }}</mat-option>
+                    }
+                </mat-select>
+                @if (getErrorMessage('idPlano'); as error) {
+                    <mat-error>{{ error }}</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Periodicidade</mat-label>
+                <mat-select formControlName="idPeriodicidade">
+                    @for (periodicidade of periodicidades; track periodicidade.id) {
+                        <mat-option [value]="periodicidade.id">{{ periodicidade.nome }}</mat-option>
+                    }
+                </mat-select>
+                @if (getErrorMessage('idPeriodicidade'); as error) {
+                    <mat-error>{{ error }}</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Cupom de desconto</mat-label>
+                <mat-select formControlName="idCupom">
+                    <mat-option [value]="null">Sem cupom</mat-option>
+                    @for (cupom of cupons(); track cupom.id) {
+                        <mat-option [value]="cupom.id">{{ cupom.codigo }} (-{{ cupom.percentualDesconto | number:'1.0-2' }}%)</mat-option>
+                    }
+                </mat-select>
+                @if (getErrorMessage('idCupom'); as error) {
+                    <mat-error>{{ error }}</mat-error>
+                }
+            </mat-form-field>
+
+            @if (!semCusto()) {
+                <mat-form-field appearance="outline">
+                    <mat-label>Forma de pagamento</mat-label>
+                    <mat-select formControlName="idFormaPagamento" placeholder="Selecione">
+                        @for (forma of formasPagamento; track forma.id) {
+                            <mat-option [value]="forma.id">{{ forma.nome }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (getErrorMessage('idFormaPagamento'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+            }
+        </form>
+
+        <!-- previa calculada pelo back (RN16): mais caro vale agora, mais barato fica agendado -->
+        <section class="previa" aria-live="polite">
+            @if (previa(); as previa) {
+                @if (previa.resultado; as r) {
+                    @switch (r.efeito.id) {
+                        @case (EFEITO_IMEDIATO) {
+                            <p class="efeito efeito-agora"><mat-icon aria-hidden="true">bolt</mat-icon> Vale agora</p>
+                            @if (r.valorCobradoAgora > 0) {
+                                <p>Cobrança de <strong>R$ {{ r.valorCobradoAgora | number:'1.2-2' }}</strong> hoje.
+                                    Próxima cobrança em {{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}.</p>
+                            } @else if (r.dataProximaCobranca) {
+                                <p>Nada é cobrado hoje: o crédito de <strong>R$ {{ r.credito | number:'1.2-2' }}</strong> que sobra
+                                    do período atual cobre {{ r.diasCobertos }} {{ r.diasCobertos === 1 ? 'dia' : 'dias' }} do novo plano.</p>
+                                <p>Próxima cobrança em <strong>{{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}</strong>:
+                                    R$ {{ r.valorProximaCobranca | number:'1.2-2' }}.</p>
+                            } @else {
+                                <p>Plano sem custo: não há cobrança.</p>
+                            }
+                        }
+                        @case (EFEITO_AGENDADO) {
+                            <p class="efeito efeito-agendado"><mat-icon aria-hidden="true">schedule</mat-icon> Fica agendada</p>
+                            <p>Passa a valer em <strong>{{ r.dataProximaCobranca | date:'dd/MM/yyyy' }}</strong>, na próxima cobrança
+                                @if (r.valorProximaCobranca > 0) {
+                                    (R$ {{ r.valorProximaCobranca | number:'1.2-2' }}).
+                                } @else {
+                                    (sem custo).
+                                }
+                                Até lá, o usuário continua com os recursos do plano atual.</p>
+                        }
+                        @case (EFEITO_DESFAZ) {
+                            <p class="efeito"><mat-icon aria-hidden="true">undo</mat-icon> É o plano atual</p>
+                            <p>A troca agendada para {{ r.dataProximaCobranca | date:'dd/MM/yyyy' }} será desfeita.</p>
+                        }
+                    }
+                } @else {
+                    <p class="efeito efeito-erro"><mat-icon aria-hidden="true">info</mat-icon> {{ previa.erro }}</p>
+                }
+            } @else {
+                <p class="secundario">{{ form.valid ? 'Calculando…' : 'Escolha o plano para ver quando a troca vale.' }}</p>
+            }
+        </section>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button matButton="outlined" type="button" mat-dialog-close>Voltar</button>
+        <button matButton="filled" type="button" class="confirmar" (click)="confirmar()"
+            [disabled]="!previa()?.resultado || enviando()">
+            {{ rotuloConfirmar() }}
+        </button>
+    </mat-dialog-actions>
+</div>
