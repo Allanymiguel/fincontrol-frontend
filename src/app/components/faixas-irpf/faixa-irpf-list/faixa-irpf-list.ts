@@ -72,10 +72,4 @@ export class FaixaIrpfList implements OnInit {
     this.pageIndex = 0;
     this.loadFaixas();
   }
-
-  limparFiltro() {
-    this.vigenciaFilter = null;
-    this.pageIndex = 0;
-    this.loadFaixas();
-  }
 }

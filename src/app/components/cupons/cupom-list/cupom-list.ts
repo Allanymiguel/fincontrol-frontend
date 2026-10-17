@@ -76,12 +76,6 @@ export class CupomList implements OnInit {
     this.codigoChanges.next(value);
   }
 
-  limparFiltro() {
-    this.codigoFilter = '';
-    this.pageIndex = 0;
-    this.loadCupons();
-  }
-
   // ativo e dentro da validade = pode ser usado hoje
   situacao(cupom: Cupom): 'ativo' | 'inativo' | 'expirado' {
     if (!cupom.ativo) return 'inativo';

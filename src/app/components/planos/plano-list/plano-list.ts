@@ -73,12 +73,6 @@ export class PlanoList implements OnInit {
     this.nomeChanges.next(value);
   }
 
-  limparFiltro() {
-    this.nomeFilter = '';
-    this.pageIndex = 0;
-    this.loadPlanos();
-  }
-
   // nomes dos modulos que o plano libera, para exibir na tabela
   modulos(plano: Plano): string[] {
     const modulos: string[] = [];

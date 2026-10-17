@@ -13,8 +13,16 @@
     <div class="filters">
         <mat-form-field appearance="outline" class="filter-nome">
             <mat-label>Buscar por nome ou e-mail</mat-label>
-            <input matInput [ngModel]="buscaFilter" (ngModelChange)="onBuscaInput($event)" placeholder="Ex.: maria ou @empresa.com" />
-            <mat-icon matSuffix>search</mat-icon>
+            <input #busca matInput [ngModel]="buscaFilter" (ngModelChange)="onBuscaInput($event)" placeholder="Ex.: maria ou @empresa.com" />
+            <!-- com texto, a lupa vira um X que limpa a busca (passa pelo mesmo debounce da digitacao) -->
+            @if (buscaFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onBuscaInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="filter-plano">
@@ -26,11 +34,6 @@
                 }
             </mat-select>
         </mat-form-field>
-
-        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
-            <mat-icon>clear</mat-icon>
-            Limpar
-        </button>
     </div>
 
     <div class="data-card">

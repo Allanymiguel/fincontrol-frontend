@@ -13,11 +13,19 @@
     <div class="filters">
         <mat-form-field appearance="outline" class="filter-descricao">
             <mat-label>Filtrar por descrição</mat-label>
-            <input matInput
+            <input #busca matInput
                    [ngModel]="descricaoFilter"
                    (ngModelChange)="onDescricaoInput($event)"
                    placeholder="Ex.: Salário" />
-            <mat-icon matSuffix>search</mat-icon>
+            <!-- com texto, a lupa vira um X que limpa a busca (passa pelo mesmo debounce da digitacao) -->
+            @if (descricaoFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onDescricaoInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="filter-categoria">
@@ -29,11 +37,6 @@
                 }
             </mat-select>
         </mat-form-field>
-
-        <button matButton="outlined" class="filters-fim" (click)="limparFiltros()">
-            <mat-icon>clear</mat-icon>
-            Limpar
-        </button>
     </div>
 
     <div class="data-card">

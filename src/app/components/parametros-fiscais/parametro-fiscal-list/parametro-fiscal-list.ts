@@ -73,10 +73,4 @@ export class ParametroFiscalList implements OnInit {
     this.chaveFilter = value;
     this.chaveChanges.next(value);
   }
-
-  limparFiltro() {
-    this.chaveFilter = '';
-    this.pageIndex = 0;
-    this.loadParametros();
-  }
 }

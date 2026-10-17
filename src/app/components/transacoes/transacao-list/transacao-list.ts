@@ -99,11 +99,4 @@ export class TransacaoList implements OnInit {
     this.pageIndex = 0;
     this.loadTransacoes();
   }
-
-  limparFiltros() {
-    this.descricaoFilter = '';
-    this.idCategoriaFilter = null;
-    this.pageIndex = 0;
-    this.loadTransacoes();
-  }
 }

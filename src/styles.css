@@ -191,8 +191,13 @@ a:hover {
     max-width: 28rem;
 }
 
-.filters-fim {
-    margin-left: auto;
+/* X dentro do campo de busca (aparece quando ha texto) */
+.limpar-busca {
+    --mat-icon-button-icon-color: var(--color-text-secondary);
+}
+
+.limpar-busca:hover {
+    --mat-icon-button-icon-color: var(--color-text-primary);
 }
 
 /* ===== Tabela em cartao ===== */

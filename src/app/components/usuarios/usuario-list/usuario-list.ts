@@ -109,13 +109,6 @@ export class UsuarioList implements OnInit {
     this.loadUsuarios();
   }
 
-  limparFiltro() {
-    this.buscaFilter = '';
-    this.idPlanoFilter = null;
-    this.pageIndex = 0;
-    this.loadUsuarios();
-  }
-
   alternarAtivo(usuario: Usuario, event: MatSlideToggleChange) {
     this.alterando.add(usuario.id);
 

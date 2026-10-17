@@ -13,14 +13,17 @@
     <div class="filters">
         <mat-form-field appearance="outline" class="filter-nome">
             <mat-label>Filtrar por chave</mat-label>
-            <input matInput [ngModel]="chaveFilter" (ngModelChange)="onChaveInput($event)" placeholder="Ex.: SALARIO_MINIMO" />
-            <mat-icon matSuffix>search</mat-icon>
+            <input #busca matInput [ngModel]="chaveFilter" (ngModelChange)="onChaveInput($event)" placeholder="Ex.: SALARIO_MINIMO" />
+            <!-- com texto, a lupa vira um X que limpa a busca (passa pelo mesmo debounce da digitacao) -->
+            @if (chaveFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onChaveInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
         </mat-form-field>
-
-        <button matButton="outlined" class="filters-fim" (click)="limparFiltro()">
-            <mat-icon>clear</mat-icon>
-            Limpar
-        </button>
     </div>
 
     <div class="data-card">

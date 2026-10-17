@@ -74,10 +74,4 @@ export class ContatoList implements OnInit {
     this.nomeFilter = value;
     this.nomeChanges.next(value);
   }
-
-  limparFiltro() {
-    this.nomeFilter = '';
-    this.pageIndex = 0;
-    this.loadContatos();
-  }
 }

@@ -91,13 +91,6 @@ export class CategoriaPadraoList implements OnInit {
     this.loadCategorias();
   }
 
-  limparFiltro() {
-    this.nomeFilter = '';
-    this.idTipoFilter = null;
-    this.pageIndex = 0;
-    this.loadCategorias();
-  }
-
   // recarrega a pagina porque as arquivadas vao para o fim da lista
   alternarArquivada(categoria: CategoriaPadrao) {
     this.categoriaPadraoService.alternarArquivada(categoria.id).subscribe({
