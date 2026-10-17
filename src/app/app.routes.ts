@@ -30,6 +30,8 @@ import { FaixaIrpfForm } from './components/faixas-irpf/faixa-irpf-form/faixa-ir
 import { faixaIrpfResolver } from './resolvers/faixa-irpf-resolver';
 import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
 import { UsuarioDetalhe } from './components/usuarios/usuario-detalhe/usuario-detalhe';
+import { UsuarioForm } from './components/usuarios/usuario-form/usuario-form';
+import { usuarioResolver } from './resolvers/usuario-resolver';
 import { usuarioResumoResolver } from './resolvers/usuario-resumo-resolver';
 
 export const routes: Routes = [
@@ -88,6 +90,9 @@ export const routes: Routes = [
 
             // a assinatura (unica) de cada usuario e gerida no resumo dele (RN16)
             {path: 'usuarios', component: UsuarioList, title: 'Lista de Usuários'},
+            {path: 'usuarios/new', component: UsuarioForm, title: 'Novo Usuário'},
+            {path: 'usuarios/edit/:id', component: UsuarioForm, title: 'Editar Usuário',
+                resolve: { usuario: usuarioResolver }},
             {path: 'usuarios/:id', component: UsuarioDetalhe, title: 'Detalhe do Usuário',
                 resolve: { resumo: usuarioResumoResolver }},
         ]},

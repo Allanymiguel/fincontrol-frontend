@@ -4,12 +4,11 @@
             <h1 class="page-title">Usuários</h1>
             <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'usuário' : 'usuários' }}</p>
         </div>
+        <button matButton="filled" routerLink="/usuarios/new">
+            <mat-icon>add</mat-icon>
+            Novo usuário
+        </button>
     </header>
-
-    <p class="aviso callout">
-        <mat-icon aria-hidden="true">info</mat-icon>
-        As contas são criadas pelos próprios usuários na tela "Criar conta". Aqui o administrador as consulta, ativa ou desativa (conta desativada não consegue entrar) e, no resumo de cada usuário, troca o plano da assinatura.
-    </p>
 
     <div class="filters">
         <mat-form-field appearance="outline" class="filter-nome">
@@ -63,7 +62,12 @@
                 <ng-container matColumnDef="perfil">
                     <th mat-header-cell *matHeaderCellDef> Perfil fiscal </th>
                     <td mat-cell *matCellDef="let obj">
-                        <span class="tag">{{ obj.perfilFiscal?.nome }}</span>
+                        @if (obj.perfilFiscal) {
+                            <span class="tag">{{ obj.perfilFiscal.nome }}</span>
+                        }
+                        @if (!obj.cadastroCompleto) {
+                            <span class="tag tag-alerta">Cadastro simples</span>
+                        }
                         @if (obj.atividadeMei) {
                             <div class="secundario">{{ obj.atividadeMei.nome }}</div>
                         }
@@ -101,8 +105,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="ativo">
-                    <th mat-header-cell *matHeaderCellDef> Ativo </th>
+                    <th mat-header-cell *matHeaderCellDef> Ações </th>
                     <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button class="icone-acao" routerLink="/usuarios/edit/{{ obj.id }}"
+                            aria-label="Editar" matTooltip="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
                         <mat-slide-toggle [checked]="obj.ativo" [disabled]="alterando.has(obj.id)"
                             (change)="alternarAtivo(obj, $event)"
                             [attr.aria-label]="(obj.ativo ? 'Desativar ' : 'Ativar ') + obj.nome">

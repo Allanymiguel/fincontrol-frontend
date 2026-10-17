@@ -2,7 +2,7 @@ import { DatePipe, DecimalPipe, Location, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,6 +39,7 @@ import { DadosTrocaPlano, TrocaPlanoDialog } from '../troca-plano-dialog/troca-p
     MatInputModule,
     MatSnackBarModule,
     MatTableModule,
+    RouterLink,
   ],
   selector: 'app-usuario-detalhe',
   styleUrl: './usuario-detalhe.css',

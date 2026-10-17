@@ -4,20 +4,24 @@ import { Endereco } from './contato.model';
 import { Papel } from './papel';
 import { PerfilFiscal } from './perfil-fiscal';
 
-// Somente leitura no admin: o cadastro do usuario vira do Keycloak
+// Usuario visto pelo admin. Cadastro simples tem so nome, e-mail (e a senha no Keycloak);
+// o completo tambem tem documento, perfil fiscal e endereco.
 export interface Usuario {
   id: number;
   nome: string;
   email: string;
   documento: string | null;
   telefone: string | null;
-  perfilFiscal: PerfilFiscal;
+  // null no cadastro simples
+  perfilFiscal: PerfilFiscal | null;
   // so para MEI
   atividadeMei: AtividadeMei | null;
   papel: Papel;
   ativo: boolean;
-  // opcional no cadastro do usuario
+  // null no cadastro simples
   endereco: Endereco | null;
+  // documento, perfil fiscal e endereco preenchidos
+  cadastroCompleto: boolean;
   // so nas respostas do admin; null se o usuario nao tiver assinatura (o proprio admin)
   assinatura?: AssinaturaResumo | null;
 }

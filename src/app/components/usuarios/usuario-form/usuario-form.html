@@ -1,0 +1,109 @@
+<section class="page">
+    <form class="sheet" [formGroup]="form" (ngSubmit)="salvar()">
+        <header class="sheet-header">
+            <div>
+                <span class="label-caps">{{ isEdicao() ? 'Cadastro de ' + usuario()!.papel.nome.toLowerCase() : 'Nova conta' }}</span>
+                <h1 class="sheet-title">{{ isEdicao() ? 'Editar usuário' : 'Novo usuário' }}</h1>
+            </div>
+            <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="sheet-body">
+            <h2 class="label-caps sheet-section">Tipo de cadastro</h2>
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Papel</mat-label>
+                    <mat-select formControlName="idPapel">
+                        @for (papel of papeis; track papel.id) {
+                            <mat-option [value]="papel.id">{{ papel.id === 1 ? 'Cliente (usuário)' : papel.nome }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (isEdicao()) {
+                        <mat-hint>O papel não muda depois de criado</mat-hint>
+                    } @else {
+                        <mat-hint>{{ form.value.idPapel === 2 ? 'Acessa só a área administrativa' : 'Recebe as categorias padrão e o plano Gratuito' }}</mat-hint>
+                    }
+                    @if (getErrorMessage('idPapel'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <div class="tipo-cadastro">
+                    @if (podeEscolherTipo()) {
+                        <mat-button-toggle-group [value]="completo()" (change)="escolherTipo($event.value)"
+                            aria-label="Forma do cadastro">
+                            <mat-button-toggle [value]="false">Simples</mat-button-toggle>
+                            <mat-button-toggle [value]="true">{{ isEdicao() ? 'Completar cadastro' : 'Completo' }}</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    } @else {
+                        <span class="tag tag-ok">Cadastro completo</span>
+                    }
+                    <p class="secundario tipo-ajuda">
+                        {{ completo() ? 'Com CPF/CNPJ, perfil fiscal, telefone e endereço.' : 'Só nome, e-mail e senha.' }}
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="label-caps sheet-section">Acesso</h2>
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nome completo</mat-label>
+                    <input matInput formControlName="nome" maxlength="120" />
+                    @if (getErrorMessage('nome'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>E-mail</mat-label>
+                    <input matInput type="email" formControlName="email" maxlength="120" />
+                    <mat-hint>É o login da conta</mat-hint>
+                    @if (getErrorMessage('email'); as error) {
+                        <mat-error>{{ error }}</mat-error>
+                    }
+                </mat-form-field>
+
+                @if (!isEdicao()) {
+                    <mat-form-field appearance="outline">
+                        <mat-label>Senha</mat-label>
+                        <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="senha"
+                            autocomplete="new-password" maxlength="64" />
+                        <button mat-icon-button matSuffix type="button" (click)="alternarSenha()"
+                            [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                            <mat-icon>{{ mostrarSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                        <mat-hint>Mínimo de 8 caracteres</mat-hint>
+                        @if (getErrorMessage('senha'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirmar senha</mat-label>
+                        <input matInput [type]="mostrarSenha() ? 'text' : 'password'" formControlName="confirmarSenha"
+                            autocomplete="new-password" maxlength="64" />
+                        @if (getErrorMessage('confirmarSenha'); as error) {
+                            <mat-error>{{ error }}</mat-error>
+                        }
+                    </mat-form-field>
+                }
+            </div>
+
+            @if (completo()) {
+                <app-dados-completos [form]="form" [endereco]="usuario()?.endereco ?? null" />
+            }
+        </div>
+
+        <footer class="sheet-footer">
+            <button matButton="outlined" type="button" (click)="voltar()">
+                Cancelar
+            </button>
+
+            <button matButton="filled" type="submit" [disabled]="enviando()">
+                {{ isEdicao() ? 'Salvar' : 'Cadastrar' }}
+            </button>
+        </footer>
+    </form>
+</section>

@@ -41,3 +41,11 @@
 .link-nome + .tag {
     margin-left: 0.4rem;
 }
+
+.mat-column-perfil .tag + .tag {
+    margin-left: 0.25rem;
+}
+
+.mat-column-ativo {
+    white-space: nowrap;
+}

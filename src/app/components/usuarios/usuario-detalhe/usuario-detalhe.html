@@ -6,6 +6,10 @@
                     <span class="label-caps">Consulta do administrador</span>
                     <h1 class="sheet-title">Resumo do usuário</h1>
                 </div>
+                <a matButton="outlined" class="botao-editar" routerLink="/usuarios/edit/{{ resumo.usuario.id }}">
+                    <mat-icon>edit</mat-icon>
+                    Editar
+                </a>
                 <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -19,12 +23,17 @@
                         <h2 class="nome">{{ resumo.usuario.nome }}</h2>
                         <div class="secundario">{{ resumo.usuario.email }}</div>
                         <div class="tags">
-                            <span class="tag">
-                                {{ resumo.usuario.perfilFiscal.nome }}
-                                @if (resumo.usuario.atividadeMei) {
-                                    · {{ resumo.usuario.atividadeMei.nome }}
-                                }
-                            </span>
+                            @if (resumo.usuario.perfilFiscal; as perfil) {
+                                <span class="tag">
+                                    {{ perfil.nome }}
+                                    @if (resumo.usuario.atividadeMei) {
+                                        · {{ resumo.usuario.atividadeMei.nome }}
+                                    }
+                                </span>
+                            }
+                            @if (!resumo.usuario.cadastroCompleto) {
+                                <span class="tag tag-alerta">Cadastro simples</span>
+                            }
                             <!-- id 2 = ADMIN (enum Papel do back) -->
                             <span class="tag" [class.tag-admin]="resumo.usuario.papel.id === 2">{{ resumo.usuario.papel.nome }}</span>
                         </div>
@@ -94,7 +103,7 @@
                     </div>
                     <div>
                         <dt>Perfil fiscal</dt>
-                        <dd>{{ resumo.usuario.perfilFiscal.nome }}</dd>
+                        <dd>{{ resumo.usuario.perfilFiscal?.nome ?? '—' }}</dd>
                     </div>
                 </dl>
 

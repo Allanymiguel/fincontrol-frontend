@@ -1,11 +1,18 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {
+  CadastroCompletoRequest,
+  CadastroSimplesRequest,
+  EdicaoCompletaRequest,
+  EdicaoSimplesRequest,
+} from '../models/cadastro.model';
 import { Usuario } from '../models/usuario.model';
 import { UsuarioResumo } from '../models/usuario-resumo.model';
 import { PagedResponse } from './categoria.service';
 
-// Gestao de usuarios pelo admin: so consulta e ativacao
+// Gestao de usuarios pelo admin: consulta, criacao (simples ou completa, papel USER ou ADMIN),
+// edicao e ativacao
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   private readonly apiUrl: string = 'http://localhost:8080/admin/usuarios';
@@ -39,6 +46,24 @@ export class UsuarioService {
   // perfil + assinatura + pagamentos + contagens (sem o conteudo dos registros pessoais)
   buscarResumo(id: number | string): Observable<UsuarioResumo> {
     return this.http.get<UsuarioResumo>(`${this.apiUrl}/${id}/resumo`);
+  }
+
+  cadastrarSimples(dados: CadastroSimplesRequest): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/simples`, dados);
+  }
+
+  cadastrarCompleto(dados: CadastroCompletoRequest): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/completo`, dados);
+  }
+
+  // so para cadastro simples: nome e e-mail
+  editarSimples(id: number, dados: EdicaoSimplesRequest): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/${id}/simples`, dados);
+  }
+
+  // completa um cadastro simples ou atualiza um completo
+  editarCompleto(id: number, dados: EdicaoCompletaRequest): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/${id}/completo`, dados);
   }
 
   // ativa se estiver inativo, desativa se estiver ativo; devolve o novo estado
