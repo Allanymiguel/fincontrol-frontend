@@ -1,1 +1,509 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Estilos globais do FinControl: paleta do design (cores --fc-*), tipografia e os blocos
+ * que todas as telas repetem (cabecalho da pagina, barra de filtros, tabela em cartao,
+ * painel de formulario, etiquetas e avisos). O CSS de cada componente fica so com o que e dele.
+ */
+
+:root {
+    --fc-surface: #f8f9fb;
+    --fc-surface-lowest: #ffffff;
+    --fc-surface-low: #f3f4f6;
+    --fc-surface-container: #eaecef;
+    --fc-on-surface: #111827;
+    --fc-on-surface-variant: #4b5563;
+    --fc-outline: #9ca3af;
+    --fc-outline-variant: #e5e7eb;
+    --fc-primary: #111827;
+    --fc-on-primary: #ffffff;
+    --fc-primary-hover: #1f2937;
+    --fc-error: #b91c1c;
+    --fc-error-container: #fef2f2;
+    --fc-on-error-container: #991b1b;
+    --fc-success: #15803d;
+    --fc-success-container: #f0fdf4;
+    --fc-on-success-container: #166534;
+    --fc-warning: #b45309;
+    --fc-warning-container: #fffbeb;
+    --fc-on-warning-container: #92400e;
+    --fc-info: #1d4ed8;
+    --fc-info-container: #eff6ff;
+    --fc-on-info-container: #1e40af;
+
+    --fc-font-display: 'Bodoni Moda', Georgia, serif;
+    --fc-font-sans: 'Inter', system-ui, sans-serif;
+    --fc-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --fc-radius-md: 6px;
+    --fc-radius-lg: 8px;
+    --fc-radius-xl: 12px;
+    --fc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --fc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background: var(--fc-surface);
+    color: var(--fc-on-surface);
+    font-family: var(--fc-font-sans);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: var(--fc-primary);
+    color: var(--fc-on-primary);
+}
+
+a {
+    color: var(--fc-primary);
+}
+
+/* icones: Material Symbols com traco mais fino (o MatIconRegistry usa essa fonte por padrao) */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 20;
+}
+
+/* ===== Pagina ===== */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.page-title {
+    margin: 0;
+    font-family: var(--fc-font-display);
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+    margin: 0.25rem 0 0;
+    color: var(--fc-on-surface-variant);
+}
+
+/* rotulo pequeno em caixa alta (cabecalhos de tabela, secoes, sobretitulos) */
+.label-caps {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fc-on-surface-variant);
+}
+
+.secundario {
+    color: var(--fc-on-surface-variant);
+    font-size: 0.85em;
+}
+
+.num {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.codigo {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    background: var(--fc-surface-container);
+    font-family: var(--fc-font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ===== Barra de filtros ===== */
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    padding: 1rem;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-xl);
+    background: var(--fc-surface-lowest);
+    box-shadow: var(--fc-shadow-sm);
+}
+
+.filters .mat-mdc-form-field {
+    --mat-form-field-container-height: 40px;
+    --mat-form-field-container-vertical-padding: 8px;
+    --mat-form-field-filled-with-label-container-padding-top: 8px;
+    --mat-form-field-filled-with-label-container-padding-bottom: 8px;
+}
+
+/* sem espaco reservado para hint/erro nos filtros */
+.filters .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+.filters .filter-nome {
+    flex: 1 1 18rem;
+    max-width: 28rem;
+}
+
+.filters-fim {
+    margin-left: auto;
+}
+
+/* ===== Tabela em cartao ===== */
+
+.data-card {
+    overflow: hidden;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-xl);
+    background: var(--fc-surface-lowest);
+    box-shadow: var(--fc-shadow-sm);
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.data-card .mat-mdc-table {
+    --mat-table-background-color: transparent;
+    --mat-table-row-item-outline-color: var(--fc-outline-variant);
+    --mat-table-header-container-height: 44px;
+    --mat-table-row-item-container-height: 56px;
+    width: 100%;
+}
+
+.data-card .mat-mdc-header-row {
+    background: var(--fc-surface-low);
+}
+
+.data-card .mat-mdc-header-cell {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fc-on-surface-variant);
+    white-space: nowrap;
+}
+
+.data-card .mat-mdc-row {
+    transition: background-color 150ms;
+}
+
+.data-card .mat-mdc-row:hover {
+    background: rgba(234, 236, 239, 0.5);
+}
+
+.data-card .mat-mdc-cell {
+    color: var(--fc-on-surface);
+}
+
+.data-card .mat-mdc-paginator {
+    border-top: 1px solid var(--fc-outline-variant);
+    --mat-paginator-container-text-color: var(--fc-on-surface-variant);
+}
+
+/* coluna de numeros (valores em R$, percentuais): alinhada a direita */
+.data-card .col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.data-card .col-acoes {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.data-card .mat-column-numero {
+    width: 1%;
+    color: var(--fc-outline);
+    font-variant-numeric: tabular-nums;
+}
+
+.linha-encerrada,
+.linha-inativa {
+    opacity: 0.6;
+}
+
+.icone-acao {
+    --mat-icon-button-icon-color: var(--fc-on-surface-variant);
+}
+
+.icone-acao:hover:not([disabled]) {
+    --mat-icon-button-icon-color: var(--fc-primary);
+}
+
+.icone-acao.perigo:hover:not([disabled]) {
+    --mat-icon-button-icon-color: var(--fc-error);
+}
+
+/* estado vazio dentro da tabela */
+.empty {
+    padding: 3rem 1.5rem !important;
+    text-align: center;
+    color: var(--fc-on-surface-variant);
+}
+
+.empty mat-icon {
+    display: block;
+    margin: 0 auto 0.5rem;
+    color: var(--fc-outline);
+}
+
+/* ===== Etiquetas de status ===== */
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--fc-radius-md);
+    background: var(--fc-surface-container);
+    color: var(--fc-on-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.tag-ok {
+    background: var(--fc-success-container);
+    color: var(--fc-on-success-container);
+}
+
+.tag-alerta {
+    background: var(--fc-warning-container);
+    color: var(--fc-on-warning-container);
+}
+
+.tag-erro {
+    background: var(--fc-error-container);
+    color: var(--fc-on-error-container);
+}
+
+.tag-admin,
+.tag-info {
+    background: var(--fc-info-container);
+    color: var(--fc-on-info-container);
+}
+
+/* ===== Avisos ===== */
+
+.callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(29, 78, 216, 0.2);
+    border-radius: var(--fc-radius-lg);
+    background: var(--fc-info-container);
+    color: var(--fc-on-info-container);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.callout mat-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+.callout-erro {
+    border-color: rgba(185, 28, 28, 0.25);
+    background: var(--fc-error-container);
+    color: var(--fc-on-error-container);
+}
+
+.callout-neutro {
+    border-color: var(--fc-outline-variant);
+    background: var(--fc-surface-low);
+    color: var(--fc-on-surface-variant);
+}
+
+/* ===== Painel de formulario (mesma linguagem dos paineis laterais do design) ===== */
+
+.sheet {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 760px;
+    margin: 2rem auto;
+    overflow: hidden;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-xl);
+    background: var(--fc-surface-lowest);
+    box-shadow: var(--fc-shadow-xl);
+}
+
+.sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--fc-outline-variant);
+    background: rgba(243, 244, 246, 0.4);
+}
+
+.sheet-title {
+    margin: 0.15rem 0 0;
+    font-family: var(--fc-font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.sheet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem;
+}
+
+.sheet-section {
+    margin: 0.75rem 0 0.5rem;
+}
+
+.sheet-section:first-child {
+    margin-top: 0;
+}
+
+.sheet-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--fc-outline-variant);
+    background: var(--fc-surface-low);
+}
+
+/* acao destrutiva (Excluir) fica sozinha a esquerda */
+.sheet-footer .acao-perigo {
+    margin-right: auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem 1rem;
+    align-items: start;
+}
+
+.form-grid.cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.form-grid .span-2 {
+    grid-column: span 2;
+}
+
+.form-grid .span-all {
+    grid-column: 1 / -1;
+}
+
+.form-grid .mat-mdc-form-field {
+    width: 100%;
+}
+
+/* opcoes liga/desliga com descricao (modulos do plano, cupom ativo) */
+.opcao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-lg);
+    background: var(--fc-surface);
+}
+
+.opcao-titulo {
+    margin: 0;
+    font-weight: 500;
+}
+
+.opcao-descricao {
+    margin: 0.1rem 0 0;
+    color: var(--fc-on-surface-variant);
+    font-size: 0.8rem;
+}
+
+/* resumo somente leitura (dl com pares rotulo/valor) */
+.dados {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--fc-outline-variant);
+    border-radius: var(--fc-radius-lg);
+    background: var(--fc-surface);
+}
+
+.dados dt {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fc-on-surface-variant);
+}
+
+.dados dd {
+    margin: 0.2rem 0 0;
+}
+
+/* ===== Botoes ===== */
+
+.botao-perigo.mat-mdc-button-base {
+    --mat-button-filled-container-color: var(--fc-error);
+    --mat-button-filled-label-text-color: #ffffff;
+    --mat-button-outlined-label-text-color: var(--fc-error);
+    --mat-button-outlined-outline-color: rgba(185, 28, 28, 0.35);
+}
+
+/* ===== Toast (MatSnackBar) ===== */
+
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+    border: 1px solid var(--fc-outline-variant);
+    box-shadow: var(--fc-shadow-xl);
+}
+
+/* ===== Telas estreitas ===== */
+
+@media (max-width: 768px) {
+    .page {
+        padding: 1.25rem 1rem;
+    }
+
+    .sheet {
+        margin: 1rem auto;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .form-grid,
+    .form-grid.cols-3,
+    .dados {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form-grid .span-2 {
+        grid-column: auto;
+    }
+
+    .filters .filter-nome {
+        max-width: none;
+    }
+}
