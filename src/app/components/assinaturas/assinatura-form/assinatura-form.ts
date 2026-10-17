@@ -13,13 +13,11 @@ import {
 import { Router } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 import { ApiProblem } from '../../../models/api-problem.model';
 import { Assinatura, AssinaturaRequest } from '../../../models/assinatura.model';
@@ -54,12 +52,10 @@ function usuarioSelecionado(control: AbstractControl): ValidationErrors | null {
     DecimalPipe,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatToolbarModule,
     MatIconModule,
     MatSnackBarModule,
   ],

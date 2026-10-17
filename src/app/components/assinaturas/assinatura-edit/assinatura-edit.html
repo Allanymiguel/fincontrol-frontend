@@ -1,46 +1,55 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    Editar Assinatura
-</mat-toolbar>
+<section class="page">
+    <form class="sheet" [formGroup]="form" (ngSubmit)="salvar()">
+        <header class="sheet-header">
+            <div>
+                <span class="label-caps">Alteração contratual</span>
+                <h1 class="sheet-title">Editar assinatura</h1>
+            </div>
+            <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
 
-<mat-card class="card">
-    <mat-card-content>
-        @if (assinatura(); as assinatura) {
-            <h3 class="section-title">Contratação</h3>
-            <dl class="resumo">
-                <div>
-                    <dt>Usuário</dt>
-                    <dd>{{ assinatura.nomeUsuario }} <span class="secundario">· {{ assinatura.emailUsuario }}</span></dd>
-                </div>
-                <div>
-                    <dt>Plano</dt>
-                    <dd>{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome }})</dd>
-                </div>
-                <div>
-                    <dt>Cupom</dt>
-                    <dd>
-                        @if (assinatura.codigoCupom) {
-                            {{ assinatura.codigoCupom }} (-{{ assinatura.percentualDesconto | number:'1.0-2' }}%)
-                        } @else {
-                            <span class="secundario">Sem cupom</span>
-                        }
-                    </dd>
-                </div>
-                <div>
-                    <dt>Valor pago</dt>
-                    <dd>R$ {{ assinatura.valorPago | number:'1.2-2' }} · {{ assinatura.formaPagamento.nome }}</dd>
-                </div>
-                <div>
-                    <dt>Início</dt>
-                    <dd>{{ assinatura.dataInicio | date:'dd/MM/yyyy' }}</dd>
-                </div>
-            </dl>
-            <p class="secundario aviso">Usuário, plano e valor não mudam. Para trocar de plano, cancele esta assinatura e crie outra.</p>
-        }
+        <div class="sheet-body">
+            @if (assinatura(); as assinatura) {
+                <h2 class="label-caps sheet-section">Contratação</h2>
+                <dl class="resumo dados">
+                    <div>
+                        <dt>Usuário</dt>
+                        <dd>{{ assinatura.nomeUsuario }} <span class="secundario">· {{ assinatura.emailUsuario }}</span></dd>
+                    </div>
+                    <div>
+                        <dt>Plano</dt>
+                        <dd>{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome }})</dd>
+                    </div>
+                    <div>
+                        <dt>Cupom</dt>
+                        <dd>
+                            @if (assinatura.codigoCupom) {
+                                {{ assinatura.codigoCupom }} (-{{ assinatura.percentualDesconto | number:'1.0-2' }}%)
+                            } @else {
+                                <span class="secundario">Sem cupom</span>
+                            }
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Valor pago</dt>
+                        <dd>R$ {{ assinatura.valorPago | number:'1.2-2' }} · {{ assinatura.formaPagamento.nome }}</dd>
+                    </div>
+                    <div>
+                        <dt>Início</dt>
+                        <dd>{{ assinatura.dataInicio | date:'dd/MM/yyyy' }}</dd>
+                    </div>
+                </dl>
+                <p class="callout aviso" role="note">
+                    <mat-icon aria-hidden="true">info</mat-icon>
+                    <span>Usuário, plano e valor não mudam. Para trocar de plano, crie uma nova assinatura para o usuário: esta será encerrada automaticamente.</span>
+                </p>
+            }
 
-        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
-            <h3 class="section-title">Situação</h3>
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input">
+            <h2 class="label-caps sheet-section">Situação</h2>
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
                     <mat-label>Status</mat-label>
                     <mat-select formControlName="idStatus">
                         @for (item of status; track item.id) {
@@ -52,7 +61,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Data de fim</mat-label>
                     <input matInput [matDatepicker]="pickerFim" [min]="dataInicio" formControlName="dataFim" />
                     <div matIconSuffix class="sufixo-data">
@@ -70,7 +79,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input span-2">
+                <mat-form-field appearance="outline" class="span-2">
                     <mat-label>Observação</mat-label>
                     <textarea matInput formControlName="observacao" rows="2" maxlength="255"></textarea>
                     <mat-hint align="end">{{ form.value.observacao?.length ?? 0 }}/255</mat-hint>
@@ -79,24 +88,22 @@
                     }
                 </mat-form-field>
             </div>
+        </div>
 
-            <div class="actions">
-                <button mat-raised-button color="warn" type="button" (click)="cancelarAssinatura()"
-                    [disabled]="isCancelada()">
-                    <mat-icon>cancel</mat-icon>
-                    Cancelar assinatura
-                </button>
+        <footer class="sheet-footer">
+            <button matButton="outlined" type="button" class="botao-perigo acao-perigo" (click)="cancelarAssinatura()"
+                [disabled]="isCancelada()">
+                <mat-icon>block</mat-icon>
+                Cancelar assinatura
+            </button>
 
-                <button mat-raised-button type="button" (click)="voltar()">
-                    <mat-icon>arrow_back</mat-icon>
-                    Voltar
-                </button>
+            <button matButton="outlined" type="button" (click)="voltar()">
+                Voltar
+            </button>
 
-                <button mat-raised-button color="primary" type="submit">
-                    <mat-icon>save</mat-icon>
-                    Salvar
-                </button>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+            <button matButton="filled" type="submit">
+                Salvar
+            </button>
+        </footer>
+    </form>
+</section>

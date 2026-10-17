@@ -5,13 +5,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { CategoriaPadrao, CategoriaPadraoRequest } from '../../../models/categoria-padrao.model';
 import { TIPOS_TRANSACAO, TipoTransacao } from '../../../models/tipo-transacao';
 import { CategoriaPadraoService } from '../../../services/categoria-padrao.service';
@@ -22,11 +20,9 @@ const COR_HEX = /^#[0-9A-Fa-f]{6}$/;
 @Component({
   imports: [
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatToolbarModule,
     MatSelectModule,
     MatIconModule,
     MatSnackBarModule,

@@ -11,14 +11,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { ApiProblem } from '../../../models/api-problem.model';
 import { CepResponse } from '../../../models/cep.model';
 import { Contato, ContatoRequest } from '../../../models/contato.model';
@@ -32,11 +30,9 @@ type CepState = 'idle' | 'buscando' | 'encontrado' | 'erro';
 @Component({
   imports: [
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatToolbarModule,
     MatSelectModule,
     MatIconModule,
     MatSnackBarModule,

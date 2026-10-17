@@ -1,14 +1,19 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    Nova Assinatura
-</mat-toolbar>
+<section class="page">
+    <form class="sheet" [formGroup]="form" (ngSubmit)="salvar()">
+        <header class="sheet-header">
+            <div>
+                <span class="label-caps">Contrato</span>
+                <h1 class="sheet-title">Nova assinatura</h1>
+            </div>
+            <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
 
-<mat-card class="card">
-    <mat-card-content>
-        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
-
-            <h3 class="section-title">Assinante e plano</h3>
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input span-2">
+        <div class="sheet-body">
+            <h2 class="label-caps sheet-section">Assinante e plano</h2>
+            <div class="form-grid">
+                <mat-form-field appearance="outline" class="span-2">
                     <mat-label>Usuário</mat-label>
                     <input matInput formControlName="usuario" [matAutocomplete]="autoUsuario"
                         placeholder="Digite o nome ou e-mail" />
@@ -26,7 +31,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Plano</mat-label>
                     <mat-select formControlName="idPlano" placeholder="Selecione">
                         @for (plano of planos(); track plano.id) {
@@ -38,7 +43,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Periodicidade</mat-label>
                     <mat-select formControlName="idPeriodicidade">
                         @for (periodicidade of periodicidades; track periodicidade.id) {
@@ -53,7 +58,7 @@
 
             <!-- o back encerra a assinatura ativa e coloca a nova no lugar (uma ATIVA por usuario) -->
             @if (assinaturaAtual(); as atual) {
-                <p class="aviso-troca" [class.aviso-erro]="mesmoPlanoAtivo()" role="status">
+                <p class="aviso-troca callout" [class.aviso-erro]="mesmoPlanoAtivo()" [class.callout-erro]="mesmoPlanoAtivo()" role="status">
                     <mat-icon aria-hidden="true">{{ mesmoPlanoAtivo() ? 'error' : 'swap_horiz' }}</mat-icon>
                     @if (mesmoPlanoAtivo()) {
                         <span>{{ atual.nomeUsuario }} já tem este plano ativo nessa periodicidade. Escolha outro plano ou outra periodicidade.</span>
@@ -66,9 +71,9 @@
                 </p>
             }
 
-            <h3 class="section-title">Pagamento</h3>
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input">
+            <h2 class="label-caps sheet-section">Pagamento</h2>
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
                     <mat-label>Cupom de desconto</mat-label>
                     <mat-select formControlName="idCupom">
                         <mat-option [value]="null">Sem cupom</mat-option>
@@ -82,7 +87,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Forma de pagamento</mat-label>
                     <mat-select formControlName="idFormaPagamento" placeholder="Selecione">
                         @for (forma of formasPagamento(); track forma.id) {
@@ -97,7 +102,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input span-2">
+                <mat-form-field appearance="outline" class="span-2">
                     <mat-label>Observação</mat-label>
                     <textarea matInput formControlName="observacao" rows="2" maxlength="255"></textarea>
                     <mat-hint align="end">{{ form.value.observacao?.length ?? 0 }}/255</mat-hint>
@@ -108,6 +113,7 @@
             </div>
 
             <section class="resumo" aria-live="polite">
+                <span class="label-caps">Cálculo do valor</span>
                 @if (resumo(); as resumo) {
                     <div class="resumo-linha">
                         <span>{{ resumo.plano.nome }} ({{ resumo.anual ? 'anual' : 'mensal' }})</span>
@@ -127,18 +133,16 @@
                     <span class="secundario">Escolha o plano e a periodicidade para ver o valor.</span>
                 }
             </section>
+        </div>
 
-            <div class="actions">
-                <button mat-raised-button type="button" (click)="voltar()">
-                    <mat-icon>arrow_back</mat-icon>
-                    Cancelar
-                </button>
+        <footer class="sheet-footer">
+            <button matButton="outlined" type="button" (click)="voltar()">
+                Cancelar
+            </button>
 
-                <button mat-raised-button color="primary" type="submit">
-                    <mat-icon>save</mat-icon>
-                    Salvar
-                </button>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+            <button matButton="filled" type="submit">
+                Salvar
+            </button>
+        </footer>
+    </form>
+</section>

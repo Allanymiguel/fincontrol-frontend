@@ -1,20 +1,25 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    Cadastro de Categorias Padrão
-</mat-toolbar>
+<section class="page">
+    <form class="sheet" [formGroup]="form" (ngSubmit)="salvar()">
+        <header class="sheet-header">
+            <div>
+                <span class="label-caps">Classificação</span>
+                <h1 class="sheet-title">{{ form.value.id ? 'Editar categoria padrão' : 'Nova categoria padrão' }}</h1>
+            </div>
+            <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
 
-<mat-card class="card">
-    <mat-card-content>
-        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
-
+        <div class="sheet-body">
             @if (arquivada) {
-                <div class="aviso-arquivada" role="status">
-                    <mat-icon>archive</mat-icon>
+                <p class="callout callout-neutro" role="status">
+                    <mat-icon aria-hidden="true">archive</mat-icon>
                     Esta categoria está arquivada: novas contas não a recebem.
-                </div>
+                </p>
             }
 
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input">
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
                     <mat-label>Nome</mat-label>
                     <input matInput formControlName="nome" placeholder="Ex.: Alimentação" maxlength="60" />
                     @if (getErrorMessage('nome'); as error) {
@@ -22,7 +27,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Tipo</mat-label>
                     <mat-select formControlName="idTipo" placeholder="Selecione">
                         @for (tipo of tipos; track tipo.id) {
@@ -34,7 +39,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Cor</mat-label>
                     <input matInput formControlName="cor" maxlength="7" placeholder="#4F46E5" />
                     <input matSuffix type="color" class="seletor-cor" aria-label="Escolher cor"
@@ -45,24 +50,25 @@
                     }
                 </mat-form-field>
             </div>
+        </div>
 
-            <div class="actions">
-                <button mat-raised-button type="button" class="botao-arquivar"
-                    (click)="alternarArquivada()" [disabled]="!form.value.id">
+        <footer class="sheet-footer">
+            <!-- so na edicao: um registro novo ainda nao existe -->
+            @if (form.value.id) {
+                <button matButton="outlined" type="button" class="acao-esquerda"
+                    (click)="alternarArquivada()">
                     <mat-icon>{{ arquivada ? 'unarchive' : 'archive' }}</mat-icon>
                     {{ arquivada ? 'Desarquivar' : 'Arquivar' }}
                 </button>
+            }
 
-                <button mat-raised-button type="button" (click)="voltar()">
-                    <mat-icon>arrow_back</mat-icon>
-                    Cancelar
-                </button>
+            <button matButton="outlined" type="button" (click)="voltar()">
+                Cancelar
+            </button>
 
-                <button mat-raised-button color="primary" type="submit">
-                    <mat-icon>save</mat-icon>
-                    Salvar
-                </button>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+            <button matButton="filled" type="submit">
+                Salvar
+            </button>
+        </footer>
+    </form>
+</section>

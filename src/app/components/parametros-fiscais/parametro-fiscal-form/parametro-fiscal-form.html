@@ -1,13 +1,18 @@
-<mat-toolbar class="toolbar-title" color="primary">
-    Cadastro de Parâmetros Fiscais
-</mat-toolbar>
+<section class="page">
+    <form class="sheet" [formGroup]="form" (ngSubmit)="salvar()">
+        <header class="sheet-header">
+            <div>
+                <span class="label-caps">Índice regulatório</span>
+                <h1 class="sheet-title">{{ form.value.id ? 'Editar parâmetro fiscal' : 'Novo parâmetro fiscal' }}</h1>
+            </div>
+            <button mat-icon-button type="button" (click)="voltar()" aria-label="Fechar">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
 
-<mat-card class="card">
-    <mat-card-content>
-        <form class="form" [formGroup]="form" (ngSubmit)="salvar()">
-
-            <div class="grid">
-                <mat-form-field appearance="outline" class="full-width-input span-2">
+        <div class="sheet-body">
+            <div class="form-grid">
+                <mat-form-field appearance="outline" class="span-2">
                     <mat-label>Chave</mat-label>
                     <input matInput formControlName="chave" maxlength="60" placeholder="Ex.: SALARIO_MINIMO"
                         (input)="normalizarChave()" />
@@ -17,7 +22,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Valor</mat-label>
                     <input matInput type="number" formControlName="valor" min="0" step="0.0001" />
                     @if (getErrorMessage('valor'); as error) {
@@ -25,7 +30,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Início da vigência</mat-label>
                     <input matInput [matDatepicker]="pickerInicio" formControlName="vigenciaInicio" />
                     <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
@@ -35,7 +40,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width-input">
+                <mat-form-field appearance="outline">
                     <mat-label>Fim da vigência</mat-label>
                     <input matInput [matDatepicker]="pickerFim" [min]="inicioSelecionado" formControlName="vigenciaFim" />
                     <div matIconSuffix class="sufixo-data">
@@ -54,24 +59,25 @@
                     }
                 </mat-form-field>
             </div>
+        </div>
 
-            <div class="actions">
-                <button mat-raised-button color="warn" type="button"
-                    (click)="excluir()" [disabled]="!form.value.id">
+        <footer class="sheet-footer">
+            <!-- so na edicao: um registro novo ainda nao existe -->
+            @if (form.value.id) {
+                <button matButton="outlined" type="button" class="botao-perigo acao-perigo"
+                    (click)="excluir()">
                     <mat-icon>delete</mat-icon>
                     Excluir
                 </button>
+            }
 
-                <button mat-raised-button type="button" (click)="voltar()">
-                    <mat-icon>arrow_back</mat-icon>
-                    Cancelar
-                </button>
+            <button matButton="outlined" type="button" (click)="voltar()">
+                Cancelar
+            </button>
 
-                <button mat-raised-button color="primary" type="submit">
-                    <mat-icon>save</mat-icon>
-                    Salvar
-                </button>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+            <button matButton="filled" type="submit">
+                Salvar
+            </button>
+        </footer>
+    </form>
+</section>

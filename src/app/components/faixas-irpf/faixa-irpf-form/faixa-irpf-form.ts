@@ -5,14 +5,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { FaixaIrpf, FaixaIrpfRequest } from '../../../models/faixa-irpf.model';
 import { FaixaIrpfService } from '../../../services/faixa-irpf.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
@@ -24,11 +22,9 @@ const DUAS_CASAS = /^\d+(\.\d{1,2})?$/;
 @Component({
   imports: [
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatToolbarModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
