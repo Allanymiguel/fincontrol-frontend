@@ -1,11 +1,14 @@
 @if (mostrarMenu()) {
     <nav class="app-nav" aria-label="Navegação principal">
-        <div class="nav-section" role="group" aria-labelledby="nav-operacional">
-            <span class="nav-label" id="nav-operacional">Operacional</span>
-            <a routerLink="/transacoes" routerLinkActive="active">Transações</a>
-            <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
-            <a routerLink="/contatos" routerLinkActive="active">Contatos</a>
-        </div>
+        <!-- so para a role USER: sao os dados pessoais de cada usuario (o admin nao os acessa) -->
+        @if (auth.temRoleUser()) {
+            <div class="nav-section" role="group" aria-labelledby="nav-operacional">
+                <span class="nav-label" id="nav-operacional">Operacional</span>
+                <a routerLink="/transacoes" routerLinkActive="active">Transações</a>
+                <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
+                <a routerLink="/contatos" routerLinkActive="active">Contatos</a>
+            </div>
+        }
 
         <!-- so para a role ADMIN (o back tambem bloqueia com @RolesAllowed) -->
         @if (auth.isAdmin()) {

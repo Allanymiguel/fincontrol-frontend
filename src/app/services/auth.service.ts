@@ -37,6 +37,8 @@ export class AuthService {
   readonly roles = computed(() => this.claims()?.realm_access?.roles ?? []);
   // com o login desligado (AUTH_HABILITADA = false) todas as areas ficam visiveis
   readonly isAdmin = computed(() => !AUTH_HABILITADA || this.roles().includes('ADMIN'));
+  // area operacional (transacoes, categorias, contatos) e da role USER; o admin puro nao a ve
+  readonly temRoleUser = computed(() => !AUTH_HABILITADA || this.roles().includes('USER'));
   readonly nome = computed(() => this.claims()?.given_name ?? this.claims()?.name ?? this.claims()?.email ?? '');
 
   login(dados: LoginRequest): Observable<void> {

@@ -13,8 +13,8 @@
     gap: 0.25rem 1rem;
 }
 
-/* separa visualmente a area administrativa da operacional */
-.nav-admin {
+/* separa visualmente a area administrativa da operacional (so quando as duas aparecem) */
+.nav-section + .nav-admin {
     padding-left: 1.5rem;
     border-left: 1px solid #d1d5db;
 }
@@ -60,7 +60,7 @@
 
 /* abaixo dessa largura a secao admin quebra para a linha de baixo: o divisor sai */
 @media (max-width: 1200px) {
-    .nav-admin {
+    .nav-section + .nav-admin {
         padding-left: 0;
         border-left: none;
     }
