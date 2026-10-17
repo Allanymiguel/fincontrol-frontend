@@ -1,42 +1,89 @@
-@if (mostrarMenu()) {
-    <nav class="app-nav" aria-label="Navegação principal">
-        <!-- so para a role USER: sao os dados pessoais de cada usuario (o admin nao os acessa) -->
-        @if (auth.temRoleUser()) {
-            <div class="nav-section" role="group" aria-labelledby="nav-operacional">
-                <span class="nav-label" id="nav-operacional">Operacional</span>
-                <a routerLink="/transacoes" routerLinkActive="active">Transações</a>
-                <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
-                <a routerLink="/contatos" routerLinkActive="active">Contatos</a>
-            </div>
-        }
-
-        <!-- so para a role ADMIN (o back tambem bloqueia com @RolesAllowed) -->
-        @if (auth.isAdmin()) {
-            <div class="nav-section nav-admin" role="group" aria-labelledby="nav-admin">
-                <span class="nav-label" id="nav-admin">Admin</span>
-                <a routerLink="/planos" routerLinkActive="active">Planos</a>
-                <a routerLink="/assinaturas" routerLinkActive="active">Assinaturas</a>
-                <a routerLink="/cupons" routerLinkActive="active">Cupons</a>
-                <a routerLink="/categorias-padrao" routerLinkActive="active">Categorias Padrão</a>
-                <a routerLink="/parametros-fiscais" routerLinkActive="active">Parâmetros Fiscais</a>
-                <a routerLink="/faixas-irpf" routerLinkActive="active">Faixas IRPF</a>
-                <a routerLink="/usuarios" routerLinkActive="active">Usuários</a>
-            </div>
-        }
-
-        @if (authHabilitada && auth.logado()) {
-            <div class="nav-usuario">
-                <span class="nav-nome">
-                    <mat-icon aria-hidden="true">account_circle</mat-icon>
-                    {{ auth.nome() }}
-                </span>
-                <button mat-stroked-button type="button" (click)="sair()">
-                    <mat-icon>logout</mat-icon>
-                    Sair
+<!-- um unico router-outlet: login e cadastro so escondem a barra lateral -->
+<div class="shell" [class.sem-menu]="!mostrarMenu()">
+    @if (mostrarMenu()) {
+        <aside class="sidebar" [class.aberta]="menuAberto()">
+            <div class="marca">
+                <div class="logo" aria-hidden="true">F</div>
+                <div class="marca-texto">
+                    <span class="marca-nome">
+                        FinControl
+                        @if (auth.isAdmin()) {
+                            <span class="marca-badge">Admin</span>
+                        }
+                    </span>
+                    <span class="label-caps marca-sub">{{ auth.isAdmin() ? 'Painel administrativo' : 'Controle financeiro' }}</span>
+                </div>
+                <!-- em telas estreitas a navegacao vira um menu que abre por este botao -->
+                <button mat-icon-button type="button" class="botao-menu" (click)="alternarMenu()"
+                    [attr.aria-expanded]="menuAberto()" aria-controls="nav-principal"
+                    [attr.aria-label]="menuAberto() ? 'Fechar menu' : 'Abrir menu'">
+                    <mat-icon>{{ menuAberto() ? 'close' : 'menu' }}</mat-icon>
                 </button>
             </div>
-        }
-    </nav>
-}
 
-<router-outlet />
+            <nav class="app-nav" id="nav-principal" aria-label="Navegação principal">
+                <!-- so para a role USER: sao os dados pessoais de cada usuario (o admin nao os acessa) -->
+                @if (auth.temRoleUser()) {
+                    <div class="nav-section" role="group" aria-labelledby="nav-operacional">
+                        <span class="nav-label label-caps" id="nav-operacional">Operacional</span>
+                        <a routerLink="/transacoes" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">swap_vert</mat-icon> Transações
+                        </a>
+                        <a routerLink="/categorias" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">category</mat-icon> Categorias
+                        </a>
+                        <a routerLink="/contatos" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">contacts</mat-icon> Contatos
+                        </a>
+                    </div>
+                }
+
+                <!-- so para a role ADMIN (o back tambem bloqueia com @RolesAllowed) -->
+                @if (auth.isAdmin()) {
+                    <div class="nav-section nav-admin" role="group" aria-labelledby="nav-admin">
+                        <span class="nav-label label-caps" id="nav-admin">Admin</span>
+                        <a routerLink="/usuarios" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">group</mat-icon> Usuários
+                        </a>
+                        <a routerLink="/assinaturas" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">credit_card</mat-icon> Assinaturas
+                        </a>
+                        <a routerLink="/planos" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">diamond</mat-icon> Planos
+                        </a>
+                        <a routerLink="/cupons" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">sell</mat-icon> Cupons
+                        </a>
+                        <a routerLink="/categorias-padrao" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">category</mat-icon> Categorias Padrão
+                        </a>
+                        <a routerLink="/parametros-fiscais" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">tune</mat-icon> Parâmetros Fiscais
+                        </a>
+                        <a routerLink="/faixas-irpf" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">account_balance</mat-icon> Faixas IRPF
+                        </a>
+                    </div>
+                }
+
+                @if (authHabilitada && auth.logado()) {
+                    <div class="nav-usuario">
+                        <div class="avatar" aria-hidden="true">{{ iniciais() }}</div>
+                        <div class="nav-usuario-texto">
+                            <span class="nav-nome">{{ auth.nome() }}</span>
+                            <span class="label-caps nav-papel">{{ auth.isAdmin() ? 'Administrador' : 'Usuário' }}</span>
+                        </div>
+                        <button matButton type="button" class="botao-sair" (click)="sair()">
+                            <mat-icon>logout</mat-icon>
+                            Sair
+                        </button>
+                    </div>
+                }
+            </nav>
+        </aside>
+    }
+
+    <main class="conteudo">
+        <router-outlet />
+    </main>
+</div>
