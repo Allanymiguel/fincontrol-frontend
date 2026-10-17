@@ -162,7 +162,7 @@ export class CupomForm implements OnInit {
   private exibirMensagem(mensagem: string): void {
     this.snack.open(mensagem, 'Ok', {
       duration: 3000,
-      horizontalPosition: 'center',
+      horizontalPosition: 'end',
       verticalPosition: 'top',
     });
   }

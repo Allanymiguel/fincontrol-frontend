@@ -99,7 +99,7 @@ export class CategoriaForm implements OnInit {
   exibirMensagem(mensagem: string): void {
     this.snack.open(mensagem, 'Ok', {
       duration: 2500,
-      horizontalPosition: 'center',
+      horizontalPosition: 'end',
       verticalPosition: 'top',
     });
   }
