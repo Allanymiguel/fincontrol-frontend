@@ -12,3 +12,32 @@
 .mat-column-cidade {
     white-space: nowrap;
 }
+
+.filter-plano {
+    width: 12rem;
+}
+
+.plano {
+    font-weight: 500;
+}
+
+.mat-column-plano,
+.mat-column-cobranca {
+    white-space: nowrap;
+}
+
+/* troca agendada: plano que passa a valer na proxima cobranca */
+.troca {
+    gap: 0.2rem;
+    margin-top: 0.2rem;
+}
+
+.troca mat-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+}
+
+.link-nome + .tag {
+    margin-left: 0.4rem;
+}

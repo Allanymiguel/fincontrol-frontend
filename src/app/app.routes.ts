@@ -31,10 +31,6 @@ import { faixaIrpfResolver } from './resolvers/faixa-irpf-resolver';
 import { UsuarioList } from './components/usuarios/usuario-list/usuario-list';
 import { UsuarioDetalhe } from './components/usuarios/usuario-detalhe/usuario-detalhe';
 import { usuarioResumoResolver } from './resolvers/usuario-resumo-resolver';
-import { AssinaturaList } from './components/assinaturas/assinatura-list/assinatura-list';
-import { AssinaturaForm } from './components/assinaturas/assinatura-form/assinatura-form';
-import { AssinaturaEdit } from './components/assinaturas/assinatura-edit/assinatura-edit';
-import { assinaturaResolver } from './resolvers/assinatura-resolver';
 
 export const routes: Routes = [
     {path: 'login', component: Login, title: 'Entrar', canActivate: [visitanteGuard]},
@@ -70,12 +66,6 @@ export const routes: Routes = [
             {path: 'planos/edit/:id', component: PlanoForm, title: 'Editar Plano',
                 resolve: { plano: planoResolver }},
 
-            // criacao e edicao tem telas diferentes: depois de criada, so status, fim e observacao mudam
-            {path: 'assinaturas', component: AssinaturaList, title: 'Lista de Assinaturas'},
-            {path: 'assinaturas/new', component: AssinaturaForm, title: 'Nova Assinatura'},
-            {path: 'assinaturas/edit/:id', component: AssinaturaEdit, title: 'Editar Assinatura',
-                resolve: { assinatura: assinaturaResolver }},
-
             {path: 'cupons', component: CupomList, title: 'Lista de Cupons'},
             {path: 'cupons/new', component: CupomForm, title: 'Novo Cupom'},
             {path: 'cupons/edit/:id', component: CupomForm, title: 'Editar Cupom',
@@ -96,6 +86,7 @@ export const routes: Routes = [
             {path: 'faixas-irpf/edit/:id', component: FaixaIrpfForm, title: 'Editar Faixa IRPF',
                 resolve: { faixaIrpf: faixaIrpfResolver }},
 
+            // a assinatura (unica) de cada usuario e gerida no resumo dele (RN16)
             {path: 'usuarios', component: UsuarioList, title: 'Lista de Usuários'},
             {path: 'usuarios/:id', component: UsuarioDetalhe, title: 'Detalhe do Usuário',
                 resolve: { resumo: usuarioResumoResolver }},

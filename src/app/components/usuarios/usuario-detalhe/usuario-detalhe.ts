@@ -37,7 +37,7 @@ export class UsuarioDetalhe implements OnInit {
 
   readonly resumo = signal<UsuarioResumo | null>(null);
   readonly alterando = signal(false);
-  readonly colunasHistorico = ['plano', 'status', 'periodicidade', 'valorPago', 'dataInicio', 'dataFim'];
+  readonly colunasHistorico = ['data', 'plano', 'valor', 'forma', 'status'];
   readonly formatarDocumento = formatarDocumento;
 
   // ate duas iniciais do nome, para o avatar

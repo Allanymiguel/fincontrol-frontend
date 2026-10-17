@@ -1,14 +1,15 @@
 import { Assinatura } from './assinatura.model';
+import { Pagamento } from './pagamento.model';
 import { Usuario } from './usuario.model';
 
-// Visao do admin sobre um usuario (GET /admin/usuarios/{id}/resumo): perfil, assinaturas e
+// Visao do admin sobre um usuario (GET /admin/usuarios/{id}/resumo): perfil, assinatura, pagamentos e
 // so as QUANTIDADES dos registros pessoais. O conteudo deles nunca vem do back.
 export interface UsuarioResumo {
   usuario: Usuario;
-  // null se nao tiver assinatura ATIVA
-  assinaturaAtual: Assinatura | null;
-  // da mais recente para a mais antiga
-  assinaturas: Assinatura[];
+  // null se o usuario nao tiver assinatura (o admin, por exemplo)
+  assinatura: Assinatura | null;
+  // cobrancas, da mais recente para a mais antiga
+  pagamentos: Pagamento[];
   contagens: {
     transacoes: number;
     categorias: number;

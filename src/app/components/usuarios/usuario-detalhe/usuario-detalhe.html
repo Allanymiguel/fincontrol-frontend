@@ -98,63 +98,83 @@
                     </div>
                 </dl>
 
-                <h3 class="label-caps sheet-section">Assinatura atual</h3>
-                @if (resumo.assinaturaAtual; as atual) {
+                <h3 class="label-caps sheet-section">Assinatura</h3>
+                @if (resumo.assinatura; as assinatura) {
                     <div class="assinatura-atual">
                         <div class="assinatura-topo">
-                            <span class="assinatura-plano">{{ atual.nomePlano }} ({{ atual.periodicidade.nome.toLowerCase() }})</span>
-                            <span class="selo">{{ atual.status.nome }}</span>
+                            <span class="assinatura-plano">{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome.toLowerCase() }})</span>
+                            <span class="selo">{{ assinatura.status.nome }}</span>
                         </div>
                         <p class="assinatura-desde">
-                            Desde {{ atual.dataInicio | date:'dd/MM/yyyy' }}
-                            @if (atual.dataFim) {
-                                · até {{ atual.dataFim | date:'dd/MM/yyyy' }}
+                            @if (assinatura.dataProximaCobranca) {
+                                Próxima cobrança em {{ assinatura.dataProximaCobranca | date:'dd/MM/yyyy' }}
                             } @else {
-                                · sem prazo
+                                Plano sem custo · sem cobrança
                             }
+                            · assinante desde {{ assinatura.dataInicio | date:'dd/MM/yyyy' }}
                         </p>
                         <div class="assinatura-rodape">
-                            <span>R$ {{ atual.valorPago | number:'1.2-2' }} · {{ atual.formaPagamento.nome }}</span>
-                            <span>{{ atual.codigoCupom ? 'Cupom ' + atual.codigoCupom : 'Sem cupom' }}</span>
+                            <span>R$ {{ assinatura.valor | number:'1.2-2' }} / {{ assinatura.periodicidade.id === 2 ? 'ano' : 'mês' }} · {{ assinatura.formaPagamento.nome }}</span>
+                            <span>{{ assinatura.codigoCupom ? 'Cupom ' + assinatura.codigoCupom : 'Sem cupom' }}</span>
                         </div>
                     </div>
+
+                    @if (assinatura.trocaAgendada; as troca) {
+                        <div class="troca-agendada callout callout-alerta" role="status">
+                            <mat-icon aria-hidden="true">schedule</mat-icon>
+                            <span>
+                                Em <strong>{{ troca.data | date:'dd/MM/yyyy' }}</strong> passa para
+                                <strong>{{ troca.nomePlano }} ({{ troca.periodicidade.nome.toLowerCase() }})</strong>
+                                @if (troca.valor > 0) {
+                                    por R$ {{ troca.valor | number:'1.2-2' }}.
+                                } @else {
+                                    sem cobrança.
+                                }
+                                Até lá, continua no plano atual.
+                            </span>
+                        </div>
+                    }
+
+                    @if (assinatura.observacao) {
+                        <p class="observacao secundario">Observação: {{ assinatura.observacao }}</p>
+                    }
                 } @else {
-                    <p class="secundario">Sem assinatura ativa.</p>
+                    <p class="secundario">Sem assinatura (contas de administrador não têm plano).</p>
                 }
 
-                <h3 class="label-caps sheet-section">Histórico de assinaturas</h3>
-                @if (resumo.assinaturas.length > 0) {
+                <h3 class="label-caps sheet-section">Histórico de pagamentos</h3>
+                @if (resumo.pagamentos.length > 0) {
                     <div class="data-card">
                         <div class="table-scroll">
-                            <table mat-table [dataSource]="resumo.assinaturas" class="historico">
+                            <table mat-table [dataSource]="resumo.pagamentos" class="historico">
+                                <ng-container matColumnDef="data">
+                                    <th mat-header-cell *matHeaderCellDef> Data </th>
+                                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataPagamento | date:'dd/MM/yyyy' }} </td>
+                                </ng-container>
                                 <ng-container matColumnDef="plano">
                                     <th mat-header-cell *matHeaderCellDef class="col-principal"> Plano </th>
-                                    <td mat-cell *matCellDef="let obj" class="col-principal"> {{ obj.nomePlano }} </td>
+                                    <td mat-cell *matCellDef="let obj" class="col-principal">
+                                        {{ obj.nomePlano }} <span class="secundario">({{ obj.periodicidade.nome.toLowerCase() }})</span>
+                                        @if (obj.codigoCupom) {
+                                            <span class="codigo">{{ obj.codigoCupom }}</span>
+                                        }
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="valor">
+                                    <th mat-header-cell *matHeaderCellDef class="col-num"> Valor </th>
+                                    <td mat-cell *matCellDef="let obj" class="col-num"> R$ {{ obj.valor | number:'1.2-2' }} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="forma">
+                                    <th mat-header-cell *matHeaderCellDef> Forma </th>
+                                    <td mat-cell *matCellDef="let obj"> {{ obj.formaPagamento.nome }} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="status">
                                     <th mat-header-cell *matHeaderCellDef> Status </th>
                                     <td mat-cell *matCellDef="let obj">
-                                        <!-- 1 Pendente, 2 Ativa, 3 Cancelada, 4 Suspensa, 5 Expirada -->
-                                        <span class="tag" [class.tag-ok]="obj.status.id === 2"
-                                            [class.tag-alerta]="obj.status.id === 1 || obj.status.id === 4"
+                                        <!-- 1 Pendente, 2 Aprovado, 3 Recusado -->
+                                        <span class="tag" [class.tag-ok]="obj.status.id === 2" [class.tag-alerta]="obj.status.id === 1"
                                             [class.tag-erro]="obj.status.id === 3">{{ obj.status.nome }}</span>
                                     </td>
-                                </ng-container>
-                                <ng-container matColumnDef="periodicidade">
-                                    <th mat-header-cell *matHeaderCellDef> Periodicidade </th>
-                                    <td mat-cell *matCellDef="let obj"> {{ obj.periodicidade.nome }} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="valorPago">
-                                    <th mat-header-cell *matHeaderCellDef class="col-num"> Valor </th>
-                                    <td mat-cell *matCellDef="let obj" class="col-num"> R$ {{ obj.valorPago | number:'1.2-2' }} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="dataInicio">
-                                    <th mat-header-cell *matHeaderCellDef> Início </th>
-                                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataInicio | date:'dd/MM/yyyy' }} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="dataFim">
-                                    <th mat-header-cell *matHeaderCellDef> Fim </th>
-                                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataFim ? (obj.dataFim | date:'dd/MM/yyyy') : 'Sem prazo' }} </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="colunasHistorico"></tr>
                                 <tr mat-row *matRowDef="let row; columns: colunasHistorico;"></tr>
@@ -162,7 +182,7 @@
                         </div>
                     </div>
                 } @else {
-                    <p class="secundario">Nenhuma assinatura.</p>
+                    <p class="secundario">Nenhum pagamento.</p>
                 }
             </div>
 

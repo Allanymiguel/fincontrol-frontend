@@ -1,3 +1,4 @@
+import { AssinaturaResumo } from './assinatura.model';
 import { AtividadeMei } from './atividade-mei';
 import { Endereco } from './contato.model';
 import { Papel } from './papel';
@@ -17,4 +18,6 @@ export interface Usuario {
   ativo: boolean;
   // opcional no cadastro do usuario
   endereco: Endereco | null;
+  // so nas respostas do admin; null se o usuario nao tiver assinatura (o proprio admin)
+  assinatura?: AssinaturaResumo | null;
 }

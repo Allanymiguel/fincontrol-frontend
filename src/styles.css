@@ -371,6 +371,12 @@ a {
     color: var(--fc-on-error-container);
 }
 
+.callout-alerta {
+    border-color: rgba(180, 83, 9, 0.25);
+    background: var(--fc-warning-container);
+    color: var(--fc-on-warning-container);
+}
+
 .callout-neutro {
     border-color: var(--fc-outline-variant);
     background: var(--fc-surface-low);

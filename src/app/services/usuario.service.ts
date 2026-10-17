@@ -12,12 +12,21 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) {}
 
-  // busca = parte do nome ou do email
-  findAll(page: number = 0, pageSize: number = 10, busca?: string): Observable<PagedResponse<Usuario>> {
+  // busca = parte do nome ou do email; idPlano = plano vigente da assinatura
+  findAll(
+    page: number = 0,
+    pageSize: number = 10,
+    busca?: string,
+    idPlano?: number | null,
+  ): Observable<PagedResponse<Usuario>> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
     if (busca && busca.trim().length > 0) {
       params = params.set('busca', busca.trim());
+    }
+
+    if (idPlano != null) {
+      params = params.set('idPlano', idPlano);
     }
 
     return this.http.get<PagedResponse<Usuario>>(this.apiUrl, { params });
@@ -27,7 +36,7 @@ export class UsuarioService {
     return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
   }
 
-  // perfil + assinaturas + contagens (sem o conteudo dos registros pessoais)
+  // perfil + assinatura + pagamentos + contagens (sem o conteudo dos registros pessoais)
   buscarResumo(id: number | string): Observable<UsuarioResumo> {
     return this.http.get<UsuarioResumo>(`${this.apiUrl}/${id}/resumo`);
   }

@@ -1,49 +1,44 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Assinatura, AssinaturaRequest, AssinaturaUpdate } from '../models/assinatura.model';
-import { PagedResponse } from './categoria.service';
+import { Assinatura, TrocaPlanoRequest, TrocaPlanoResultado } from '../models/assinatura.model';
 
+// A assinatura (unica) de um usuario, gerida pelo admin (RN16): troca de plano no estilo da
+// Netflix, cancelamento do plano pago e observacao. Ela nasce no cadastro e nao e excluida.
 @Injectable({ providedIn: 'root' })
 export class AssinaturaService {
-  private readonly apiUrl: string = 'http://localhost:8080/admin/assinaturas';
+  private readonly apiUrl: string = 'http://localhost:8080/admin/usuarios';
 
   constructor(private http: HttpClient) {}
 
-  // busca = parte do nome do usuario ou do plano
-  findAll(
-    page: number = 0,
-    pageSize: number = 10,
-    busca?: string,
-    idStatus?: number | null,
-  ): Observable<PagedResponse<Assinatura>> {
-    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
-
-    if (busca && busca.trim().length > 0) {
-      params = params.set('busca', busca.trim());
-    }
-
-    if (idStatus) {
-      params = params.set('idStatus', idStatus);
-    }
-
-    return this.http.get<PagedResponse<Assinatura>>(this.apiUrl, { params });
+  buscar(idUsuario: number): Observable<Assinatura> {
+    return this.http.get<Assinatura>(this.url(idUsuario));
   }
 
-  findById(id: number | string): Observable<Assinatura> {
-    return this.http.get<Assinatura>(`${this.apiUrl}/${id}`);
+  // previa (vale agora ou fica agendada, credito, proxima cobranca) sem alterar nada
+  simularTroca(idUsuario: number, troca: TrocaPlanoRequest): Observable<TrocaPlanoResultado> {
+    return this.http.post<TrocaPlanoResultado>(`${this.url(idUsuario)}/troca/simulacao`, troca);
   }
 
-  create(assinatura: AssinaturaRequest): Observable<Assinatura> {
-    return this.http.post<Assinatura>(this.apiUrl, assinatura);
+  trocarPlano(idUsuario: number, troca: TrocaPlanoRequest): Observable<TrocaPlanoResultado> {
+    return this.http.post<TrocaPlanoResultado>(`${this.url(idUsuario)}/troca`, troca);
   }
 
-  update(id: number, assinatura: AssinaturaUpdate): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, assinatura);
+  // desfaz a troca agendada para a proxima cobranca
+  desfazerTroca(idUsuario: number): Observable<Assinatura> {
+    return this.http.delete<Assinatura>(`${this.url(idUsuario)}/troca`);
   }
 
-  // em vez de excluir: muda para CANCELADA e fecha a data de fim (mantem o historico)
-  cancelar(id: number): Observable<Assinatura> {
-    return this.http.patch<Assinatura>(`${this.apiUrl}/${id}/cancelar`, null);
+  // volta ao Gratuito na proxima cobranca
+  cancelarPlanoPago(idUsuario: number): Observable<TrocaPlanoResultado> {
+    return this.http.post<TrocaPlanoResultado>(`${this.url(idUsuario)}/cancelamento`, null);
+  }
+
+  salvarObservacao(idUsuario: number, observacao: string | null): Observable<Assinatura> {
+    return this.http.patch<Assinatura>(`${this.url(idUsuario)}/observacao`, { observacao });
+  }
+
+  private url(idUsuario: number): string {
+    return `${this.apiUrl}/${idUsuario}/assinatura`;
   }
 }
