@@ -11,17 +11,6 @@ export interface LoginRequest {
   senha: string;
 }
 
-// Corpo do POST /auth/registro (formato do RegistroRequestDTO do back)
-export interface RegistroRequest {
-  nome: string;
-  email: string;
-  senha: string;
-  documento: string;
-  telefone: string | null;
-  idPerfilFiscal: number;
-  idAtividadeMei: number | null;
-}
-
 // O que fica guardado no navegador entre recarregamentos da pagina
 export interface Sessao {
   accessToken: string;

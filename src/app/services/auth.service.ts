@@ -3,7 +3,8 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, finalize, map, shareReplay, tap, throwError } from 'rxjs';
 import { AUTH_HABILITADA } from '../auth/auth-config';
-import { LoginRequest, RegistroRequest, Sessao, TokenResponse } from '../models/auth.model';
+import { LoginRequest, Sessao, TokenResponse } from '../models/auth.model';
+import { CadastroCompletoRequest, CadastroSimplesRequest } from '../models/cadastro.model';
 import { Usuario } from '../models/usuario.model';
 
 const CHAVE_SESSAO = 'fincontrol.sessao';
@@ -53,8 +54,13 @@ export class AuthService {
     );
   }
 
-  registrar(dados: RegistroRequest): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/registro`, dados);
+  // cadastro publico (papel USER) nas duas formas: simples (so o acesso) ou completo
+  registrarSimples(dados: CadastroSimplesRequest): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/registro/simples`, dados);
+  }
+
+  registrarCompleto(dados: CadastroCompletoRequest): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/registro/completo`, dados);
   }
 
   usuarioLogado(): Observable<Usuario> {
