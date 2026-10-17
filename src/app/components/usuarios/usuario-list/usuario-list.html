@@ -64,9 +64,8 @@
                     <td mat-cell *matCellDef="let obj">
                         @if (obj.perfilFiscal) {
                             <span class="tag">{{ obj.perfilFiscal.nome }}</span>
-                        }
-                        @if (!obj.cadastroCompleto) {
-                            <span class="tag tag-alerta">Cadastro simples</span>
+                        } @else {
+                            <span class="secundario">—</span>
                         }
                         @if (obj.atividadeMei) {
                             <div class="secundario">{{ obj.atividadeMei.nome }}</div>

@@ -31,9 +31,6 @@
                                     }
                                 </span>
                             }
-                            @if (!resumo.usuario.cadastroCompleto) {
-                                <span class="tag tag-alerta">Cadastro simples</span>
-                            }
                             <!-- id 2 = ADMIN (enum Papel do back) -->
                             <span class="tag" [class.tag-admin]="resumo.usuario.papel.id === 2">{{ resumo.usuario.papel.nome }}</span>
                         </div>
