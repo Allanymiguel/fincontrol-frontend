@@ -675,11 +675,17 @@ a {
 @media (max-width: 900px) {
     .auth {
         grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
     }
 
     .auth-marca {
+        justify-content: flex-start;
         gap: 1rem;
         padding: 1.5rem;
+    }
+
+    .auth-conteudo {
+        align-items: flex-start;
     }
 
     .auth-titulo {
