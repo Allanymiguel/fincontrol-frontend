@@ -1,0 +1,9 @@
+/* CEP encontrado / erro da busca de CEP */
+.ok-icon {
+    color: var(--fc-success);
+    padding-right: 12px;
+}
+
+.hint-error {
+    color: var(--fc-error);
+}
