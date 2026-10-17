@@ -32,7 +32,7 @@
 
                 <mat-form-field appearance="outline">
                     <mat-label>Início da vigência</mat-label>
-                    <input matInput [matDatepicker]="pickerInicio" formControlName="vigenciaInicio" />
+                    <input matInput [matDatepicker]="pickerInicio" placeholder="dd/mm/aaaa" formControlName="vigenciaInicio" />
                     <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
                     <mat-datepicker #pickerInicio></mat-datepicker>
                     @if (getErrorMessage('vigenciaInicio'); as error) {
@@ -42,7 +42,7 @@
 
                 <mat-form-field appearance="outline">
                     <mat-label>Fim da vigência</mat-label>
-                    <input matInput [matDatepicker]="pickerFim" [min]="inicioSelecionado" formControlName="vigenciaFim" />
+                    <input matInput [matDatepicker]="pickerFim" placeholder="dd/mm/aaaa" [min]="inicioSelecionado" formControlName="vigenciaFim" />
                     <div matIconSuffix class="sufixo-data">
                         @if (form.value.vigenciaFim) {
                             <button mat-icon-button type="button" aria-label="Limpar fim da vigência"

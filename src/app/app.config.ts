@@ -9,11 +9,12 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { routes } from './app.routes';
 import { authInterceptor } from './auth/auth.interceptor';
+import { DataBrAdapter, FORMATOS_DATA_BR } from './utils/data-br-adapter';
 
 registerLocaleData(localePt);
 
@@ -51,8 +52,10 @@ export const appConfig: ApplicationConfig = {
     { provide: MatPaginatorIntl, useFactory: getPtBrPaginatorIntl },
     // pipes number/date no formato brasileiro (R$ 1.500,00)
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-    // os campos de data continuam no formato de antes: o NativeDateAdapter so sabe ler datas digitadas como MM/DD/AAAA
-    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+    // campos de data (mat-datepicker) em dd/MM/aaaa e calendario em portugues
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: DateAdapter, useClass: DataBrAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: FORMATOS_DATA_BR },
     // <mat-icon> usa a fonte Material Symbols (carregada no index.html) em vez da Material Icons
     provideAppInitializer(() => {
       inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');

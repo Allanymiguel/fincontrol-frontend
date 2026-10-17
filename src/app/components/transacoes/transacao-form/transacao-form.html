@@ -24,9 +24,12 @@
 
                 <mat-form-field appearance="outline">
                     <mat-label>Data</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="data" />
+                    <input matInput [matDatepicker]="picker" placeholder="dd/mm/aaaa" formControlName="data" />
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
+                    @if (form.get('data')?.hasError('matDatepickerParse')) {
+                        <mat-error>Data inválida. Use dd/mm/aaaa.</mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">

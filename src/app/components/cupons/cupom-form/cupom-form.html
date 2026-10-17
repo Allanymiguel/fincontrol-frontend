@@ -33,7 +33,7 @@
 
                 <mat-form-field appearance="outline">
                     <mat-label>Validade</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="validade" />
+                    <input matInput [matDatepicker]="picker" placeholder="dd/mm/aaaa" formControlName="validade" />
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-hint>Último dia de uso</mat-hint>

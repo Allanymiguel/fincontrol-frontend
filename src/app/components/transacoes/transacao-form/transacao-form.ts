@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +15,7 @@ import { ESCOPOS_TRANSACAO, EscopoTransacao } from '../../../models/escopo-trans
 import { TIPOS_TRANSACAO, TipoTransacao } from '../../../models/tipo-transacao';
 import { CategoriaService, PagedResponse } from '../../../services/categoria.service';
 import { TransacaoService } from '../../../services/transacao.service';
+import { deDataIso, paraDataIso } from '../../../utils/data';
 
 @Component({
   imports: [
@@ -25,7 +25,6 @@ import { TransacaoService } from '../../../services/transacao.service';
     MatButtonModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatIconModule,
     MatSnackBarModule,
   ],
@@ -66,6 +65,8 @@ export class TransacaoForm implements OnInit {
     if (transacao) {
       this.form.patchValue({
         ...transacao,
+        // "yyyy-MM-dd" vira Date local (new Date("2026-12-31") seria o dia anterior em UTC-3)
+        data: deDataIso(transacao.data),
         idTipo: transacao.tipo?.id,
         idEscopo: transacao.escopo?.id,
         idCategoria: transacao.categoria?.id,
@@ -80,7 +81,7 @@ export class TransacaoForm implements OnInit {
 
   salvar() {
     const transacao = { ...this.form.value };
-    transacao.data = this.formatarData(transacao.data);
+    transacao.data = paraDataIso(transacao.data);
 
     const resultado: Observable<unknown> = transacao.id
       ? this.transacaoService.update(transacao.id, transacao)
@@ -125,14 +126,5 @@ export class TransacaoForm implements OnInit {
 
   voltar(): void {
     this.location.back();
-  }
-
-  private formatarData(data: string | Date | null): string | null {
-    if (!data) return null;
-    if (typeof data === 'string') return data.substring(0, 10);
-    const yyyy = data.getFullYear();
-    const mm = String(data.getMonth() + 1).padStart(2, '0');
-    const dd = String(data.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
   }
 }

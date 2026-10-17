@@ -1,5 +1,8 @@
 // O back trabalha com LocalDate ("yyyy-MM-dd"); o datepicker trabalha com Date.
 
+// formato de exibicao de datas em todo o front (pipe date, formatDate e campos de data)
+export const FORMATO_DATA = 'dd/MM/yyyy';
+
 // Date (ou string) -> "yyyy-MM-dd", usando a data LOCAL (sem converter para UTC)
 export function paraDataIso(data: Date | string | null | undefined): string | null {
   if (!data) return null;

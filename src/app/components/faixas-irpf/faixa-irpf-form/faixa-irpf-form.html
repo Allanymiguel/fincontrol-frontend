@@ -14,7 +14,7 @@
             <div class="form-grid">
                 <mat-form-field appearance="outline">
                     <mat-label>Início da vigência</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="vigenciaInicio" />
+                    <input matInput [matDatepicker]="picker" placeholder="dd/mm/aaaa" formControlName="vigenciaInicio" />
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-hint>Mesma data = mesma tabela</mat-hint>
