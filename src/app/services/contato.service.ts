@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Contato, ContatoRequest } from '../models/contato.model';
+import { Contato, ContatoCompletoRequest, ContatoSimplesRequest } from '../models/contato.model';
 import { PagedResponse } from './categoria.service';
 
 @Injectable({ providedIn: 'root' })
@@ -24,12 +24,22 @@ export class ContatoService {
     return this.http.get<Contato>(`${this.apiUrl}/${id}`);
   }
 
-  create(contato: ContatoRequest): Observable<Contato> {
-    return this.http.post<Contato>(this.apiUrl, contato);
+  // simples = nome, tipo e telefone; completo = tambem CPF/CNPJ e endereco
+  createSimples(contato: ContatoSimplesRequest): Observable<Contato> {
+    return this.http.post<Contato>(`${this.apiUrl}/simples`, contato);
   }
 
-  update(id: number, contato: ContatoRequest): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, contato);
+  createCompleto(contato: ContatoCompletoRequest): Observable<Contato> {
+    return this.http.post<Contato>(`${this.apiUrl}/completo`, contato);
+  }
+
+  updateSimples(id: number, contato: ContatoSimplesRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/simples`, contato);
+  }
+
+  // tambem completa um contato simples
+  updateCompleto(id: number, contato: ContatoCompletoRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/completo`, contato);
   }
 
   delete(id: number): Observable<void> {

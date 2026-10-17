@@ -1,3 +1,16 @@
+/* Simples | Completo, com a linha de ajuda embaixo */
+.tipo-cadastro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+}
+
+.tipo-ajuda {
+    margin: 0;
+}
+
 /* CEP encontrado / erro da busca de CEP */
 .ok-icon {
     color: var(--color-success);

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -11,6 +11,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ApiProblem } from '../../../models/api-problem.model';
 import { CepResponse } from '../../../models/cep.model';
-import { Contato, ContatoRequest } from '../../../models/contato.model';
+import { Contato, ContatoCompletoRequest, ContatoSimplesRequest } from '../../../models/contato.model';
 import { TIPOS_CONTATO, TipoContato } from '../../../models/tipo-contato';
 import { CepService } from '../../../services/cep.service';
 import { ContatoService } from '../../../services/contato.service';
@@ -28,12 +29,19 @@ import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 type CepState = 'idle' | 'buscando' | 'encontrado' | 'erro';
 
+// campos que so existem no cadastro completo
+const CAMPOS_COMPLETOS = ['documento', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'idMunicipio'];
+
+// Contato simples = nome, tipo e telefone (e-mail opcional); completo = tambem CPF/CNPJ e endereco.
+// Editar: um contato simples pode ser completado, um completo continua completo.
+
 @Component({
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatSelectModule,
     MatIconModule,
     MatSnackBarModule,
@@ -51,6 +59,9 @@ export class ContatoForm implements OnInit {
   @ViewChild('numeroInput') numeroInput?: ElementRef<HTMLInputElement>;
 
   tipos: TipoContato[] = TIPOS_CONTATO;
+  readonly completo = signal(false);
+  // o contato ja salvo e completo: nao volta a ser simples
+  private salvoCompleto = false;
   cepState: CepState = 'idle';
   // texto "Cidade - UF" exibido no form; o que vai para o back e so o idMunicipio
   cidadeUf = '';
@@ -76,6 +87,7 @@ export class ContatoForm implements OnInit {
       maxlength: 'E-mail deve ter no máximo 120 caracteres.',
     },
     telefone: {
+      required: 'Telefone é obrigatório no contato simples.',
       pattern: 'Informe DDD + número (10 ou 11 dígitos).',
     },
     cep: {
@@ -132,6 +144,28 @@ export class ContatoForm implements OnInit {
     if (contato) {
       this.preencherFormulario(contato);
     }
+    this.escolherTipo(contato?.cadastroCompleto ?? false);
+  }
+
+  podeEscolherTipo(): boolean {
+    return !this.salvoCompleto;
+  }
+
+  // Liga ou desliga os campos do completo. Desabilitados, eles nao sao validados (o simples
+  // salva com eles vazios). O telefone so e obrigatorio no simples.
+  escolherTipo(completo: boolean): void {
+    this.completo.set(completo);
+    for (const campo of CAMPOS_COMPLETOS) {
+      const control = this.form.get(campo);
+      if (completo) control?.enable({ emitEvent: false });
+      else control?.disable({ emitEvent: false });
+    }
+
+    const telefone = this.form.get('telefone')!;
+    if (completo) telefone.removeValidators(Validators.required);
+    else telefone.addValidators(Validators.required);
+    telefone.updateValueAndValidity({ emitEvent: false });
+    this.form.updateValueAndValidity();
   }
 
   // Mantem so numeros nos campos de documento, telefone e CEP
@@ -214,11 +248,14 @@ export class ContatoForm implements OnInit {
     this.clearApiErrors();
 
     const id = this.form.get('id')?.value as number | null;
-    const payload = this.toRequest();
-
-    const resultado: Observable<unknown> = id
-      ? this.contatoService.update(id, payload)
-      : this.contatoService.create(payload);
+    let resultado: Observable<unknown>;
+    if (this.completo()) {
+      const payload = this.toCompletoRequest();
+      resultado = id ? this.contatoService.updateCompleto(id, payload) : this.contatoService.createCompleto(payload);
+    } else {
+      const payload = this.toSimplesRequest();
+      resultado = id ? this.contatoService.updateSimples(id, payload) : this.contatoService.createSimples(payload);
+    }
 
     resultado.subscribe({
       next: () => {
@@ -314,9 +351,21 @@ export class ContatoForm implements OnInit {
       this.ultimoCepBuscado = endereco.cep;
       this.cepState = 'encontrado';
     }
+    this.salvoCompleto = contato.cadastroCompleto;
   }
 
-  private toRequest(): ContatoRequest {
+  private toSimplesRequest(): ContatoSimplesRequest {
+    const value = this.form.getRawValue();
+
+    return {
+      nome: String(value.nome).trim(),
+      idTipo: Number(value.idTipo),
+      telefone: apenasDigitos(value.telefone),
+      email: this.normalizeNullable(value.email),
+    };
+  }
+
+  private toCompletoRequest(): ContatoCompletoRequest {
     const value = this.form.getRawValue();
 
     return {

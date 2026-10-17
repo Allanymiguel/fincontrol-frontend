@@ -10,18 +10,28 @@ export interface Endereco {
   municipio: Municipio;
 }
 
+// documento e endereco so existem no cadastro completo
 export interface Contato {
   id: number;
   nome: string;
   tipo: TipoContato;
-  documento: string;
+  documento: string | null;
   email: string | null;
   telefone: string | null;
-  endereco: Endereco;
+  endereco: Endereco | null;
+  cadastroCompleto: boolean;
 }
 
-// Corpo enviado no POST/PUT (formato do ContatoRequestDTO do back)
-export interface ContatoRequest {
+// Corpo do POST/PUT .../simples (ContatoSimplesDTO do back)
+export interface ContatoSimplesRequest {
+  nome: string;
+  idTipo: number;
+  telefone: string;
+  email: string | null;
+}
+
+// Corpo do POST/PUT .../completo (ContatoCompletoDTO do back)
+export interface ContatoCompletoRequest {
   nome: string;
   idTipo: number;
   documento: string;

@@ -48,19 +48,24 @@
 
                 <ng-container matColumnDef="documento">
                     <th mat-header-cell *matHeaderCellDef> CPF / CNPJ </th>
-                    <td mat-cell *matCellDef="let obj" class="num"> {{ formatarDocumento(obj.documento) }} </td>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.documento ? formatarDocumento(obj.documento) : '—' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="cidade">
                     <th mat-header-cell *matHeaderCellDef> Cidade / UF </th>
                     <td mat-cell *matCellDef="let obj">
-                        {{ obj.endereco?.municipio?.nome }} - {{ obj.endereco?.municipio?.estado?.sigla }}
+                        <!-- contato simples nao tem endereco -->
+                        @if (obj.endereco?.municipio; as municipio) {
+                            {{ municipio.nome }} - {{ municipio.estado.sigla }}
+                        } @else {
+                            <span class="secundario">—</span>
+                        }
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="cep">
                     <th mat-header-cell *matHeaderCellDef> CEP </th>
-                    <td mat-cell *matCellDef="let obj" class="num"> {{ formatarCep(obj.endereco?.cep) }} </td>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.endereco ? formatarCep(obj.endereco.cep) : '—' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="acao">
