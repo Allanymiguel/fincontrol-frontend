@@ -63,6 +63,22 @@ html {
     )
   );
 
+  // campos mais compactos (44px) e com texto de 14px, como os do design
+  @include mat.form-field-overrides(
+    (
+      container-text-size: 14px,
+      outlined-label-text-size: 14px,
+      outlined-outline-color: #e5e7eb,
+      outlined-hover-outline-color: #9ca3af,
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      trigger-text-size: 14px,
+    )
+  );
+
   // toast claro no canto superior direito (a borda e a sombra ficam em styles.css)
   @include mat.snack-bar-overrides(
     (
@@ -70,6 +86,14 @@ html {
       supporting-text-color: #111827,
       button-color: #111827,
       container-shape: 12px,
+    )
+  );
+}
+
+.mat-mdc-form-field {
+  @include mat.theme(
+    (
+      density: -3,
     )
   );
 }
