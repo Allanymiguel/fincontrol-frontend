@@ -7,6 +7,7 @@ export interface TrocaAgendada {
   idPlano: number;
   nomePlano: string;
   periodicidade: Periodicidade;
+  idCupom: number | null;
   codigoCupom: string | null;
   formaPagamento: FormaPagamento;
   // valor cobrado na data, ja com o cupom
@@ -46,7 +47,8 @@ export interface AssinaturaResumo {
   periodicidade: Periodicidade;
   valor: number;
   dataProximaCobranca: string | null;
-  // plano que passa a valer na proxima cobranca; null se nada estiver agendado
+  // plano que passa a valer na proxima cobranca; nulos se nada estiver agendado
+  idPlanoAgendado: number | null;
   nomePlanoAgendado: string | null;
 }
 
