@@ -39,6 +39,11 @@ export class AuthService {
   readonly isAdmin = computed(() => !AUTH_HABILITADA || this.roles().includes('ADMIN'));
   // area operacional (transacoes, categorias, contatos) e da role USER; o admin puro nao a ve
   readonly temRoleUser = computed(() => !AUTH_HABILITADA || this.roles().includes('USER'));
+  // tela inicial de cada papel: admin puro vai para a area administrativa
+  rotaInicial(): string {
+    return this.isAdmin() && !this.temRoleUser() ? '/usuarios' : '/transacoes';
+  }
+
   readonly nome = computed(() => this.claims()?.given_name ?? this.claims()?.name ?? this.claims()?.email ?? '');
 
   login(dados: LoginRequest): Observable<void> {

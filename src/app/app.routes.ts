@@ -1,5 +1,7 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard, visitanteGuard } from './auth/auth.guards';
+import { adminGuard, authGuard, userGuard, visitanteGuard } from './auth/auth.guards';
+import { AuthService } from './services/auth.service';
 import { Login } from './components/auth/login/login';
 import { Registro } from './components/auth/registro/registro';
 import { TransacaoList } from './components/transacoes/transacao-list/transacao-list';
@@ -38,23 +40,26 @@ export const routes: Routes = [
 
     // tudo abaixo exige login
     {path: '', canActivateChild: [authGuard], children: [
-        {path: '', redirectTo: 'transacoes', pathMatch: 'full'},
+        // tela inicial depende do papel: admin -> /usuarios, usuario -> /transacoes
+        {path: '', pathMatch: 'full', redirectTo: () => inject(AuthService).rotaInicial()},
 
-        // ===== Operacional =====
-        {path: 'transacoes', component: TransacaoList, title: 'Lista de Transações'},
-        {path: 'transacoes/new', component: TransacaoForm, title: 'Nova Transação'},
-        {path: 'transacoes/edit/:id', component: TransacaoForm, title: 'Editar Transação',
-            resolve: { transacao: transacaoResolver }},
+        // ===== Operacional: exige a role USER (dados pessoais de cada usuario) =====
+        {path: '', canActivateChild: [userGuard], children: [
+            {path: 'transacoes', component: TransacaoList, title: 'Lista de Transações'},
+            {path: 'transacoes/new', component: TransacaoForm, title: 'Nova Transação'},
+            {path: 'transacoes/edit/:id', component: TransacaoForm, title: 'Editar Transação',
+                resolve: { transacao: transacaoResolver }},
 
-        {path: 'categorias', component: CategoriaList, title: 'Lista de Categorias'},
-        {path: 'categorias/new', component: CategoriaForm, title: 'Nova Categoria'},
-        {path: 'categorias/edit/:id', component: CategoriaForm, title: 'Editar Categoria',
-            resolve: { categoria: categoriaResolver }},
+            {path: 'categorias', component: CategoriaList, title: 'Lista de Categorias'},
+            {path: 'categorias/new', component: CategoriaForm, title: 'Nova Categoria'},
+            {path: 'categorias/edit/:id', component: CategoriaForm, title: 'Editar Categoria',
+                resolve: { categoria: categoriaResolver }},
 
-        {path: 'contatos', component: ContatoList, title: 'Lista de Contatos'},
-        {path: 'contatos/new', component: ContatoForm, title: 'Novo Contato'},
-        {path: 'contatos/edit/:id', component: ContatoForm, title: 'Editar Contato',
-            resolve: { contato: contatoResolver }},
+            {path: 'contatos', component: ContatoList, title: 'Lista de Contatos'},
+            {path: 'contatos/new', component: ContatoForm, title: 'Novo Contato'},
+            {path: 'contatos/edit/:id', component: ContatoForm, title: 'Editar Contato',
+                resolve: { contato: contatoResolver }},
+        ]},
 
         // ===== Admin: exige a role ADMIN =====
         {path: '', canActivateChild: [adminGuard], children: [

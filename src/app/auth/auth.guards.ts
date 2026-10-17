@@ -13,6 +13,16 @@ export const authGuard: CanActivateFn = (_route, state) => {
   return inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };
 
+// area operacional (dados pessoais): exige a role USER; o admin puro vai para a area dele
+export const userGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  if (!AUTH_HABILITADA || auth.temRoleUser()) return true;
+  if (!auth.logado()) return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+
+  return router.createUrlTree([auth.rotaInicial()]);
+};
+
 // area administrativa: exige a role ADMIN
 export const adminGuard: CanActivateFn = (_route, state) => {
   const auth = inject(AuthService);
@@ -20,8 +30,8 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   if (!AUTH_HABILITADA || auth.isAdmin()) return true;
   if (!auth.logado()) return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 
-  // logado sem ser admin: volta para a area operacional
-  return router.createUrlTree(['/']);
+  // logado sem ser admin: volta para a area dele
+  return router.createUrlTree([auth.rotaInicial()]);
 };
 
 // login e cadastro: quem ja esta logado vai direto para o sistema
