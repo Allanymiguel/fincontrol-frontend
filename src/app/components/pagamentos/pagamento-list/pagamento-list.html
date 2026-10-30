@@ -94,7 +94,7 @@
                     <td mat-cell *matCellDef="let obj">
                         {{ obj.nomePlano }} <span class="secundario">({{ obj.periodicidade.nome.toLowerCase() }})</span>
                         @if (obj.codigoCupom) {
-                            <span class="codigo">{{ obj.codigoCupom }}</span>
+                            <span class="codigo" [matTooltip]="'Desconto de R$ ' + (obj.valorDesconto | number:'1.2-2')">{{ obj.codigoCupom }}</span>
                         }
                     </td>
                 </ng-container>

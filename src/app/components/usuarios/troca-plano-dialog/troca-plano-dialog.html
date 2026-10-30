@@ -40,7 +40,11 @@
                 <mat-select formControlName="idCupom">
                     <mat-option [value]="null">Sem cupom</mat-option>
                     @for (cupom of cupons(); track cupom.id) {
-                        <mat-option [value]="cupom.id">{{ cupom.codigo }} (-{{ cupom.percentualDesconto | number:'1.0-2' }}%)</mat-option>
+                        <mat-option [value]="cupom.id">
+                            {{ cupom.codigo }} (-{{ cupom.percentualDesconto | number:'1.0-2' }}%)
+                            @if (cupom.planos.length > 0) { · só {{ planosDoCupom(cupom) }} }
+                            @if (cupomEsgotado(cupom)) { · esgotado }
+                        </mat-option>
                     }
                 </mat-select>
                 @if (getErrorMessage('idCupom'); as error) {

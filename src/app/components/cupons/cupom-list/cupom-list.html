@@ -61,6 +61,31 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="planos">
+                    <th mat-header-cell *matHeaderCellDef> Planos </th>
+                    <td mat-cell *matCellDef="let obj" [class.secundario]="obj.planos.length === 0"> {{ planosDoCupom(obj) }} </td>
+                </ng-container>
+
+                <!-- uso = adesao de uma assinatura (conta para o limite) -->
+                <ng-container matColumnDef="usos">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Usos </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num">
+                        {{ obj.usos }}<span class="secundario"> / {{ obj.limiteUsos ?? '∞' }}</span>
+                        @if (cupomEsgotado(obj)) {
+                            <div><span class="tag tag-alerta">Esgotado</span></div>
+                        }
+                    </td>
+                </ng-container>
+
+                <!-- dos pagamentos aprovados (estornados nao contam) -->
+                <ng-container matColumnDef="concedido">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Desconto concedido </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num">
+                        R$ {{ obj.descontoConcedido | number:'1.2-2' }}
+                        <div class="secundario">{{ obj.pagamentos }} {{ obj.pagamentos === 1 ? 'pagamento' : 'pagamentos' }}</div>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="acao">
                     <th mat-header-cell *matHeaderCellDef> Ações </th>
                     <td mat-cell *matCellDef="let obj">

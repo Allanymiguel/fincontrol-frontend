@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Location } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { DecimalPipe, Location } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,16 +10,21 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Cupom, CupomRequest } from '../../../models/cupom.model';
+import { Plano } from '../../../models/plano.model';
 import { CupomService } from '../../../services/cupom.service';
+import { PlanoService } from '../../../services/plano.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { aplicarErrosDaApi, limparErrosDaApi, mensagemDeErro } from '../../../utils/form-errors';
 import { ConfirmacaoService } from '../../../services/confirmacao.service';
 
 @Component({
   imports: [
+    DecimalPipe,
     ReactiveFormsModule,
+    MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -52,7 +57,17 @@ export class CupomForm implements OnInit {
       required: 'Validade é obrigatória.',
       matDatepickerParse: 'Data inválida.',
     },
+    limiteUsos: {
+      min: 'O limite deve ser pelo menos 1 (deixe vazio para não limitar).',
+      pattern: 'Use um número inteiro.',
+    },
   };
+
+  // planos pagos (o Gratuito nao tem preco para descontar)
+  readonly planos = signal<Plano[]>([]);
+  // metricas do cupom em edicao (nulo no cupom novo)
+  readonly metricas = signal<Cupom | null>(null);
+  private readonly planoService = inject(PlanoService);
 
   constructor(
     private fb: FormBuilder,
@@ -70,14 +85,23 @@ export class CupomForm implements OnInit {
       ],
       validade: [null, [Validators.required]],
       ativo: [true],
+      limiteUsos: [null as number | null, [Validators.min(1), Validators.pattern(/^\d+$/)]],
+      idPlanos: [[] as number[]],
     });
   }
 
   ngOnInit(): void {
     const cupom = this.activatedRoute.snapshot.data['cupom'] as Cupom | undefined;
+    // so planos com preco; os ja escolhidos continuam na lista mesmo se forem desativados depois
+    this.planoService.findAll(0, 100).subscribe({
+      next: (resposta) => this.planos.set(resposta.items.filter((plano) => plano.precoMensal > 0
+        && (plano.ativo || cupom?.planos.some((p) => p.id === plano.id)))),
+      error: (error: unknown) => console.error('Erro ao buscar planos:', error),
+    });
 
     if (cupom) {
-      this.form.patchValue({ ...cupom, validade: deDataIso(cupom.validade) });
+      this.form.patchValue({ ...cupom, validade: deDataIso(cupom.validade), idPlanos: cupom.planos.map((p) => p.id) });
+      this.metricas.set(cupom);
     }
   }
 
@@ -154,6 +178,8 @@ export class CupomForm implements OnInit {
       percentualDesconto: Number(value.percentualDesconto),
       validade: paraDataIso(value.validade) as string,
       ativo: !!value.ativo,
+      limiteUsos: value.limiteUsos === null || value.limiteUsos === '' ? null : Number(value.limiteUsos),
+      idPlanos: value.idPlanos ?? [],
     };
   }
 

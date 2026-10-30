@@ -18,7 +18,7 @@ import {
   TrocaPlanoRequest,
   TrocaPlanoResultado,
 } from '../../../models/assinatura.model';
-import { Cupom } from '../../../models/cupom.model';
+import { Cupom, cupomEsgotado, planosDoCupom } from '../../../models/cupom.model';
 import { FORMAS_PAGAMENTO, FORMA_PAGAMENTO_NENHUMA } from '../../../models/forma-pagamento';
 import { PERIODICIDADES } from '../../../models/periodicidade';
 import { Plano } from '../../../models/plano.model';
@@ -69,6 +69,8 @@ export class TrocaPlanoDialog implements OnInit {
   // so o que pode ser contratado: planos ativos (mais o vigente) e cupons ativos dentro da validade
   readonly planos = signal<Plano[]>([]);
   readonly cupons = signal<Cupom[]>([]);
+  readonly planosDoCupom = planosDoCupom;
+  readonly cupomEsgotado = cupomEsgotado;
   readonly enviando = signal(false);
 
   readonly form = inject(FormBuilder).group({

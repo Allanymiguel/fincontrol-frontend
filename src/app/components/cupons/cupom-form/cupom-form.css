@@ -1,1 +1,10 @@
 /* o painel do formulario usa os estilos globais (.sheet, .form-grid, .opcao) */
+
+/* limite e planos: segunda linha do formulario */
+.regras {
+    margin-top: 1rem;
+}
+
+.metricas {
+    margin: 1.25rem 0 1rem;
+}

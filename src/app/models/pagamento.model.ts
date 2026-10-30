@@ -16,6 +16,8 @@ export interface Pagamento {
   idCupom: number | null;
   codigoCupom: string | null;
   valor: number;
+  // quanto o cupom tirou do preco cheio (zero sem cupom)
+  valorDesconto: number;
   formaPagamento: FormaPagamento;
   status: { id: number; nome: string };
   // nulos se nao foi estornado

@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
-import { Cupom } from '../../../models/cupom.model';
+import { Cupom, cupomEsgotado, planosDoCupom } from '../../../models/cupom.model';
 import { PagedResponse } from '../../../services/categoria.service';
 import { CupomService } from '../../../services/cupom.service';
 import { hojeIso } from '../../../utils/data';
@@ -32,7 +32,9 @@ import { hojeIso } from '../../../utils/data';
   templateUrl: './cupom-list.html',
 })
 export class CupomList implements OnInit {
-  displayedColumns: string[] = ['numero', 'codigo', 'desconto', 'validade', 'situacao', 'acao'];
+  displayedColumns: string[] = ['numero', 'codigo', 'desconto', 'validade', 'situacao', 'planos', 'usos', 'concedido', 'acao'];
+  readonly planosDoCupom = planosDoCupom;
+  readonly cupomEsgotado = cupomEsgotado;
   dataSource = new MatTableDataSource<Cupom>();
   pageIndex = 0;
   pageSize = 10;
