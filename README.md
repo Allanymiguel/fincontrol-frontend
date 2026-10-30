@@ -24,8 +24,9 @@ Abra <http://localhost:4200> e entre com `admin@fincontrol.com` / `admin12345`. 
 | Tela | O que faz |
 |---|---|
 | Painel | MRR, receita do mês, receita em risco, novos cadastros e conversão; receita, assinantes e evolução por plano (com a fórmula de cada indicador) |
-| Usuários | filtros (situação, cadastro incompleto, troca ou cancelamento agendado), exportar CSV, resumo com linha do tempo, encerrar sessões |
-| Cobranças | "a cobrança de ontem rodou?", dias sem a automática, histórico com falhas em destaque, rodar agora |
+| Usuários | filtros (situação, cadastro incompleto, troca ou cancelamento agendado), exportar CSV, resumo com linha do tempo, encerrar sessões, simular recusa da cobrança, estornar pagamento |
+| Cobranças | "a cobrança de ontem rodou?", dias sem a automática, histórico com falhas e recusas em destaque, rodar agora ("cobrar até" uma data) |
+| Pagamentos | todos os pagamentos com filtros (período, plano, forma, situação, nome ou e-mail), totais por situação e estorno com motivo |
 | Planos, Cupons, Categorias Padrão, Parâmetros Fiscais, Faixas IRPF | cadastros do FinControl |
 | Base de CEPs | revisão, verificação, revalidação com o ViaCEP, importação CSV, interruptor da consulta externa e log de consultas |
 | Auditoria | quem fez o quê e quando, com o "antes e depois" (somente leitura) |
