@@ -34,6 +34,7 @@ import { UsuarioForm } from './components/usuarios/usuario-form/usuario-form';
 import { usuarioResolver } from './resolvers/usuario-resolver';
 import { usuarioResumoResolver } from './resolvers/usuario-resumo-resolver';
 import { PainelAdmin } from './components/painel/painel-admin/painel-admin';
+import { AuditoriaList } from './components/auditoria/auditoria-list/auditoria-list';
 
 export const routes: Routes = [
     {path: 'login', component: Login, title: 'Entrar', canActivate: [visitanteGuard]},
@@ -65,6 +66,8 @@ export const routes: Routes = [
         // ===== Admin: exige a role ADMIN =====
         {path: '', canActivateChild: [adminGuard], children: [
             {path: 'painel', component: PainelAdmin, title: 'Painel'},
+            // somente leitura: nao ha rota para criar, editar ou excluir eventos
+            {path: 'auditoria', component: AuditoriaList, title: 'Auditoria'},
             {path: 'planos', component: PlanoList, title: 'Lista de Planos'},
             {path: 'planos/new', component: PlanoForm, title: 'Novo Plano'},
             {path: 'planos/edit/:id', component: PlanoForm, title: 'Editar Plano',

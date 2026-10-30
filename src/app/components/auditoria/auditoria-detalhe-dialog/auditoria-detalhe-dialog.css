@@ -1,0 +1,88 @@
+.titulo {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.dados {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem 1rem;
+    margin: 0 0 1.25rem;
+}
+
+.dados dt {
+    margin-bottom: 0.15rem;
+    color: var(--color-text-secondary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.dados dd {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: var(--color-text-primary);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+/* antes | depois lado a lado */
+.comparacao {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.comparacao th,
+.comparacao td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--color-divider);
+    text-align: left;
+    vertical-align: top;
+}
+
+.comparacao thead th {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.comparacao tbody th {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.comparacao .antes {
+    color: var(--color-text-secondary);
+}
+
+.comparacao .depois {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.comparacao .oculto {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.comparacao .oculto mat-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.25rem;
+    font-size: 16px;
+    vertical-align: -3px;
+}
+
+.nota {
+    margin: 0.75rem 0 0;
+}
+
+@media (max-width: 600px) {
+    .dados {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

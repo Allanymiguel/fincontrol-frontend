@@ -1,0 +1,64 @@
+<h2 mat-dialog-title class="titulo">{{ evento.acao.nome }}</h2>
+
+<mat-dialog-content>
+    <dl class="dados">
+        <div>
+            <dt>Quando</dt>
+            <dd class="num">{{ evento.dataHora | date:'dd/MM/yyyy HH:mm' }}</dd>
+        </div>
+        <div>
+            <dt>Administrador</dt>
+            <dd>
+                {{ evento.adminNome }}
+                @if (evento.adminEmail) {
+                    <span class="secundario">{{ evento.adminEmail }}</span>
+                }
+            </dd>
+        </div>
+        <div>
+            <dt>{{ evento.tipoAlvo.nome }}</dt>
+            <dd>{{ evento.descricaoAlvo ?? '—' }}</dd>
+        </div>
+    </dl>
+
+    @if (evento.alteracoes.length === 0) {
+        <p class="secundario">Nenhum campo registrado para esta ação.</p>
+    } @else {
+        <div class="table-scroll">
+            <table class="comparacao">
+                <thead>
+                    <tr>
+                        <th scope="col">Campo</th>
+                        <th scope="col">Antes</th>
+                        <th scope="col">Depois</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (alteracao of evento.alteracoes; track alteracao.campo) {
+                        <tr>
+                            <th scope="row">{{ alteracao.campo }}</th>
+                            @if (alteracao.oculto) {
+                                <td colspan="2" class="oculto">
+                                    <mat-icon aria-hidden="true">lock</mat-icon>
+                                    Alterado · valor oculto por privacidade
+                                </td>
+                            } @else {
+                                <td class="antes">{{ alteracao.antes ?? '—' }}</td>
+                                <td class="depois">{{ alteracao.depois ?? '—' }}</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (criacao) {
+            <p class="secundario nota">Registro criado: não havia valores antes.</p>
+        } @else if (exclusao) {
+            <p class="secundario nota">Registro excluído: os valores acima são os que ele tinha.</p>
+        }
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button matButton="filled" type="button" mat-dialog-close>Fechar</button>
+</mat-dialog-actions>

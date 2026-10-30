@@ -1,0 +1,148 @@
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Auditoria</h1>
+            <p class="page-subtitle">
+                {{ totalItems }} {{ totalItems === 1 ? 'ação registrada' : 'ações registradas' }} · somente leitura
+            </p>
+        </div>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filtro-admin">
+            <mat-label>Administrador</mat-label>
+            <mat-select [(ngModel)]="idAdmin" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (admin of opcoes().admins; track admin.keycloakId) {
+                    <mat-option [value]="admin.keycloakId">{{ admin.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-acao">
+            <mat-label>Ação</mat-label>
+            <mat-select [(ngModel)]="idAcao" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (acao of opcoes().acoes; track acao.id) {
+                    <mat-option [value]="acao.id">{{ acao.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-tipo">
+            <mat-label>Alvo</mat-label>
+            <mat-select [(ngModel)]="idTipoAlvo" (selectionChange)="idAlvo = null; filtrar()">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (tipo of opcoes().tiposAlvo; track tipo.id) {
+                    <mat-option [value]="tipo.id">{{ tipo.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-nome">
+            <mat-label>Buscar no alvo</mat-label>
+            <input #busca matInput [ngModel]="buscaFilter" (ngModelChange)="onBuscaInput($event)" placeholder="Ex.: Carla ou BLACKFRIDAY" />
+            @if (buscaFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onBuscaInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-periodo">
+            <mat-label>Período</mat-label>
+            <mat-date-range-input [rangePicker]="periodo">
+                <input matStartDate placeholder="dd/mm/aaaa" [(ngModel)]="inicio" (dateChange)="onPeriodoChange()" />
+                <input matEndDate placeholder="dd/mm/aaaa" [(ngModel)]="fim" (dateChange)="onPeriodoChange()" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="periodo" />
+            <mat-date-range-picker #periodo />
+        </mat-form-field>
+
+        @if (temFiltro()) {
+            <button matButton type="button" class="limpar-filtros" (click)="limparFiltros()">
+                <mat-icon>filter_alt_off</mat-icon>
+                Limpar filtros
+            </button>
+        }
+    </div>
+
+    @if (idAlvo) {
+        <p class="callout callout-neutro" role="note">
+            <mat-icon aria-hidden="true">filter_alt</mat-icon>
+            <span>Mostrando só as ações sobre um alvo específico (id {{ idAlvo }}).</span>
+        </p>
+    }
+
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="dataHora">
+                    <th mat-header-cell *matHeaderCellDef> Quando </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataHora | date:'dd/MM/yyyy HH:mm' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="admin">
+                    <th mat-header-cell *matHeaderCellDef> Administrador </th>
+                    <td mat-cell *matCellDef="let obj">
+                        <div class="admin-nome">{{ obj.adminNome }}</div>
+                        @if (obj.adminEmail) {
+                            <div class="secundario">{{ obj.adminEmail }}</div>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="evento">
+                    <th mat-header-cell *matHeaderCellDef> Ação </th>
+                    <td mat-cell *matCellDef="let obj">
+                        @switch (tomDaAcao(obj)) {
+                            @case ('erro') { <span class="tag tag-erro">{{ obj.acao.nome }}</span> }
+                            @case ('ok') { <span class="tag tag-ok">{{ obj.acao.nome }}</span> }
+                            @default { <span class="tag tag-info">{{ obj.acao.nome }}</span> }
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="alvo">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Alvo </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal">
+                        <div class="secundario">{{ obj.tipoAlvo.nome }}</div>
+                        <div>{{ obj.descricaoAlvo ?? '—' }}</div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="alteracoes">
+                    <th mat-header-cell *matHeaderCellDef> Campos alterados </th>
+                    <td mat-cell *matCellDef="let obj" class="secundario"> {{ resumoAlteracoes(obj) }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button type="button" class="icone-acao" (click)="abrir(obj); $event.stopPropagation()"
+                            matTooltip="Ver antes e depois" aria-label="Ver antes e depois">
+                            <mat-icon>compare_arrows</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="linha-clicavel" (click)="abrir(row)"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon>history</mat-icon>
+                        Nenhuma ação encontrada com esses filtros.
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 25, 50]" (page)="onPageChange($event)" aria-label="Páginas da auditoria" />
+    </div>
+</section>

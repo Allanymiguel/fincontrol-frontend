@@ -1,0 +1,33 @@
+.filters .filtro-admin,
+.filters .filtro-tipo {
+    width: 180px;
+}
+
+.filters .filtro-acao {
+    width: 240px;
+}
+
+.filters .filtro-periodo {
+    width: 260px;
+}
+
+.limpar-filtros {
+    align-self: center;
+}
+
+.admin-nome {
+    font-weight: 600;
+}
+
+.linha-clicavel {
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .filters .filtro-admin,
+    .filters .filtro-tipo,
+    .filters .filtro-acao,
+    .filters .filtro-periodo {
+        width: 100%;
+    }
+}
