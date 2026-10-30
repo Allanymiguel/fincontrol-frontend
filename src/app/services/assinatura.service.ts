@@ -38,6 +38,11 @@ export class AssinaturaService {
     return this.http.patch<Assinatura>(`${this.url(idUsuario)}/observacao`, { observacao });
   }
 
+  // sem gateway real (RN15): enquanto ligada, cada tentativa da cobranca e recusada
+  definirSimulacaoRecusa(idUsuario: number, ligada: boolean): Observable<Assinatura> {
+    return this.http.patch<Assinatura>(`${this.url(idUsuario)}/simulacao-recusa`, { ligada });
+  }
+
   private url(idUsuario: number): string {
     return `${this.apiUrl}/${idUsuario}/assinatura`;
   }

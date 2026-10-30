@@ -8,14 +8,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiProblem } from '../../../models/api-problem.model';
 import {
   EFEITO_AGENDADO,
   EFEITO_DESFAZ_AGENDAMENTO,
   TrocaPlanoResultado,
 } from '../../../models/assinatura.model';
+import { PAGAMENTO_APROVADO, Pagamento, tomDoPagamento } from '../../../models/pagamento.model';
+import { ASSINATURA_PENDENTE } from '../../../models/status-assinatura';
 import { Usuario } from '../../../models/usuario.model';
 import { UsuarioResumo } from '../../../models/usuario-resumo.model';
 import { AssinaturaService } from '../../../services/assinatura.service';
@@ -23,12 +27,13 @@ import { EventoLinhaDoTempo, UsuarioService } from '../../../services/usuario.se
 import { FORMATO_DATA } from '../../../utils/data';
 import { formatarDocumento } from '../../../utils/documento';
 import { ConfirmacaoService } from '../../../services/confirmacao.service';
+import { EstornoDialog } from '../../pagamentos/estorno-dialog/estorno-dialog';
 import { DadosTrocaPlano, TrocaPlanoDialog } from '../troca-plano-dialog/troca-plano-dialog';
 
 // Detalhe de um usuario para o admin, sem invadir os dados pessoais: perfil, assinatura, pagamentos e
 // apenas QUANTIDADES de transacoes/categorias/contatos (o conteudo nunca vem do back).
 // Aqui o admin tambem gerencia a assinatura (RN16): trocar plano, cancelar o plano pago,
-// desfazer a troca agendada e anotar observacoes.
+// desfazer a troca agendada, anotar observacoes, simular a recusa da cobranca e estornar pagamentos.
 @Component({
   imports: [
     DatePipe,
@@ -38,8 +43,10 @@ import { DadosTrocaPlano, TrocaPlanoDialog } from '../troca-plano-dialog/troca-p
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatTableModule,
+    MatTooltipModule,
     RouterLink,
   ],
   selector: 'app-usuario-detalhe',
@@ -59,8 +66,14 @@ export class UsuarioDetalhe implements OnInit {
   readonly alterando = signal(false);
   readonly linhaDoTempo = signal<EventoLinhaDoTempo[]>([]);
   readonly verTodaLinha = signal(false);
-  readonly colunasHistorico = ['data', 'plano', 'valor', 'forma', 'status'];
+  readonly colunasHistorico = ['data', 'plano', 'valor', 'forma', 'status', 'acao'];
   readonly formatarDocumento = formatarDocumento;
+  readonly tomDoPagamento = tomDoPagamento;
+  readonly PAGAMENTO_APROVADO = PAGAMENTO_APROVADO;
+  readonly alterandoSimulacao = signal(false);
+
+  // pagamento recusado aguardando nova tentativa: o plano continua, mas a troca fica bloqueada
+  readonly pendente = computed(() => this.resumo()?.assinatura?.status.id === ASSINATURA_PENDENTE);
   readonly observacao = new FormControl<string>('', { nonNullable: true });
   readonly salvandoObservacao = signal(false);
 
@@ -154,6 +167,43 @@ export class UsuarioDetalhe implements OnInit {
         this.exibirErro(error, 'Erro ao salvar a observação.');
       },
     });
+  }
+
+  alternarSimulacao(ligada: boolean): void {
+    const assinatura = this.resumo()?.assinatura;
+    if (!assinatura) return;
+
+    this.alterandoSimulacao.set(true);
+    this.assinaturaService.definirSimulacaoRecusa(assinatura.idUsuario, ligada).subscribe({
+      next: () => {
+        this.alterandoSimulacao.set(false);
+        this.exibirMensagem(ligada
+          ? 'Simulação ligada: as próximas tentativas de cobrança serão recusadas.'
+          : 'Simulação desligada: a próxima tentativa de cobrança passa.');
+        this.recarregar();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alterandoSimulacao.set(false);
+        this.exibirErro(error, 'Erro ao alterar a simulação de recusa.');
+        // volta o interruptor para o que esta no back
+        this.recarregar();
+      },
+    });
+  }
+
+  estornar(pagamento: Pagamento): void {
+    this.dialog
+      .open<EstornoDialog, Pagamento, Pagamento>(EstornoDialog, {
+        data: pagamento,
+        width: '560px',
+        maxWidth: 'calc(100vw - 32px)',
+      })
+      .afterClosed()
+      .subscribe((estornado) => {
+        if (!estornado) return;
+        this.exibirMensagem('Pagamento estornado. A assinatura continua como estava.');
+        this.recarregar();
+      });
   }
 
   private mensagemDaTroca(resultado: TrocaPlanoResultado): string {

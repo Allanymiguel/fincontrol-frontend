@@ -175,6 +175,20 @@
     }
 }
 
+.selo.selo-pendente {
+    background: var(--color-danger);
+}
+
+/* aviso de recusa e simulacao usam os callouts globais: aqui so o espaco */
+.pendencia,
+.simulacao {
+    margin-top: 0.75rem;
+}
+
+.simulacao {
+    flex-direction: column;
+}
+
 .acoes-assinatura {
     display: flex;
     flex-wrap: wrap;

@@ -68,14 +68,6 @@
     text-decoration: line-through;
 }
 
-.estorno {
-    max-width: 16rem;
-    margin-top: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .data-card .linha-recusada {
     background: var(--color-danger-soft);
 }

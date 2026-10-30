@@ -38,6 +38,9 @@ export interface Assinatura {
   dataProximaCobranca: string | null;
   trocaAgendada: TrocaAgendada | null;
   observacao: string | null;
+  // simulacao de recusa ligada pelo admin e recusas seguidas da cobranca vencida (status Pendente)
+  simularRecusa: boolean;
+  tentativasRecusadas: number;
 }
 
 // O essencial da assinatura que vem em cada linha da listagem de usuarios

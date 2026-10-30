@@ -150,6 +150,15 @@ a:hover {
 }
 
 /* chave ou codigo curto (parametros fiscais) */
+/* data e motivo do estorno embaixo da situacao do pagamento (listas do admin) */
+.estorno {
+    max-width: 16rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .codigo {
     display: inline-block;
     padding: 0.15rem 0.5rem;

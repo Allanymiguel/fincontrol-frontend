@@ -115,10 +115,12 @@
                     <div class="assinatura-atual">
                         <div class="assinatura-topo">
                             <span class="assinatura-plano">{{ assinatura.nomePlano }} ({{ assinatura.periodicidade.nome.toLowerCase() }})</span>
-                            <span class="selo">{{ assinatura.status.nome }}</span>
+                            <span class="selo" [class.selo-pendente]="pendente()">{{ assinatura.status.nome }}</span>
                         </div>
                         <p class="assinatura-desde">
-                            @if (assinatura.dataProximaCobranca) {
+                            @if (pendente()) {
+                                Cobrança de {{ assinatura.dataProximaCobranca | date }} recusada, em nova tentativa
+                            } @else if (assinatura.dataProximaCobranca) {
                                 Próxima cobrança em {{ assinatura.dataProximaCobranca | date }}
                             } @else {
                                 Plano sem custo · sem cobrança
@@ -131,15 +133,26 @@
                         </div>
                     </div>
 
+                    @if (pendente()) {
+                        <div class="callout callout-erro pendencia" role="status">
+                            <mat-icon aria-hidden="true">credit_card_off</mat-icon>
+                            <span>
+                                <strong>Pagamento recusado ({{ assinatura.tentativasRecusadas }} de 3 tentativas).</strong>
+                                O plano continua valendo; a próxima cobrança tenta de novo e, na 3ª recusa seguida,
+                                volta ao Gratuito. A troca de plano fica bloqueada até a cobrança passar.
+                            </span>
+                        </div>
+                    }
+
                     <div class="acoes-assinatura">
                         <button matButton="filled" type="button" class="botao-trocar" (click)="trocarPlano()"
-                            [disabled]="!resumo.usuario.ativo">
+                            [disabled]="!resumo.usuario.ativo || pendente()">
                             <mat-icon>swap_horiz</mat-icon>
                             Trocar plano
                         </button>
                         @if (podeCancelar()) {
                             <button matButton="outlined" type="button" class="botao-perigo botao-cancelar-plano"
-                                (click)="cancelarPlanoPago()" [disabled]="!resumo.usuario.ativo">
+                                (click)="cancelarPlanoPago()" [disabled]="!resumo.usuario.ativo || pendente()">
                                 <mat-icon>block</mat-icon>
                                 Cancelar plano pago
                             </button>
@@ -163,6 +176,19 @@
                                 Até lá, continua no plano atual.
                             </span>
                             <button matButton type="button" class="botao-desfazer" (click)="desfazerTroca()">Desfazer</button>
+                        </div>
+                    }
+
+                    <!-- sem gateway real (RN15): o admin simula a recusa para ver o fluxo de cobranca -->
+                    @if (assinatura.dataProximaCobranca || assinatura.simularRecusa) {
+                        <div class="callout callout-neutro simulacao">
+                            <mat-slide-toggle [checked]="assinatura.simularRecusa" [disabled]="alterandoSimulacao()"
+                                (change)="alternarSimulacao($event.checked)">
+                                Simular recusa nas próximas cobranças
+                            </mat-slide-toggle>
+                            <span class="secundario">
+                                Sem gateway real: enquanto ligado, cada tentativa de cobrança desta assinatura é recusada.
+                            </span>
                         </div>
                     }
 
@@ -211,9 +237,23 @@
                                 <ng-container matColumnDef="status">
                                     <th mat-header-cell *matHeaderCellDef> Status </th>
                                     <td mat-cell *matCellDef="let obj">
-                                        <!-- 1 Pendente, 2 Aprovado, 3 Recusado -->
-                                        <span class="tag" [class.tag-ok]="obj.status.id === 2" [class.tag-alerta]="obj.status.id === 1"
-                                            [class.tag-erro]="obj.status.id === 3">{{ obj.status.nome }}</span>
+                                        <span [class]="tomDoPagamento(obj.status.id)">{{ obj.status.nome }}</span>
+                                        @if (obj.dataEstorno) {
+                                            <div class="secundario estorno" [matTooltip]="obj.motivoEstorno + ' (' + obj.estornadoPor + ')'">
+                                                em {{ obj.dataEstorno | date }} · {{ obj.motivoEstorno }}
+                                            </div>
+                                        }
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="acao">
+                                    <th mat-header-cell *matHeaderCellDef></th>
+                                    <td mat-cell *matCellDef="let obj">
+                                        @if (obj.status.id === PAGAMENTO_APROVADO) {
+                                            <button mat-icon-button type="button" class="icone-acao" (click)="estornar(obj)"
+                                                matTooltip="Estornar" aria-label="Estornar este pagamento">
+                                                <mat-icon>undo</mat-icon>
+                                            </button>
+                                        }
                                     </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="colunasHistorico"></tr>
