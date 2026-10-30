@@ -37,6 +37,7 @@ import { PainelAdmin } from './components/painel/painel-admin/painel-admin';
 import { AuditoriaList } from './components/auditoria/auditoria-list/auditoria-list';
 import { CepList } from './components/ceps/cep-list/cep-list';
 import { ConsultaCepList } from './components/ceps/consulta-cep-list/consulta-cep-list';
+import { CobrancaList } from './components/cobrancas/cobranca-list/cobranca-list';
 
 export const routes: Routes = [
     {path: 'login', component: Login, title: 'Entrar', canActivate: [visitanteGuard]},
@@ -70,6 +71,7 @@ export const routes: Routes = [
             {path: 'painel', component: PainelAdmin, title: 'Painel'},
             // somente leitura: nao ha rota para criar, editar ou excluir eventos
             {path: 'auditoria', component: AuditoriaList, title: 'Auditoria'},
+            {path: 'cobrancas', component: CobrancaList, title: 'Cobranças'},
             // base propria de CEPs dos enderecos de clientes (os contatos nao usam)
             {path: 'ceps', component: CepList, title: 'Base de CEPs'},
             {path: 'ceps/consultas', component: ConsultaCepList, title: 'Consultas de CEP'},

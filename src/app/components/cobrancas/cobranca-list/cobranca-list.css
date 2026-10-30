@@ -1,0 +1,79 @@
+/* "a cobranca de ontem rodou direito?" */
+.ontem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.ontem.ok {
+    border-left: 4px solid var(--color-success);
+}
+
+.ontem.problema {
+    border-left: 4px solid var(--color-danger);
+}
+
+.ontem-icone {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+}
+
+.ontem.ok .ontem-icone {
+    color: var(--color-success);
+}
+
+.ontem.problema .ontem-icone {
+    color: var(--color-danger);
+}
+
+.ontem-texto {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 14rem;
+    color: var(--color-text-primary);
+}
+
+.ontem-texto strong {
+    font-size: 1.05rem;
+}
+
+.callout {
+    align-items: center;
+}
+
+.ver-falhas {
+    margin-left: auto;
+}
+
+.filters .filtro-periodo {
+    width: 260px;
+}
+
+.filters .filtro-select {
+    width: 180px;
+}
+
+.linha-clicavel {
+    cursor: pointer;
+}
+
+/* execucao com falha em destaque */
+.data-card .linha-falha {
+    background: var(--color-danger-soft);
+}
+
+@media (max-width: 600px) {
+    .filters .filtro-periodo,
+    .filters .filtro-select {
+        width: 100%;
+    }
+}

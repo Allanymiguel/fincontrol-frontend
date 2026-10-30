@@ -1,0 +1,164 @@
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Cobranças</h1>
+            <p class="page-subtitle">Execuções da cobrança automática (03:00) e manuais</p>
+        </div>
+        <button matButton="filled" type="button" (click)="rodarAgora()" [disabled]="rodando()">
+            <mat-icon>play_circle</mat-icon>
+            {{ rodando() ? 'Rodando...' : 'Rodar cobrança agora' }}
+        </button>
+    </header>
+
+    @if (resumo(); as resumo) {
+        <!-- "a cobranca de ontem rodou direito?" -->
+        <div class="ontem" [class.ok]="ontemOk()" [class.problema]="!ontemOk()" role="status">
+            <mat-icon class="ontem-icone" aria-hidden="true">
+                {{ ontemOk() ? 'check_circle' : (resumo.automaticaDeOntem ? 'error' : 'event_busy') }}
+            </mat-icon>
+            <div class="ontem-texto">
+                <span class="label-caps">Cobrança de ontem ({{ deDataIso(resumo.ontem) | date }})</span>
+                @if (resumo.automaticaDeOntem; as exec) {
+                    <strong>
+                        Rodou às {{ exec.inicio | date:'HH:mm' }} · {{ exec.status.nome }}
+                    </strong>
+                    <span class="secundario">
+                        {{ exec.assinaturasProcessadas }} assinatura(s), {{ exec.pagamentosGerados }} pagamento(s),
+                        R$ {{ exec.valorTotal | number:'1.2-2' }}
+                    </span>
+                } @else {
+                    <strong>A cobrança automática não rodou.</strong>
+                    <span class="secundario">Rode agora para cobrar o que venceu.</span>
+                }
+            </div>
+            @if (resumo.automaticaDeOntem; as exec) {
+                <button matButton="outlined" type="button" (click)="abrir(exec)">Ver detalhes</button>
+            }
+        </div>
+
+        @if (resumo.diasSemAutomatica.length > 0) {
+            <p class="callout callout-alerta" role="note">
+                <mat-icon aria-hidden="true">event_busy</mat-icon>
+                <span>
+                    A cobrança automática não rodou em
+                    @for (dia of resumo.diasSemAutomatica; track dia; let ultimo = $last) {
+                        <strong>{{ deDataIso(dia) | date:'dd/MM' }}</strong>{{ ultimo ? '' : ', ' }}
+                    }
+                    (últimos 30 dias). O back precisa estar no ar às 03:00.
+                </span>
+            </p>
+        }
+        @if (resumo.falhasNoPeriodo > 0) {
+            <p class="callout callout-erro" role="note">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                <span>{{ resumo.falhasNoPeriodo }} {{ resumo.falhasNoPeriodo === 1 ? 'execução falhou' : 'execuções falharam' }} nos últimos 30 dias.</span>
+                <button matButton type="button" class="ver-falhas" (click)="verFalhas()">Ver falhas</button>
+            </p>
+        }
+    }
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filtro-periodo">
+            <mat-label>Data de referência</mat-label>
+            <mat-date-range-input [rangePicker]="periodo">
+                <input matStartDate placeholder="dd/mm/aaaa" [(ngModel)]="inicio" (dateChange)="onPeriodoChange()" />
+                <input matEndDate placeholder="dd/mm/aaaa" [(ngModel)]="fim" (dateChange)="onPeriodoChange()" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="periodo" />
+            <mat-date-range-picker #periodo />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Origem</mat-label>
+            <mat-select [(ngModel)]="idOrigem" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (origem of origens; track origem.id) {
+                    <mat-option [value]="origem.id">{{ origem.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Situação</mat-label>
+            <mat-select [(ngModel)]="idStatus" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (situacao of situacoes; track situacao.id) {
+                    <mat-option [value]="situacao.id">{{ situacao.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="dataReferencia">
+                    <th mat-header-cell *matHeaderCellDef> Referência </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ deDataIso(obj.dataReferencia) | date }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="inicio">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Início </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal">
+                        <div class="num">{{ obj.inicio | date:'dd/MM/yyyy HH:mm' }}</div>
+                        <div class="secundario">{{ obj.disparadoPor }}</div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="origem">
+                    <th mat-header-cell *matHeaderCellDef> Origem </th>
+                    <td mat-cell *matCellDef="let obj"> <span class="tag" [class.tag-info]="obj.origem.id === 2">{{ obj.origem.nome }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Situação </th>
+                    <td mat-cell *matCellDef="let obj"> <span [class]="tom(obj)">{{ obj.status.nome }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assinaturas">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Assinaturas </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num"> {{ obj.assinaturasProcessadas }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pagamentos">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Pagamentos </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num"> {{ obj.pagamentosGerados }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="valor">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Valor </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num"> R$ {{ obj.valorTotal | number:'1.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="duracao">
+                    <th mat-header-cell *matHeaderCellDef class="col-num"> Duração </th>
+                    <td mat-cell *matCellDef="let obj" class="col-num num"> {{ obj.duracaoMs / 1000 | number:'1.1-2' }} s </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let obj">
+                        <button mat-icon-button type="button" class="icone-acao" (click)="abrir(obj); $event.stopPropagation()"
+                            matTooltip="Ver detalhes" aria-label="Ver detalhes da execução">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="linha-clicavel"
+                    [class.linha-falha]="falhou(row)" (click)="abrir(row)"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon>receipt_long</mat-icon>
+                        Nenhuma execução encontrada com esses filtros.
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 25, 50]" (page)="onPageChange($event)" aria-label="Páginas das execuções" />
+    </div>
+</section>
