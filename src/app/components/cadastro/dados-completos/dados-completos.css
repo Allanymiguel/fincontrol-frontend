@@ -1,9 +1,1 @@
-/* CEP encontrado / erro da busca de CEP */
-.ok-icon {
-    color: var(--color-success);
-    padding-right: 12px;
-}
-
-.hint-error {
-    color: var(--color-danger);
-}
+/* o endereco (e seus estilos) fica no componente EnderecoCliente */
