@@ -10,9 +10,12 @@ export interface ReceitaEmRisco {
   downgrades: ValorQuantidade;
   cancelamentos: ValorQuantidade;
   contasDesativadas: ValorQuantidade;
+  // pagamento recusado aguardando nova tentativa (volta ao Gratuito na 3a recusa)
+  pagamentosRecusados: ValorQuantidade;
 }
 
-// mes = "AAAA-MM"; semHistorico = mes anterior ao primeiro dado do sistema (valores nulos)
+// mes = "AAAA-MM"; semHistorico = mes anterior ao primeiro dado do sistema (valores nulos).
+// aprovado: pagamentos com data no mes (inclusive os estornados depois); estornado: estornos feitos no mes
 export interface ReceitaMensal {
   mes: string;
   semHistorico: boolean;

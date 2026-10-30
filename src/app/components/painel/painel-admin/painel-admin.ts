@@ -55,11 +55,11 @@ export class PainelAdmin implements OnInit {
 
   readonly formulas = {
     mrr: 'Receita recorrente mensal de hoje: soma do valor de cada cobrança (já com cupom) das assinaturas pagas e ativas de contas ativas, convertido para mensal (anual ÷ 12). O plano Gratuito não entra.',
-    receita: 'Pagamentos aprovados com data no mês, menos os estornos com data no mês.',
-    risco: 'Receita mensal que já tem saída anunciada: diferença dos downgrades agendados, valor inteiro dos cancelamentos agendados e das contas desativadas com plano pago (elas voltam ao Gratuito na próxima cobrança).',
+    receita: 'Pagamentos aprovados com data no mês (inclusive os estornados depois), menos os estornos feitos no mês. Recusados não entram.',
+    risco: 'Receita mensal que já tem saída anunciada: diferença dos downgrades agendados, valor inteiro dos cancelamentos agendados, das contas desativadas com plano pago (voltam ao Gratuito na próxima cobrança) e das assinaturas com pagamento recusado (voltam ao Gratuito na 3ª recusa seguida).',
     cadastros: 'Contas de usuário (papel USER) com data de cadastro dentro do período.',
     conversao: 'Dos novos cadastros do período, quantos já tiveram algum pagamento aprovado. Toda conta nasce no plano Gratuito.',
-    evolucao: 'Reconstruída a partir dos pagamentos: no fim de cada mês, uma assinatura conta como pagante do plano do seu pagamento aprovado mais recente, se ele ainda cobre aquele dia (1 mês ou 1 ano).',
+    evolucao: 'Reconstruída a partir dos pagamentos: no fim de cada mês, uma assinatura conta como pagante do plano do seu pagamento aprovado mais recente, se ele ainda cobre aquele dia (1 mês ou 1 ano). Estornado continua cobrindo; recusado não.',
   };
 
   readonly mesReferencia = computed(() => {
