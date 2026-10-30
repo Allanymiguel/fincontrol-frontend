@@ -120,10 +120,14 @@ export class UsuarioDetalhe implements OnInit {
     if (!assinatura?.dataProximaCobranca) return;
 
     const data = this.formatar(assinatura.dataProximaCobranca);
+    // com cobranca recusada pendente nao ha periodo pago: volta ao Gratuito na hora
+    const naHora = this.pendente();
     const ok = await this.confirmacao.confirmar({
       titulo: 'Cancelar plano pago',
-      mensagem: `${assinatura.nomeUsuario} continua no ${assinatura.nomePlano} até ${data} e depois volta ao `
-        + 'plano Gratuito, sem nova cobrança. Continuar?',
+      mensagem: naHora
+        ? `A cobrança recusada não será tentada de novo e ${assinatura.nomeUsuario} volta ao plano Gratuito agora. Continuar?`
+        : `${assinatura.nomeUsuario} continua no ${assinatura.nomePlano} até ${data} e depois volta ao `
+          + 'plano Gratuito, sem nova cobrança. Continuar?',
       confirmar: 'Cancelar plano',
       perigo: true,
     });
@@ -131,7 +135,9 @@ export class UsuarioDetalhe implements OnInit {
 
     this.assinaturaService.cancelarPlanoPago(assinatura.idUsuario).subscribe({
       next: () => {
-        this.exibirMensagem(`Cancelado: em ${data} ${assinatura.nomeUsuario} volta ao plano Gratuito.`);
+        this.exibirMensagem(naHora
+          ? `Cancelado: ${assinatura.nomeUsuario} voltou ao plano Gratuito.`
+          : `Cancelado: em ${data} ${assinatura.nomeUsuario} volta ao plano Gratuito.`);
         this.recarregar();
       },
       error: (error: HttpErrorResponse) => this.exibirErro(error, 'Erro ao cancelar o plano.'),

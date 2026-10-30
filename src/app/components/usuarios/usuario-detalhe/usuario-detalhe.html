@@ -139,7 +139,8 @@
                             <span>
                                 <strong>Pagamento recusado ({{ assinatura.tentativasRecusadas }} de 3 tentativas).</strong>
                                 O plano continua valendo; a próxima cobrança tenta de novo e, na 3ª recusa seguida,
-                                volta ao Gratuito. A troca de plano fica bloqueada até a cobrança passar.
+                                volta ao Gratuito. A troca de plano fica bloqueada até a cobrança passar; cancelar volta ao
+                                Gratuito na hora.
                             </span>
                         </div>
                     }
@@ -152,7 +153,7 @@
                         </button>
                         @if (podeCancelar()) {
                             <button matButton="outlined" type="button" class="botao-perigo botao-cancelar-plano"
-                                (click)="cancelarPlanoPago()" [disabled]="!resumo.usuario.ativo || pendente()">
+                                (click)="cancelarPlanoPago()" [disabled]="!resumo.usuario.ativo">
                                 <mat-icon>block</mat-icon>
                                 Cancelar plano pago
                             </button>
