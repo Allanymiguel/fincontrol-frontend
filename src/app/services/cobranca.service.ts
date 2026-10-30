@@ -18,9 +18,10 @@ export class CobrancaService {
 
   constructor(private http: HttpClient) {}
 
-  // cobra o que venceu ate hoje; fica no historico e na auditoria
-  processar(): Observable<ResultadoCobranca> {
-    return this.http.post<ResultadoCobranca>(`${this.apiUrl}/processar`, null);
+  // cobra o que venceu ate a data ("yyyy-MM-dd"; sem data, hoje); fica no historico e na auditoria
+  processar(data: string | null = null): Observable<ResultadoCobranca> {
+    const params = data ? new HttpParams().set('data', data) : undefined;
+    return this.http.post<ResultadoCobranca>(`${this.apiUrl}/processar`, null, { params });
   }
 
   resumo(): Observable<ResumoCobranca> {

@@ -23,6 +23,7 @@ import { ExecucaoCobranca, STATUS_FALHA, STATUS_SUCESSO } from '../../../models/
         <div><dt>Duração</dt><dd class="num">{{ execucao.duracaoMs / 1000 | number:'1.1-2' }} s</dd></div>
         <div><dt>Assinaturas</dt><dd class="num">{{ execucao.assinaturasProcessadas }}</dd></div>
         <div><dt>Pagamentos</dt><dd class="num">{{ execucao.pagamentosGerados }}</dd></div>
+        <div><dt>Recusados</dt><dd class="num">{{ execucao.pagamentosRecusados }}</dd></div>
         <div><dt>Valor</dt><dd class="num">R$ {{ execucao.valorTotal | number:'1.2-2' }}</dd></div>
         <div><dt>Trocas aplicadas</dt><dd class="num">{{ execucao.trocasAplicadas }}</dd></div>
         <div><dt>Voltas ao Gratuito</dt><dd class="num">{{ execucao.voltasAoGratuito }}</dd></div>

@@ -66,6 +66,13 @@
     cursor: pointer;
 }
 
+/* recusa (simulada) nao e falha da execucao, mas aparece */
+.recusados {
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
 /* execucao com falha em destaque */
 .data-card .linha-falha {
     background: var(--color-danger-soft);

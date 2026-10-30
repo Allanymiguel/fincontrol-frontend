@@ -16,6 +16,8 @@ export interface ExecucaoCobranca {
   valorTotal: number;
   trocasAplicadas: number;
   voltasAoGratuito: number;
+  // tentativas recusadas (simulacao): nao sao erro da execucao
+  pagamentosRecusados: number;
   // falha da execucao inteira
   mensagemErro: string | null;
   // assinaturas que falharam (as outras seguiram)
@@ -38,6 +40,7 @@ export interface ResultadoCobranca {
   valorTotal: number;
   trocasAplicadas: number;
   voltasAoGratuito: number;
+  pagamentosRecusados: number;
   idExecucao: number;
   status: ItemEnum;
 }

@@ -23,12 +23,12 @@ import {
   STATUS_SUCESSO,
 } from '../../../models/cobranca.model';
 import { CobrancaService } from '../../../services/cobranca.service';
-import { ConfirmacaoService } from '../../../services/confirmacao.service';
 import { deDataIso, paraDataIso } from '../../../utils/data';
 import { ExecucaoDetalheDialog } from '../execucao-detalhe-dialog/execucao-detalhe-dialog';
+import { RodarCobrancaDialog } from '../rodar-cobranca-dialog/rodar-cobranca-dialog';
 
 // Cobranca das assinaturas: "a de ontem rodou direito?", dias em que a automatica nao rodou,
-// historico de execucoes (falhas em destaque) e o disparo manual.
+// historico de execucoes (falhas em destaque) e o disparo manual ("cobrar ate" uma data).
 @Component({
   imports: [
     DatePipe,
@@ -52,7 +52,6 @@ import { ExecucaoDetalheDialog } from '../execucao-detalhe-dialog/execucao-detal
 export class CobrancaList implements OnInit {
   private readonly cobrancaService = inject(CobrancaService);
   private readonly dialog = inject(MatDialog);
-  private readonly confirmacao = inject(ConfirmacaoService);
   private readonly snack = inject(MatSnackBar);
 
   readonly origens = ORIGENS_EXECUCAO;
@@ -123,21 +122,24 @@ export class CobrancaList implements OnInit {
     this.dialog.open(ExecucaoDetalheDialog, { data: execucao, width: '680px', maxWidth: '95vw', autoFocus: false });
   }
 
-  async rodarAgora(): Promise<void> {
-    if (!(await this.confirmacao.confirmar({
-      titulo: 'Rodar a cobrança agora',
-      mensagem: 'As assinaturas com cobrança vencida até hoje serão cobradas e as trocas agendadas aplicadas. '
-        + 'Rodar de novo no mesmo dia não cobra duas vezes. A execução fica no histórico e na auditoria.',
-      confirmar: 'Rodar agora',
-      icone: 'play_circle',
-    }))) return;
+  rodarAgora(): void {
+    this.dialog
+      .open<RodarCobrancaDialog, void, Date>(RodarCobrancaDialog, { width: '480px', maxWidth: 'calc(100vw - 32px)' })
+      .afterClosed()
+      .subscribe((data) => {
+        if (data) this.processar(data);
+      });
+  }
 
+  private processar(data: Date): void {
     this.rodando.set(true);
-    this.cobrancaService.processar().subscribe({
+    this.cobrancaService.processar(paraDataIso(data)).subscribe({
       next: (r) => {
         this.rodando.set(false);
+        const recusados = r.pagamentosRecusados > 0 ? `, ${r.pagamentosRecusados} recusado(s)` : '';
         this.snack.open(`Cobrança ${r.status.nome.toLowerCase()}: ${r.assinaturasProcessadas} assinatura(s), `
-          + `${r.pagamentosGerados} pagamento(s), R$ ${r.valorTotal.toFixed(2).replace('.', ',')}.`, 'Ok', { duration: 6000 });
+          + `${r.pagamentosGerados} pagamento(s)${recusados}, R$ ${r.valorTotal.toFixed(2).replace('.', ',')}.`, 'Ok',
+          { duration: 6000 });
         this.carregarResumo();
         this.filtrar();
       },
