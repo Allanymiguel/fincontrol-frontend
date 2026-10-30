@@ -27,7 +27,8 @@ Abra <http://localhost:4200> e entre com `admin@fincontrol.com` / `admin12345`. 
 | Usuários | filtros (situação, cadastro incompleto, troca ou cancelamento agendado), exportar CSV, resumo com linha do tempo, encerrar sessões, simular recusa da cobrança, estornar pagamento |
 | Cobranças | "a cobrança de ontem rodou?", dias sem a automática, histórico com falhas e recusas em destaque, rodar agora ("cobrar até" uma data) |
 | Pagamentos | todos os pagamentos com filtros (período, plano, forma, situação, nome ou e-mail), totais por situação e estorno com motivo |
-| Planos, Cupons, Categorias Padrão, Parâmetros Fiscais, Faixas IRPF | cadastros do FinControl |
+| Cupons | limite de usos, planos em que o cupom vale e métricas (usos, desconto concedido) |
+| Planos, Categorias Padrão, Parâmetros Fiscais, Faixas IRPF | cadastros do FinControl |
 | Base de CEPs | revisão, verificação, revalidação com o ViaCEP, importação CSV, interruptor da consulta externa e log de consultas |
 | Auditoria | quem fez o quê e quando, com o "antes e depois" (somente leitura) |
 
