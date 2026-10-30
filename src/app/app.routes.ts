@@ -38,6 +38,7 @@ import { AuditoriaList } from './components/auditoria/auditoria-list/auditoria-l
 import { CepList } from './components/ceps/cep-list/cep-list';
 import { ConsultaCepList } from './components/ceps/consulta-cep-list/consulta-cep-list';
 import { CobrancaList } from './components/cobrancas/cobranca-list/cobranca-list';
+import { PagamentoList } from './components/pagamentos/pagamento-list/pagamento-list';
 
 export const routes: Routes = [
     {path: 'login', component: Login, title: 'Entrar', canActivate: [visitanteGuard]},
@@ -72,6 +73,7 @@ export const routes: Routes = [
             // somente leitura: nao ha rota para criar, editar ou excluir eventos
             {path: 'auditoria', component: AuditoriaList, title: 'Auditoria'},
             {path: 'cobrancas', component: CobrancaList, title: 'Cobranças'},
+            {path: 'pagamentos', component: PagamentoList, title: 'Pagamentos'},
             // base propria de CEPs dos enderecos de clientes (os contatos nao usam)
             {path: 'ceps', component: CepList, title: 'Base de CEPs'},
             {path: 'ceps/consultas', component: ConsultaCepList, title: 'Consultas de CEP'},
