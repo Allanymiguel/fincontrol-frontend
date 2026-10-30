@@ -19,7 +19,7 @@ import {
 import { Usuario } from '../../../models/usuario.model';
 import { UsuarioResumo } from '../../../models/usuario-resumo.model';
 import { AssinaturaService } from '../../../services/assinatura.service';
-import { UsuarioService } from '../../../services/usuario.service';
+import { EventoLinhaDoTempo, UsuarioService } from '../../../services/usuario.service';
 import { FORMATO_DATA } from '../../../utils/data';
 import { formatarDocumento } from '../../../utils/documento';
 import { ConfirmacaoService } from '../../../services/confirmacao.service';
@@ -57,6 +57,8 @@ export class UsuarioDetalhe implements OnInit {
 
   readonly resumo = signal<UsuarioResumo | null>(null);
   readonly alterando = signal(false);
+  readonly linhaDoTempo = signal<EventoLinhaDoTempo[]>([]);
+  readonly verTodaLinha = signal(false);
   readonly colunasHistorico = ['data', 'plano', 'valor', 'forma', 'status'];
   readonly formatarDocumento = formatarDocumento;
   readonly observacao = new FormControl<string>('', { nonNullable: true });
@@ -184,6 +186,41 @@ export class UsuarioDetalhe implements OnInit {
     this.resumo.set(resumo);
     this.observacao.setValue(resumo.assinatura?.observacao ?? '');
     this.observacao.markAsPristine();
+    this.usuarioService.linhaDoTempo(resumo.usuario.id).subscribe({
+      next: (eventos) => this.linhaDoTempo.set(eventos),
+      error: (error: unknown) => console.error('Erro ao buscar a linha do tempo:', error),
+    });
+  }
+
+  // as sessoes no Keycloak caem e os tokens ja emitidos deixam de valer na hora
+  async encerrarSessoes(): Promise<void> {
+    const usuario = this.resumo()?.usuario;
+    if (!usuario) return;
+    if (!(await this.confirmacao.confirmar({
+      titulo: 'Encerrar sessões',
+      mensagem: `${usuario.nome} será desconectado de todos os dispositivos agora e precisará entrar de novo.`,
+      confirmar: 'Encerrar sessões',
+      icone: 'logout',
+      perigo: true,
+    }))) return;
+
+    this.alterando.set(true);
+    this.usuarioService.encerrarSessoes(usuario.id).subscribe({
+      next: () => {
+        this.alterando.set(false);
+        this.exibirMensagem(`Sessões de ${usuario.nome} encerradas.`);
+        this.recarregar();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alterando.set(false);
+        const problem = error.error as ApiProblem | null;
+        this.exibirMensagem(problem?.errors?.[0]?.message ?? problem?.detail ?? 'Não foi possível encerrar as sessões.');
+      },
+    });
+  }
+
+  iconeDoEvento(categoria: string): string {
+    return { conta: 'person_add', assinatura: 'swap_horiz', pagamento: 'payments', admin: 'admin_panel_settings' }[categoria] ?? 'circle';
   }
 
   private formatar(data: string | null): string {

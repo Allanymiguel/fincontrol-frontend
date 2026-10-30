@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +20,8 @@ import { Plano } from '../../../models/plano.model';
 import { Usuario } from '../../../models/usuario.model';
 import { PagedResponse } from '../../../services/categoria.service';
 import { PlanoService } from '../../../services/plano.service';
-import { UsuarioService } from '../../../services/usuario.service';
+import { FiltroUsuario, UsuarioService } from '../../../services/usuario.service';
+import { hojeIso } from '../../../utils/data';
 import { formatarDocumento } from '../../../utils/documento';
 
 // Somente leitura + ativar/desativar: os usuarios serao criados pelo Keycloak
@@ -34,6 +36,7 @@ import { formatarDocumento } from '../../../utils/documento';
     MatPaginatorModule,
     MatSelectModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatIconModule,
     MatSlideToggleModule,
     MatSnackBarModule,
@@ -55,6 +58,10 @@ export class UsuarioList implements OnInit {
   // todos os planos (inclusive inativos: ainda pode haver usuario neles)
   planos: Plano[] = [];
   idPlanoFilter: number | null = null;
+  situacaoFilter: 'todos' | 'ativos' | 'desativados' = 'todos';
+  incompletoFilter = false;
+  agendamentoFilter = false;
+  exportando = false;
   private readonly buscaChanges = new Subject<string>();
   // ids com PATCH em andamento: o toggle fica desabilitado ate a resposta
   readonly alterando = new Set<number>();
@@ -82,7 +89,7 @@ export class UsuarioList implements OnInit {
   }
 
   loadUsuarios() {
-    this.usuarioService.findAll(this.pageIndex, this.pageSize, this.buscaFilter, this.idPlanoFilter).subscribe({
+    this.usuarioService.findAll(this.pageIndex, this.pageSize, this.buscaFilter, this.idPlanoFilter, this.filtro()).subscribe({
       next: (response: PagedResponse<Usuario>) => {
         this.dataSource.data = response.items;
         this.pageIndex = response.page;
@@ -129,6 +136,35 @@ export class UsuarioList implements OnInit {
         console.error('Erro ao ativar/desativar usuário:', error);
       },
     });
+  }
+
+  // baixa o CSV com os filtros aplicados
+  exportar(): void {
+    this.exportando = true;
+    this.usuarioService.exportarCsv(this.buscaFilter, this.idPlanoFilter, this.filtro()).subscribe({
+      next: (arquivo: Blob) => {
+        this.exportando = false;
+        const url = URL.createObjectURL(arquivo);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `usuarios-${hojeIso()}.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (error: unknown) => {
+        this.exportando = false;
+        this.exibirMensagem('Não foi possível exportar a lista.');
+        console.error('Erro ao exportar usuários:', error);
+      },
+    });
+  }
+
+  private filtro(): FiltroUsuario {
+    return {
+      ativo: this.situacaoFilter === 'todos' ? null : this.situacaoFilter === 'ativos',
+      incompleto: this.incompletoFilter,
+      agendamento: this.agendamentoFilter,
+    };
   }
 
   private exibirMensagem(mensagem: string): void {

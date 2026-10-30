@@ -42,6 +42,12 @@
                             <mat-icon>{{ resumo.usuario.ativo ? 'block' : 'check_circle' }}</mat-icon>
                             {{ resumo.usuario.ativo ? 'Desativar' : 'Ativar' }}
                         </button>
+                        @if (resumo.usuario.ativo) {
+                            <button matButton="outlined" type="button" (click)="encerrarSessoes()" [disabled]="alterando()">
+                                <mat-icon>logout</mat-icon>
+                                Encerrar sessões
+                            </button>
+                        }
                     </div>
                 </div>
 
@@ -217,6 +223,40 @@
                     </div>
                 } @else {
                     <p class="secundario">Nenhum pagamento.</p>
+                }
+
+                <!-- relacao com o FinControl: nada das financas pessoais, documento ou telefone -->
+                <div class="linha-titulo">
+                    <h3 class="label-caps sheet-section">Linha do tempo</h3>
+                    <a matButton routerLink="/auditoria" [queryParams]="{ busca: resumo.usuario.email }">
+                        <mat-icon>history</mat-icon>
+                        Ver na auditoria
+                    </a>
+                </div>
+                @if (linhaDoTempo().length === 0) {
+                    <p class="secundario">Nenhum acontecimento registrado.</p>
+                } @else {
+                    <ol class="linha-do-tempo">
+                        @for (evento of (verTodaLinha() ? linhaDoTempo() : linhaDoTempo().slice(0, 8)); track $index) {
+                            <li [class]="'evento evento-' + evento.categoria">
+                                <span class="evento-ponto" aria-hidden="true"><mat-icon>{{ iconeDoEvento(evento.categoria) }}</mat-icon></span>
+                                <div class="evento-texto">
+                                    <div class="evento-cabecalho">
+                                        <strong>{{ evento.titulo }}</strong>
+                                        <span class="secundario num">
+                                            {{ evento.categoria === 'pagamento' ? (evento.dataHora | date) : (evento.dataHora | date:'dd/MM/yyyy HH:mm') }}
+                                        </span>
+                                    </div>
+                                    <span class="secundario">{{ evento.descricao }}</span>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                    @if (linhaDoTempo().length > 8) {
+                        <button matButton type="button" class="ver-mais" (click)="verTodaLinha.set(!verTodaLinha())">
+                            {{ verTodaLinha() ? 'Mostrar menos' : 'Mostrar tudo (' + linhaDoTempo().length + ')' }}
+                        </button>
+                    }
                 }
             </div>
 

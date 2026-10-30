@@ -4,10 +4,17 @@
             <h1 class="page-title">Usuários</h1>
             <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'usuário' : 'usuários' }}</p>
         </div>
-        <button matButton="filled" routerLink="/usuarios/new">
-            <mat-icon>add</mat-icon>
-            Novo usuário
-        </button>
+        <div class="acoes-topo">
+            <button matButton="outlined" type="button" (click)="exportar()" [disabled]="exportando"
+                matTooltip="CSV com os filtros aplicados (sem CPF, telefone e endereço)">
+                <mat-icon>download</mat-icon>
+                Exportar CSV
+            </button>
+            <button matButton="filled" routerLink="/usuarios/new">
+                <mat-icon>add</mat-icon>
+                Novo usuário
+            </button>
+        </div>
     </header>
 
     <div class="filters">
@@ -34,6 +41,21 @@
                 }
             </mat-select>
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-situacao">
+            <mat-label>Situação</mat-label>
+            <mat-select [(ngModel)]="situacaoFilter" (selectionChange)="onPlanoChange()">
+                <mat-option value="todos">Todas</mat-option>
+                <mat-option value="ativos">Ativas</mat-option>
+                <mat-option value="desativados">Desativadas</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="filtros-marcar">
+            <mat-checkbox [(ngModel)]="incompletoFilter" (change)="onPlanoChange()"
+                matTooltip="Cliente sem documento, perfil fiscal ou endereço">Cadastro incompleto</mat-checkbox>
+            <mat-checkbox [(ngModel)]="agendamentoFilter" (change)="onPlanoChange()">Troca ou cancelamento agendado</mat-checkbox>
+        </div>
     </div>
 
     <div class="data-card">

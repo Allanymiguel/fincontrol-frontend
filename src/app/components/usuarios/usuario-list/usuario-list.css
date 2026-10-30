@@ -14,8 +14,31 @@
     white-space: nowrap;
 }
 
-.filter-plano {
+.filter-plano,
+.filter-situacao {
     width: 12rem;
+}
+
+.acoes-topo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* filtros de marcar: cadastro incompleto e troca/cancelamento agendado */
+.filtros-marcar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    color: var(--color-text-primary);
+}
+
+@media (max-width: 600px) {
+    .filter-plano,
+    .filter-situacao {
+        width: 100%;
+    }
 }
 
 .plano {
