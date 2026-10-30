@@ -42,6 +42,9 @@
                 @if (auth.isAdmin()) {
                     <div class="nav-section nav-admin" role="group" aria-labelledby="nav-admin">
                         <span class="nav-label label-caps" id="nav-admin">Admin</span>
+                        <a routerLink="/painel" routerLinkActive="active">
+                            <mat-icon aria-hidden="true">dashboard</mat-icon> Painel
+                        </a>
                         <a routerLink="/usuarios" routerLinkActive="active">
                             <mat-icon aria-hidden="true">group</mat-icon> Usuários
                         </a>

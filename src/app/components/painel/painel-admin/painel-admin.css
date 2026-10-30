@@ -1,0 +1,234 @@
+.filtros-periodo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.conteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: opacity 0.2s ease;
+}
+
+/* trocando o periodo: os numeros atuais ficam ate os novos chegarem */
+.conteudo.atualizando {
+    opacity: 0.55;
+}
+
+.carregando {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 0;
+}
+
+.callout-erro .tentar {
+    margin-left: auto;
+}
+
+/* ===== indicadores ===== */
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+}
+
+.kpi,
+.cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.kpi-destaque {
+    border-top: 3px solid var(--color-accent);
+}
+
+.kpi-cabecalho,
+.cartao-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+    min-height: 32px;
+}
+
+.info {
+    --mat-icon-button-state-layer-size: 32px;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.info mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-muted);
+}
+
+.kpi-valor {
+    color: var(--color-text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.kpi-valor small {
+    margin-left: 0.15rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* o numero que o painel destaca: um so por tela, sempre numa linha */
+.kpi-heroi {
+    font-size: clamp(1.9rem, 2.4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.kpi-heroi .moeda {
+    margin-right: 0.15rem;
+    font-size: 0.6em;
+    font-weight: 700;
+}
+
+.sem-historico {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.parcelas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin: 0.25rem 0 0;
+    font-size: 12px;
+}
+
+.parcelas div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.parcelas dt {
+    color: var(--color-text-secondary);
+}
+
+.parcelas dd {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+/* ===== graficos ===== */
+
+.graficos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 1rem;
+}
+
+.cartao {
+    gap: 0.75rem;
+}
+
+.cartao-largo {
+    grid-column: 1 / -1;
+}
+
+.cartao-cabecalho {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.cartao-cabecalho h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* assinantes por plano: barras horizontais de um tom so, valor na ponta */
+.barras-planos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.barras-planos li {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.plano-nome {
+    color: var(--color-text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.plano-trilho {
+    height: 12px;
+}
+
+.plano-barra {
+    display: block;
+    height: 100%;
+    min-width: 2px;
+    border-radius: 0 4px 4px 0;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.plano-barra.plano-gratuito {
+    background: var(--color-text-muted);
+}
+
+.plano-qtd {
+    min-width: 2ch;
+    color: var(--color-text-primary);
+    font-size: 13px;
+    text-align: right;
+}
+
+@media (max-width: 900px) {
+    .graficos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-heroi {
+        font-size: 2.5rem;
+    }
+
+    mat-button-toggle-group {
+        width: 100%;
+    }
+
+    mat-button-toggle {
+        flex: 1;
+    }
+}

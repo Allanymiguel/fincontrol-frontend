@@ -1,0 +1,131 @@
+<div class="grafico">
+    @if (mostrarLegenda()) {
+        <ul class="legenda" aria-label="Legenda">
+            @for (serie of series(); track serie.nome) {
+                <li><span class="chave chave-barra" [style.background]="serie.cor"></span>{{ serie.nome }}</li>
+            }
+            @if (serieLinha(); as linha) {
+                <li><span class="chave chave-linha" [style.background]="linha.cor"></span>{{ linha.nome }}</li>
+            }
+        </ul>
+    }
+
+    <div class="area">
+        <div class="eixo-y" aria-hidden="true">
+            @for (marca of marcas(); track $index) {
+                <span class="num" [style.bottom.%]="percentual(marca)">{{ formatar(marca, true) }}</span>
+            }
+        </div>
+
+        <div class="plot" role="group" [attr.aria-label]="titulo()">
+            @for (marca of marcas(); track $index) {
+                <div class="grade" [style.bottom.%]="percentual(marca)" aria-hidden="true"></div>
+            }
+
+            <div class="colunas" [style.grid-template-columns]="'repeat(' + colunas().length + ', 1fr)'">
+                @for (coluna of colunas(); track coluna.rotuloCompleto; let i = $index) {
+                    <div class="coluna" tabindex="0" [class.ativa]="ativa() === i"
+                        [attr.aria-label]="descricao(coluna)"
+                        (pointerenter)="ativa.set(i)" (pointerleave)="ativa.set(null)"
+                        (focus)="ativa.set(i)" (blur)="ativa.set(null)">
+                        @if (coluna.semHistorico) {
+                            <span class="sem-historico" aria-hidden="true">—</span>
+                        } @else {
+                            <div class="pilha" [style.height.%]="percentual(total(coluna))">
+                                @for (segmento of segmentos(coluna); track $index) {
+                                    <span class="segmento" [style.flex-grow]="segmento.valor" [style.background]="segmento.cor"></span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if (serieLinha(); as linha) {
+                <svg class="linha" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                    <polyline [attr.points]="polyline()" [attr.stroke]="linha.cor" />
+                </svg>
+                @for (ponto of pontosLinha(); track $index) {
+                    <span class="ponto" [style.left.%]="ponto.x" [style.bottom.%]="ponto.y" [style.background]="linha.cor" aria-hidden="true"></span>
+                }
+            }
+
+            <!-- tooltip da coluna sob o mouse ou o foco (o mesmo texto vai no aria-label e na tabela) -->
+            @let i = ativa();
+            @if (i !== null) {
+                @let coluna = colunas()[i];
+                <div class="tooltip" [class.tooltip-inicio]="alinhamento(i) === 'inicio'" [class.tooltip-fim]="alinhamento(i) === 'fim'"
+                    [style.left.%]="centro(i, colunas().length)" aria-hidden="true">
+                    <span class="tooltip-titulo">{{ coluna.rotuloCompleto }}</span>
+                    @if (coluna.semHistorico) {
+                        <span class="secundario">Sem histórico suficiente</span>
+                    } @else {
+                        @for (serie of series(); track serie.nome; let s = $index) {
+                            <span class="tooltip-linha">
+                                <span class="chave chave-linha" [style.background]="serie.cor"></span>
+                                <strong class="num">{{ formatar(coluna.valores[s]) }}</strong>
+                                <span class="secundario">{{ serie.nome }}</span>
+                            </span>
+                        }
+                        @if (serieLinha(); as linha) {
+                            <span class="tooltip-linha">
+                                <span class="chave chave-linha" [style.background]="linha.cor"></span>
+                                <strong class="num">{{ formatar(coluna.linha) }}</strong>
+                                <span class="secundario">{{ linha.nome }}</span>
+                            </span>
+                        }
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="eixo-x" [style.grid-template-columns]="'repeat(' + colunas().length + ', 1fr)'" aria-hidden="true">
+            @for (coluna of colunas(); track coluna.rotuloCompleto; let i = $index) {
+                <span>
+                    @if (!rotuloAlternado() || i % 2 === 0) {
+                        {{ coluna.rotulo }}
+                        @if (coluna.sufixo) {
+                            <small>{{ coluna.sufixo }}</small>
+                        }
+                    }
+                </span>
+            }
+        </div>
+    </div>
+
+    <details class="tabela-dados">
+        <summary>Ver dados em tabela</summary>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Mês</th>
+                        @for (serie of series(); track serie.nome) {
+                            <th scope="col" class="col-num">{{ serie.nome }}</th>
+                        }
+                        @if (serieLinha(); as linha) {
+                            <th scope="col" class="col-num">{{ linha.nome }}</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (coluna of colunas(); track coluna.rotuloCompleto) {
+                        <tr>
+                            <th scope="row">{{ coluna.rotuloCompleto }}</th>
+                            @if (coluna.semHistorico) {
+                                <td [attr.colspan]="series().length + (serieLinha() ? 1 : 0)" class="secundario">Sem histórico suficiente</td>
+                            } @else {
+                                @for (valor of coluna.valores; track $index) {
+                                    <td class="col-num num">{{ formatar(valor) }}</td>
+                                }
+                                @if (serieLinha()) {
+                                    <td class="col-num num">{{ formatar(coluna.linha) }}</td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </details>
+</div>

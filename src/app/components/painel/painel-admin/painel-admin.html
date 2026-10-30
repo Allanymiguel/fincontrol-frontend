@@ -1,0 +1,186 @@
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Painel</h1>
+            <p class="page-subtitle">Assinaturas, receita e cadastros do FinControl</p>
+        </div>
+    </header>
+
+    <!-- o periodo vale para tudo abaixo dele -->
+    <div class="filtros-periodo">
+        <mat-button-toggle-group hideSingleSelectionIndicator [value]="periodo()" (change)="escolherPeriodo($event.value)"
+            aria-label="Período">
+            @for (opcao of periodos; track opcao.id) {
+                <mat-button-toggle [value]="opcao.id">{{ opcao.rotulo }}</mat-button-toggle>
+            }
+        </mat-button-toggle-group>
+        @if (carregando()) {
+            <mat-progress-spinner mode="indeterminate" diameter="20" aria-label="Carregando indicadores" />
+        }
+    </div>
+
+    @if (erro(); as erro) {
+        <div class="callout callout-erro" role="alert">
+            <mat-icon aria-hidden="true">error</mat-icon>
+            <span>{{ erro }}</span>
+            <button matButton type="button" class="tentar" (click)="carregar()">Tentar de novo</button>
+        </div>
+    }
+
+    @if (dados(); as dados) {
+        <div class="conteudo" [class.atualizando]="carregando()">
+            <!-- ===== indicadores ===== -->
+            <div class="kpis">
+                <article class="kpi kpi-destaque">
+                    <header class="kpi-cabecalho">
+                        <span class="label-caps">MRR (hoje)</span>
+                        <button mat-icon-button type="button" class="info" [matTooltip]="formulas.mrr" aria-label="Como o MRR é calculado">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                    </header>
+                    <strong class="kpi-valor kpi-heroi"><span class="moeda">R$</span>{{ dados.mrr.valor | number:'1.2-2' }}</strong>
+                    <span class="secundario">
+                        {{ dados.mrr.assinaturas }} {{ dados.mrr.assinaturas === 1 ? 'assinatura paga' : 'assinaturas pagas' }}
+                    </span>
+                </article>
+
+                <article class="kpi">
+                    <header class="kpi-cabecalho">
+                        <span class="label-caps">Receita de {{ mesReferencia() }}</span>
+                        <button mat-icon-button type="button" class="info" [matTooltip]="formulas.receita" aria-label="Como a receita do mês é calculada">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                    </header>
+                    @if (dados.receitaMesReferencia.semHistorico) {
+                        <span class="sem-historico">Sem histórico suficiente</span>
+                    } @else {
+                        <strong class="kpi-valor">R$ {{ dados.receitaMesReferencia.liquido | number:'1.2-2' }}</strong>
+                        <span class="secundario">
+                            Aprovados R$ {{ dados.receitaMesReferencia.aprovado | number:'1.2-2' }}
+                            · Estornos R$ {{ dados.receitaMesReferencia.estornado | number:'1.2-2' }}
+                        </span>
+                    }
+                </article>
+
+                <article class="kpi">
+                    <header class="kpi-cabecalho">
+                        <span class="label-caps">Receita em risco</span>
+                        <button mat-icon-button type="button" class="info" [matTooltip]="formulas.risco" aria-label="Como a receita em risco é calculada">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                    </header>
+                    <strong class="kpi-valor">R$ {{ dados.receitaEmRisco.total | number:'1.2-2' }}<small>/mês</small></strong>
+                    <dl class="parcelas">
+                        <div>
+                            <dt>Downgrades ({{ dados.receitaEmRisco.downgrades.assinaturas }})</dt>
+                            <dd class="num">R$ {{ dados.receitaEmRisco.downgrades.valor | number:'1.2-2' }}</dd>
+                        </div>
+                        <div>
+                            <dt>Cancelamentos ({{ dados.receitaEmRisco.cancelamentos.assinaturas }})</dt>
+                            <dd class="num">R$ {{ dados.receitaEmRisco.cancelamentos.valor | number:'1.2-2' }}</dd>
+                        </div>
+                        <div>
+                            <dt>Desativadas ({{ dados.receitaEmRisco.contasDesativadas.assinaturas }})</dt>
+                            <dd class="num">R$ {{ dados.receitaEmRisco.contasDesativadas.valor | number:'1.2-2' }}</dd>
+                        </div>
+                    </dl>
+                </article>
+
+                <article class="kpi">
+                    <header class="kpi-cabecalho">
+                        <span class="label-caps">Novos cadastros</span>
+                        <button mat-icon-button type="button" class="info" [matTooltip]="formulas.cadastros" aria-label="Como os novos cadastros são contados">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                    </header>
+                    <strong class="kpi-valor">{{ dados.cadastros.novos | number }}</strong>
+                    <span class="secundario">no período selecionado</span>
+                </article>
+
+                <article class="kpi">
+                    <header class="kpi-cabecalho">
+                        <span class="label-caps">Conversão para plano pago</span>
+                        <button mat-icon-button type="button" class="info" [matTooltip]="formulas.conversao" aria-label="Como a conversão é calculada">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                    </header>
+                    @if (dados.cadastros.taxaConversao === null) {
+                        <span class="sem-historico">Sem cadastros no período</span>
+                    } @else {
+                        <strong class="kpi-valor">{{ dados.cadastros.taxaConversao | number:'1.0-1' }}%</strong>
+                        <span class="secundario">
+                            {{ dados.cadastros.convertidos }} de {{ dados.cadastros.novos }} novos já pagaram um plano
+                        </span>
+                    }
+                </article>
+            </div>
+
+            @if (mesesSemHistorico() > 0) {
+                <p class="callout callout-neutro" role="note">
+                    <mat-icon aria-hidden="true">history</mat-icon>
+                    <span>
+                        {{ mesesSemHistorico() }} {{ mesesSemHistorico() === 1 ? 'mês do período é anterior' : 'meses do período são anteriores' }}
+                        ao primeiro registro do sistema e {{ mesesSemHistorico() === 1 ? 'aparece' : 'aparecem' }} como "sem histórico suficiente".
+                    </span>
+                </p>
+            }
+
+            <!-- ===== graficos ===== -->
+            <div class="graficos">
+                <article class="cartao">
+                    <header class="cartao-cabecalho">
+                        <h2>Receita por mês</h2>
+                        <span class="secundario">Pagamentos aprovados menos estornos</span>
+                    </header>
+                    <app-grafico-colunas titulo="Receita por mês" [formato]="'moeda'" [series]="serieReceita" [colunas]="colunasReceita()" />
+                </article>
+
+                <article class="cartao">
+                    <header class="cartao-cabecalho">
+                        <h2>Assinantes por plano</h2>
+                        <span class="secundario">Hoje · {{ totalAssinantes() }} {{ totalAssinantes() === 1 ? 'conta ativa' : 'contas ativas' }}</span>
+                    </header>
+                    <ul class="barras-planos">
+                        @for (plano of dados.assinantesPorPlano; track plano.idPlano) {
+                            <li>
+                                <span class="plano-nome">{{ plano.nomePlano }}</span>
+                                <span class="plano-trilho">
+                                    <span class="plano-barra" [class.plano-gratuito]="plano.gratuito"
+                                        [style.width.%]="larguraAssinantes(plano.quantidade)"></span>
+                                </span>
+                                <strong class="plano-qtd num">{{ plano.quantidade | number }}</strong>
+                            </li>
+                        }
+                    </ul>
+                </article>
+
+                <article class="cartao cartao-largo">
+                    <header class="cartao-cabecalho">
+                        <div class="cartao-titulo">
+                            <h2>Evolução de pagantes por plano</h2>
+                            <button mat-icon-button type="button" class="info" [matTooltip]="formulas.evolucao" aria-label="Como a evolução é reconstruída">
+                                <mat-icon>info</mat-icon>
+                            </button>
+                        </div>
+                        <span class="secundario">Assinaturas pagantes no fim de cada mês e o total de contas cadastradas</span>
+                    </header>
+                    @if (seriesEvolucao().length === 0) {
+                        <p class="secundario">Sem histórico suficiente no período.</p>
+                    } @else {
+                        <app-grafico-colunas titulo="Evolução de pagantes por plano" [series]="seriesEvolucao()"
+                            [serieLinha]="serieContas" [colunas]="colunasEvolucao()" />
+                    }
+                </article>
+            </div>
+
+            <p class="callout callout-neutro" role="note">
+                <mat-icon aria-hidden="true">lock</mat-icon>
+                <span>Os indicadores usam só assinaturas, planos e pagamentos. As finanças pessoais dos usuários (transações, categorias e contatos) não entram em nenhum número.</span>
+            </p>
+        </div>
+    } @else if (carregando()) {
+        <div class="carregando">
+            <mat-progress-spinner mode="indeterminate" diameter="36" aria-label="Carregando indicadores" />
+        </div>
+    }
+</section>

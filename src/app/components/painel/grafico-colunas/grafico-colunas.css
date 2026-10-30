@@ -1,0 +1,269 @@
+:host {
+    display: block;
+}
+
+.grafico {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* ===== legenda (sempre que ha duas ou mais series) ===== */
+
+.legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+}
+
+.legenda li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.chave {
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.chave-barra {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+.chave-linha {
+    width: 14px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+/* ===== area do grafico: eixo Y + plot ===== */
+
+/* grade 2x2: eixo Y | plot na primeira linha, (vazio) | eixo X na segunda */
+.area {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 220px auto;
+    gap: 0.4rem 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.eixo-y {
+    position: relative;
+    min-width: 2rem;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    text-align: right;
+}
+
+.eixo-y span {
+    position: absolute;
+    right: 0;
+    transform: translateY(50%);
+    line-height: 1;
+}
+
+.plot {
+    position: relative;
+}
+
+/* grade recessiva: linha fina e solida */
+.grade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--color-divider);
+}
+
+.colunas {
+    position: absolute;
+    inset: 0;
+    display: grid;
+}
+
+/* a coluna inteira e o alvo do mouse e do teclado (maior que a barra) */
+.coluna {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    border-radius: var(--radius-sm);
+    outline: none;
+    cursor: default;
+}
+
+.coluna.ativa {
+    background: var(--color-surface-hover);
+}
+
+.coluna:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+/* barra: no maximo 24px, ponta arredondada de 4px e base reta; segmentos separados por 2px de fundo */
+.pilha {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+    width: min(24px, 60%);
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.segmento {
+    flex-basis: 0;
+    min-height: 2px;
+}
+
+.coluna.ativa .segmento {
+    filter: brightness(1.08);
+}
+
+.sem-historico {
+    margin-bottom: 0.25rem;
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
+
+/* linha de 2px por cima das colunas, no mesmo eixo */
+.linha {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.linha polyline {
+    fill: none;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+/* ponto de 8px com anel de 2px na cor do fundo */
+.ponto {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--color-surface);
+    transform: translate(-50%, 50%);
+    pointer-events: none;
+}
+
+/* ===== eixo X ===== */
+
+.eixo-x {
+    grid-column: 2;
+    display: grid;
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.eixo-x small {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 10px;
+}
+
+/* ===== tooltip: valor em destaque, nome da serie depois ===== */
+
+.tooltip {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 150px;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    transform: translateX(-50%);
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.tooltip-inicio {
+    transform: translateX(-12px);
+}
+
+.tooltip-fim {
+    transform: translateX(calc(-100% + 12px));
+}
+
+.tooltip-titulo {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.tooltip-linha {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.tooltip-linha strong {
+    color: var(--color-text-primary);
+}
+
+/* ===== tabela com os mesmos dados ===== */
+
+.tabela-dados summary {
+    width: fit-content;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tabela-dados table {
+    width: 100%;
+    margin-top: 0.5rem;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.tabela-dados th,
+.tabela-dados td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--color-divider);
+    text-align: left;
+}
+
+.tabela-dados thead th {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tabela-dados tbody th {
+    font-weight: 500;
+}
+
+.tabela-dados .col-num {
+    text-align: right;
+}
+
+@media (max-width: 600px) {
+    .area {
+        grid-template-rows: 180px auto;
+    }
+}
