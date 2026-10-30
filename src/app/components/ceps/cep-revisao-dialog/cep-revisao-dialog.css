@@ -1,0 +1,63 @@
+.titulo {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.divergencia {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+    border-radius: var(--radius-md);
+    background: var(--color-danger-soft);
+}
+
+.divergencia h3 {
+    margin: 0;
+}
+
+.comparacao {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.comparacao th,
+.comparacao td {
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--color-divider);
+    text-align: left;
+}
+
+.comparacao thead th {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.comparacao tbody th {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.comparacao .externo {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.campos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}

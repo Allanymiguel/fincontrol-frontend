@@ -1,0 +1,96 @@
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Consultas de CEP</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'consulta' : 'consultas' }} do cadastro de clientes · somente leitura</p>
+        </div>
+        <a matButton="outlined" routerLink="/ceps">
+            <mat-icon>arrow_back</mat-icon>
+            Base de CEPs
+        </a>
+    </header>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filtro-cep">
+            <mat-label>CEP</mat-label>
+            <input #busca matInput [ngModel]="cepFilter" (ngModelChange)="onCepInput($event)" placeholder="Ex.: 77060" inputmode="numeric" />
+            @if (cepFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onCepInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Fonte</mat-label>
+            <mat-select [(ngModel)]="idFonte" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (fonte of fontes; track fonte.id) {
+                    <mat-option [value]="fonte.id">{{ fonte.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Resultado</mat-label>
+            <mat-select [(ngModel)]="idResultado" (selectionChange)="filtrar()">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (resultado of resultados; track resultado.id) {
+                    <mat-option [value]="resultado.id">{{ resultado.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-periodo">
+            <mat-label>Período</mat-label>
+            <mat-date-range-input [rangePicker]="periodo">
+                <input matStartDate placeholder="dd/mm/aaaa" [(ngModel)]="inicio" (dateChange)="onPeriodoChange()" />
+                <input matEndDate placeholder="dd/mm/aaaa" [(ngModel)]="fim" (dateChange)="onPeriodoChange()" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="periodo" />
+            <mat-date-range-picker #periodo />
+        </mat-form-field>
+    </div>
+
+    <div class="data-card">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="dataHora">
+                    <th mat-header-cell *matHeaderCellDef> Quando </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ obj.dataHora | date:'dd/MM/yyyy HH:mm:ss' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cep">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> CEP </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal num"> <span class="codigo">{{ formatarCep(obj.cep) }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fonte">
+                    <th mat-header-cell *matHeaderCellDef> Fonte </th>
+                    <td mat-cell *matCellDef="let obj"> {{ obj.fonte.nome }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="resultado">
+                    <th mat-header-cell *matHeaderCellDef> Resultado </th>
+                    <td mat-cell *matCellDef="let obj"> <span [class]="tomResultado(obj)">{{ obj.resultado.nome }}</span> </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon>manage_search</mat-icon>
+                        Nenhuma consulta encontrada com esses filtros.
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 25, 50]" (page)="onPageChange($event)" aria-label="Páginas do log de consultas" />
+    </div>
+</section>

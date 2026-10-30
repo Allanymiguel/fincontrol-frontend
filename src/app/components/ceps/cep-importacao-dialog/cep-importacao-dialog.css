@@ -1,0 +1,55 @@
+.titulo {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.totais {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.total {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+}
+
+.total strong {
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
+}
+
+.total.com-rejeitados {
+    border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+    background: var(--color-danger-soft);
+}
+
+.rejeitados {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.rejeitados th,
+.rejeitados td {
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--color-divider);
+    text-align: left;
+    vertical-align: top;
+}
+
+.rejeitados thead th {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.nota {
+    margin: 0.75rem 0 0;
+}

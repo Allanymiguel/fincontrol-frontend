@@ -1,0 +1,172 @@
+<section class="page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Base de CEPs</h1>
+            <p class="page-subtitle">{{ totalItems }} {{ totalItems === 1 ? 'CEP' : 'CEPs' }} de endereços de clientes</p>
+        </div>
+        <div class="acoes-topo">
+            <a matButton="outlined" routerLink="/ceps/consultas">
+                <mat-icon>manage_search</mat-icon>
+                Log de consultas
+            </a>
+            <button matButton="outlined" type="button" (click)="revalidarManuais()"
+                [disabled]="apiLigada() !== true || ocupado()"
+                [matTooltip]="apiLigada() ? '' : 'Ligue a consulta externa para revalidar'">
+                <mat-icon>sync</mat-icon>
+                Revalidar manuais
+            </button>
+            <button matButton="filled" type="button" (click)="arquivo.click()" [disabled]="ocupado()">
+                <mat-icon>upload_file</mat-icon>
+                Importar CSV
+            </button>
+            <input #arquivo type="file" accept=".csv,text/csv" hidden (change)="importar(arquivo)" />
+        </div>
+    </header>
+
+    <!-- interruptor da consulta externa: vale na hora, sem reiniciar o back -->
+    <div class="config" [class.desligada]="apiLigada() === false">
+        <mat-icon class="config-icone" aria-hidden="true">{{ apiLigada() === false ? 'cloud_off' : 'cloud_done' }}</mat-icon>
+        <div class="config-texto">
+            <strong>Consulta externa (ViaCEP) {{ apiLigada() === false ? 'desligada' : 'ligada' }}</strong>
+            <span class="secundario">
+                @if (apiLigada() === false) {
+                    O cadastro de clientes usa só a base local e, sem o CEP nela, o modo manual.
+                } @else {
+                    CEP fora da base é buscado no ViaCEP e salvo aqui como verificado.
+                }
+            </span>
+        </div>
+        @if (apiLigada() !== null) {
+            <mat-slide-toggle [checked]="apiLigada()" (change)="alternarApi($event)" aria-label="Consulta externa ao ViaCEP" />
+        }
+    </div>
+
+    <mat-button-toggle-group class="atalhos" hideSingleSelectionIndicator [value]="atalho" (change)="escolherAtalho($event.value)"
+        aria-label="Atalhos de revisão">
+        <mat-button-toggle value="todos">Todos</mat-button-toggle>
+        <mat-button-toggle value="revisar">Para revisar</mat-button-toggle>
+        <mat-button-toggle value="divergentes">Divergentes</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div class="filters">
+        <mat-form-field appearance="outline" class="filtro-cep">
+            <mat-label>CEP</mat-label>
+            <input #busca matInput [ngModel]="cepFilter" (ngModelChange)="onCepInput($event)" placeholder="Ex.: 77001" inputmode="numeric" />
+            @if (cepFilter) {
+                <button mat-icon-button matSuffix type="button" class="limpar-busca" aria-label="Limpar busca"
+                    (click)="onCepInput(''); busca.focus()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            } @else {
+                <mat-icon matSuffix>search</mat-icon>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Origem</mat-label>
+            <mat-select [(ngModel)]="idOrigem" (selectionChange)="onFiltroManual()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (origem of origens; track origem.id) {
+                    <mat-option [value]="origem.id">{{ origem.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-select">
+            <mat-label>Situação</mat-label>
+            <mat-select [(ngModel)]="idSituacao" (selectionChange)="onFiltroManual()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (situacao of situacoes; track situacao.id) {
+                    <mat-option [value]="situacao.id">{{ situacao.nome }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-uf">
+            <mat-label>UF</mat-label>
+            <mat-select [(ngModel)]="uf" (selectionChange)="onFiltroManual()">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (sigla of ufs; track sigla) {
+                    <mat-option [value]="sigla">{{ sigla }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="data-card" [class.ocupado]="ocupado()">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="cep">
+                    <th mat-header-cell *matHeaderCellDef> CEP </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> <span class="codigo">{{ formatarCep(obj.cep) }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="endereco">
+                    <th mat-header-cell *matHeaderCellDef class="col-principal"> Logradouro e bairro </th>
+                    <td mat-cell *matCellDef="let obj" class="col-principal">
+                        <div>{{ obj.logradouro ?? '—' }}</div>
+                        <div class="secundario">{{ obj.bairro ?? 'CEP geral da cidade' }}</div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="municipio">
+                    <th mat-header-cell *matHeaderCellDef> Município </th>
+                    <td mat-cell *matCellDef="let obj" class="municipio"> {{ obj.municipio.nome }} - {{ obj.municipio.estado.sigla }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="origem">
+                    <th mat-header-cell *matHeaderCellDef> Origem </th>
+                    <td mat-cell *matCellDef="let obj"> <span class="tag">{{ obj.origem.nome }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="situacao">
+                    <th mat-header-cell *matHeaderCellDef> Situação </th>
+                    <td mat-cell *matCellDef="let obj"> <span [class]="'tag ' + tomSituacao(obj)">{{ obj.situacao.nome }}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="atualizado">
+                    <th mat-header-cell *matHeaderCellDef> Atualizado em </th>
+                    <td mat-cell *matCellDef="let obj" class="num"> {{ (obj.dataAlteracao ?? obj.dataCadastro) | date }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acao">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let obj">
+                        <div class="acoes-linha">
+                            <button mat-icon-button type="button" class="icone-acao" (click)="revisar(obj)"
+                                matTooltip="Revisar e corrigir" aria-label="Revisar e corrigir">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            @if (obj.situacao.id !== VERIFICADO) {
+                                <button mat-icon-button type="button" class="icone-acao" (click)="verificar(obj)"
+                                    matTooltip="Marcar como verificado" aria-label="Marcar como verificado">
+                                    <mat-icon>verified</mat-icon>
+                                </button>
+                            }
+                            @if (apiLigada()) {
+                                <button mat-icon-button type="button" class="icone-acao" (click)="revalidar(obj)" [disabled]="ocupado()"
+                                    matTooltip="Revalidar com o ViaCEP" aria-label="Revalidar com o ViaCEP">
+                                    <mat-icon>sync</mat-icon>
+                                </button>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">
+                        <mat-icon>location_off</mat-icon>
+                        Nenhum CEP encontrado com esses filtros.
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 25, 50]" (page)="onPageChange($event)" aria-label="Páginas da base de CEPs" />
+    </div>
+</section>

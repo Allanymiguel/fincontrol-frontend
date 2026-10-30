@@ -1,0 +1,84 @@
+.acoes-topo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* interruptor da consulta externa */
+.config {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-soft);
+}
+
+.config.desligada {
+    border-color: color-mix(in srgb, var(--color-warning) 40%, transparent);
+    background: var(--color-warning-soft);
+}
+
+.config-icone {
+    flex-shrink: 0;
+    color: var(--color-accent);
+}
+
+.config.desligada .config-icone {
+    color: var(--color-warning);
+}
+
+.config-texto {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: var(--color-text-primary);
+}
+
+.atalhos {
+    width: fit-content;
+}
+
+.filters .filtro-cep {
+    width: 180px;
+}
+
+.filters .filtro-select {
+    width: 190px;
+}
+
+.filters .filtro-uf {
+    width: 110px;
+}
+
+.municipio {
+    white-space: nowrap;
+}
+
+.acoes-linha {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.data-card.ocupado {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+@media (max-width: 600px) {
+    .filters .filtro-cep,
+    .filters .filtro-select,
+    .filters .filtro-uf {
+        width: 100%;
+    }
+
+    .atalhos {
+        width: 100%;
+    }
+
+    .atalhos mat-button-toggle {
+        flex: 1;
+    }
+}

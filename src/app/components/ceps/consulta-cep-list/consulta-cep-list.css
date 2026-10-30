@@ -1,0 +1,19 @@
+.filters .filtro-cep {
+    width: 180px;
+}
+
+.filters .filtro-select {
+    width: 190px;
+}
+
+.filters .filtro-periodo {
+    width: 260px;
+}
+
+@media (max-width: 600px) {
+    .filters .filtro-cep,
+    .filters .filtro-select,
+    .filters .filtro-periodo {
+        width: 100%;
+    }
+}
