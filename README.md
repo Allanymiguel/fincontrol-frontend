@@ -17,7 +17,21 @@ npm ci
 npx ng serve
 ```
 
-Abra <http://localhost:4200> e entre com `admin@fincontrol.com` / `admin12345`. O admin cai no **Painel**.
+Abra <http://localhost:4200>: sem sessão, o app leva para a tela de login do Keycloak (com o
+visual do FinControl). Entre com `admin@fincontrol.com` / `admin12345`. O admin cai no **Painel**.
+
+## Login
+
+O login é feito na tela do **Keycloak** (Authorization Code com PKCE, biblioteca `keycloak-js`): a senha é
+digitada só lá e o app recebe apenas os tokens, que ficam em memória.
+
+- `src/app/auth/auth-config.ts`: endereço do Keycloak, realm e client (`fincontrol-frontend`), e a chave
+  `AUTH_HABILITADA` para usar o app sem login.
+- `AuthService` abre o app recuperando a sessão do Keycloak sem pedir senha (`check-sso`, com
+  `public/silent-check-sso.html`), renova o token e faz o logout direto no Keycloak.
+- `/login` não tem tela: o `loginGuard` redireciona para o Keycloak, que depois volta para a tela pedida.
+- A tela de login (tema), o "Esqueci minha senha" e o Mailpit ficam no `fincontrol-backend` (veja o `KEYCLOAK.md`).
+- A tela **Criar conta** continua no app; depois do cadastro, o login do Keycloak já vem com o e-mail preenchido.
 
 ## Área administrativa (menu "Admin")
 
