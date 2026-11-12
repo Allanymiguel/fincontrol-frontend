@@ -14,6 +14,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { routes } from './app.routes';
 import { authInterceptor } from './auth/auth.interceptor';
+import { AuthService } from './services/auth.service';
 import { FORMATO_DATA } from './utils/data';
 import { DataBrAdapter, FORMATOS_DATA_BR } from './utils/data-br-adapter';
 
@@ -63,5 +64,7 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');
     }),
+    // antes da primeira navegacao: recupera a sessao do Keycloak (ou conclui o login que acabou de voltar)
+    provideAppInitializer(() => inject(AuthService).iniciar()),
   ],
 };

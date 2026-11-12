@@ -34,7 +34,20 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   return router.createUrlTree([auth.rotaInicial()]);
 };
 
-// login e cadastro: quem ja esta logado vai direto para o sistema
+// /login nao tem tela propria: leva para o login do Keycloak, que depois volta para a tela pedida.
+// Quem ja esta logado (ou usa o app sem login) vai direto para o sistema.
+export const loginGuard: CanActivateFn = (route) => {
+  const auth = inject(AuthService);
+  if (!AUTH_HABILITADA || auth.logado()) return inject(Router).createUrlTree(['/']);
+
+  const returnUrl = route.queryParamMap.get('returnUrl');
+  const destino = returnUrl?.startsWith('/') && !returnUrl.startsWith('/login') ? returnUrl : '/';
+  // logo depois do cadastro, o e-mail da conta nova ja vem preenchido
+  void auth.entrar(destino, route.queryParamMap.get('cadastrado') ?? undefined);
+  return false;
+};
+
+// cadastro: quem ja esta logado vai direto para o sistema
 export const visitanteGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   if (!AUTH_HABILITADA || !auth.logado()) return true;

@@ -4,8 +4,8 @@ import { switchMap, catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AUTH_HABILITADA } from './auth-config';
 
-// endpoints de login/cadastro nao levam token (e um token vencido nao pode atrapalhar o login)
-const ROTAS_PUBLICAS = /\/auth\/(login|refresh|registro|logout)$/;
+// endpoints de cadastro nao levam token (e um token vencido nao pode atrapalhar o cadastro)
+const ROTAS_PUBLICAS = /\/auth\/registro\//;
 
 // Envia o access token em toda chamada a API. Se ele estiver vencendo, renova antes;
 // se o back responder 401, renova uma vez e repete. Sem renovacao possivel: volta para o login.

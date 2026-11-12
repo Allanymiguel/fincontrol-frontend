@@ -1,8 +1,7 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard, userGuard, visitanteGuard } from './auth/auth.guards';
+import { adminGuard, authGuard, loginGuard, userGuard, visitanteGuard } from './auth/auth.guards';
 import { AuthService } from './services/auth.service';
-import { Login } from './components/auth/login/login';
 import { Registro } from './components/auth/registro/registro';
 import { TransacaoList } from './components/transacoes/transacao-list/transacao-list';
 import { TransacaoForm } from './components/transacoes/transacao-form/transacao-form';
@@ -41,7 +40,8 @@ import { CobrancaList } from './components/cobrancas/cobranca-list/cobranca-list
 import { PagamentoList } from './components/pagamentos/pagamento-list/pagamento-list';
 
 export const routes: Routes = [
-    {path: 'login', component: Login, title: 'Entrar', canActivate: [visitanteGuard]},
+    // o login e a tela do Keycloak (tema do FinControl); /login so redireciona para ela
+    {path: 'login', title: 'Entrar', canActivate: [loginGuard], children: []},
     {path: 'registro', component: Registro, title: 'Criar conta', canActivate: [visitanteGuard]},
 
     // tudo abaixo exige login
